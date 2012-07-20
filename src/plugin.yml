@@ -1,0 +1,20 @@
+name: Kingdoms
+main: com.imdeity.kingdoms.main.KingdomsMain
+version: 12.07.15
+language: english.yml
+author: vanZeben
+website: http://ImDeity.com
+softdepend: [DeityAPI, DeityProtect]
+commands:
+    Kingdoms:
+        aliases: []
+    Kingdom:
+        aliases: []
+    Plot:
+        aliases: []
+    Resident:
+        aliases: [res]
+    Town:
+        aliases: []
+    KingdomsAdmin:
+        aliases: [ka]
