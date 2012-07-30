@@ -35,8 +35,8 @@ public class TownWithdrawCommand extends DeityCommandReceiver {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_INVALID_PRICE);
                 return true;
             }
-            if (!resident.canPay(amount)) {
-                KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY);
+            if (!town.canPay(amount)) {
+                KingdomsMain.plugin.chat.sendPlayerMessage(player, "Town does not have enough money");
                 return true;
             }
             town.pay(resident.getName(), amount, "Town Withdraw");

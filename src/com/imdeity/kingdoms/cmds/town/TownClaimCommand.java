@@ -29,11 +29,6 @@ public class TownClaimCommand extends DeityCommandReceiver {
             return true;
         }
         
-        if (!resident.isLeastLevelOneNoble()) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_TOWN_NOT_NOBLE);
-            return true;
-        }
-        
         Town town = resident.getTown();
         if (town.getLandSize() + 1 > town.getMaxLandSize()) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_TOWN_SIZE_TOO_SMALL);

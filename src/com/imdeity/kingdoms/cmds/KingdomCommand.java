@@ -12,16 +12,20 @@ import com.imdeity.kingdoms.cmds.kingdom.KingdomWithdrawCommand;
 
 public class KingdomCommand extends DeityCommandHandler {
     
+    public KingdomCommand(String pluginName) {
+        super(pluginName, "Kingdom");
+    }
+    
     @Override
     public void initRegisteredCommands() {
         String[] requestArgs = { "list", "accept [request-id]", "deny [request-id]", "join [kingdom-name]" };
-        this.registerCommand("info", "<kingdom-name>", "Shows a kingdoms status", new KingdomInfoCommand());
-        this.registerCommand("list", "", "Lists all kingdoms", new KingdomListCommand());
-        this.registerCommand("create", "[kingdom-name]", "Creates a new Kingdom", new KingdomCreateCommand());
-        this.registerCommand("request", requestArgs, "Requests to join a kingdom", new KingdomRequestCommand());
-        this.registerCommand("remove", "[town-name]", "Removes a town from your kingdom", new KingdomRemoveCommand());
-        this.registerCommand("leave", "", "Leaves a kingdom", new KingdomLeaveCommand());
-        this.registerCommand("withdraw", "[amount]", "Takes money from the kingdom", new KingdomWithdrawCommand());
-        this.registerCommand("deposit", "<kingdom-name> [amount]", "Adds money to a  kingdom", new KingdomDepositCommand());
+        this.registerCommand("info", "<kingdom-name>", "Shows a kingdoms status", new KingdomInfoCommand(), "kingdoms.kingdom.info");
+        this.registerCommand("list", "", "Lists all kingdoms", new KingdomListCommand(), "kingdoms.kingdom.list");
+        this.registerCommand("create", "[kingdom-name]", "Creates a new Kingdom", new KingdomCreateCommand(), "kingdoms.kingdom.create");
+        this.registerCommand("request", requestArgs, "Requests to join a kingdom", new KingdomRequestCommand(), "kingdoms.kingdom.request");
+        this.registerCommand("remove", "[town-name]", "Removes a town from your kingdom", new KingdomRemoveCommand(), "kingdoms.kingdom.remove");
+        this.registerCommand("leave", "", "Leaves a kingdom", new KingdomLeaveCommand(), "kingdoms.kingdom.leave");
+        this.registerCommand("withdraw", "[amount]", "Takes money from the kingdom", new KingdomWithdrawCommand(), "kingdoms.kingdom.withdraw");
+        this.registerCommand("deposit", "<kingdom-name> [amount]", "Adds money to a  kingdom", new KingdomDepositCommand(), "kingdoms.kingdom.deposit");
     }
 }

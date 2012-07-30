@@ -24,10 +24,6 @@ public class TownUnclaimCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
             return true;
         }
-        if (!resident.isLeastLevelOneNoble()) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_TOWN_NOT_NOBLE);
-            return true;
-        }
         KingdomsChunk chunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
         if (chunk != null && chunk.getType() == KingdomsChunk.ChunkType.TOWN && chunk.getTown() != null && !chunk.getTown().getName().equalsIgnoreCase(resident.getTown().getName())) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_INVALID_LOCATION);

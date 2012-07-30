@@ -35,7 +35,7 @@ public class Kingdom {
     
     public void init() {
         towns = new ArrayList<String>();
-        String sql = "SELECT id FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "towns") + " WHERE kingdom_id = ?;";
+        String sql = "SELECT id FROM " + KingdomsMain.getTownTableName() + " WHERE kingdom_id = ?;";
         DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, this.getId());
         if (query != null && query.hasRows()) {
             for (int i = 0; i < query.rowCount(); i++) {

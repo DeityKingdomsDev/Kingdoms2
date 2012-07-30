@@ -6,11 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.imdeity.deityapi.DeityAPI;
 import com.imdeity.deityapi.exception.NegativeMoneyException;
-import com.imdeity.deityapi.exception.NotRegisteredException;
 import com.imdeity.deityapi.records.DatabaseResults;
 import com.imdeity.kingdoms.main.KingdomsMain;
 import com.imdeity.kingdoms.obj.KingdomsChunk.ChunkPermissionGroupTypes;
@@ -178,7 +178,7 @@ public class Resident {
     }
     
     public boolean isOnline() {
-        return (DeityAPI.getAPI().getServerAPI().getOnlinePlayer(getName()) != null && Deity.server.getOnlinePlayer(getName()).isOnline());
+        return (KingdomsMain.plugin.getServer().getPlayer(getName()) != null && KingdomsMain.plugin.getServer().getPlayer(getName()).isOnline());
     }
     
     public List<String> getFriends() {
@@ -246,17 +246,6 @@ public class Resident {
         this.hasUpdated = true;
     }
     
-    public void save() {
-        if (hasUpdated) {
-            DeityAPI.getAPI()
-                    .getDataAPI()
-                    .getMySQL()
-                    .write("UPDATE " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "residents") + " SET name = ?, town_id = ?, is_king = ?, is_mayor = ?, is_assistant = ?, is_helper = ?, is_male = ?, deed = ? WHERE id = ?;", name, (town != null ? town.getId() : -1),
-                            (isKing() ? 1 : 0), (isMayor() ? 1 : 0), (isAssistant() ? 1 : 0), (isHelper() ? 1 : 0), (isMale() ? 1 : 0), deed, id);
-            hasUpdated = false;
-        }
-    }
-    
     public Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> getPermissions() {
         return permissions;
     }
@@ -295,22 +284,16 @@ public class Resident {
     }
     
     public Player getPlayer() {
-        return KingdomsMain.plugin.getServer().getOnlinePlayer(getName());
+        return KingdomsMain.plugin.getServer().getPlayer(getName());
     }
     
     public List<String> showInfo(boolean onlineFriends) {
         List<String> out = new ArrayList<String>();
-        DeityProfile player = null;
+        
         Date firstOnline = new Date();
         Date lastOnline = new Date();
         long totalTimeOnline = 0;
-        try {
-            player = Deity.server.getDeityPlayer(this.getName());
-            firstOnline = player.getFirstOnline();
-            lastOnline = player.getLastOnline();
-            totalTimeOnline = player.getTotalTime();
-        } catch (NotRegisteredException e) {
-        }
+        
         out.add("&" + outputColor[0] + "+-----------------------------+");
         out.add("&" + outputColor[0] + "Resident: &" + outputColor[1] + this.getName());
         out.add("&" + outputColor[0] + "First Online: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getTimeUtils().getFriendlyDate(firstOnline, false));
@@ -351,14 +334,18 @@ public class Resident {
         return out;
     }
     
-    public boolean isLeastLevelOneNoble() {
-        // try {
-        // return
-        // (Deity.server.getDeityPlayer(this.getName()).getClassName().equalsIgnoreCase("political")
-        // && (Deity.server.getDeityPlayer(this.getName()).getLevel() >= 1));
-        // } catch (NotRegisteredException e) {
-        // e.printStackTrace();
-        // }
-        return true;
+    public void save() {
+        if (hasUpdated) {
+            DeityAPI.getAPI()
+                    .getDataAPI()
+                    .getMySQL()
+                    .write("UPDATE " + KingdomsMain.getResidentTableName() + " SET name = ?, town_id = ?, is_king = ?, is_mayor = ?, is_assistant = ?, is_helper = ?, is_male = ?, deed = ? WHERE id = ?;", name, (town != null ? town.getId() : -1), (isKing() ? 1 : 0), (isMayor() ? 1 : 0),
+                            (isAssistant() ? 1 : 0), (isHelper() ? 1 : 0), (isMale() ? 1 : 0), deed, id);
+            hasUpdated = false;
+        }
+    }
+    
+    public void teleport(Location location) {
+        DeityAPI.getAPI().getPlayerAPI().teleport(getPlayer(), location);
     }
 }

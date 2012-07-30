@@ -22,11 +22,6 @@ public class KingdomRequestCommand extends DeityCommandReceiver {
         if (resident == null) { return false; }
         if (args.length == 0) { return false; }
         
-        if (!resident.isLeastLevelOneNoble()) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_TOWN_NOT_NOBLE);
-            return true;
-        }
-        
         if (args[0].equalsIgnoreCase("list")) {
             if (resident.getTown() == null || resident.getTown().getKingdom() == null || !resident.isKing()) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_KINGDOM_REQUEST_NOT_KING);
@@ -98,10 +93,20 @@ public class KingdomRequestCommand extends DeityCommandReceiver {
                 return true;
             }
             if (resident.hasTown()) {
+                if (resident.getTown().getKingdom() != null) {
+                    KingdomsMain.plugin.chat.sendPlayerMessage(player, "Your town already has a kingdom");
+                    return true;
+                }
                 Request request = KingdomsManager.addNewRequest(resident.getName(), RequestType.KINGDOM_JOIN, kingdom.getId());
                 kingdom.addRequest(request);
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_REQUEST_CONFIRM);
             } else {
+                for (Request r : kingdom.getRequests()) {
+                    if (r.getRequestee().equals(player.getName())) {
+                        KingdomsMain.plugin.chat.sendPlayerMessage(player, "You already have a request open");
+                        return true;
+                    }
+                }
                 Request request = KingdomsManager.addNewRequest(resident.getName(), RequestType.KINGDOM_TOWN_CREATE, kingdom.getId());
                 kingdom.addRequest(request);
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_REQUEST_CONFIRM);

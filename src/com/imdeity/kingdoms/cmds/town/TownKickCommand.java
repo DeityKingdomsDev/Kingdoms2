@@ -23,10 +23,6 @@ public class TownKickCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
             return true;
         }
-        if (!resident.isLeastLevelOneNoble()) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_TOWN_NOT_NOBLE);
-            return true;
-        }
         Town town = resident.getTown();
         if (args.length == 1) {
             Resident newResident = KingdomsManager.getResident(args[0]);

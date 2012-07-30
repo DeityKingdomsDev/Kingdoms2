@@ -26,10 +26,6 @@ public class TownCreateCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_TOWN_CREATE_RESIDENT_IN_TOWN);
             return true;
         }
-        if (!resident.isLeastLevelOneNoble()) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_TOWN_NOT_NOBLE);
-            return true;
-        }
         KingdomsChunk chunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
         if (chunk != null && chunk.getType() == KingdomsChunk.ChunkType.TOWN) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_INVALID_LOCATION);

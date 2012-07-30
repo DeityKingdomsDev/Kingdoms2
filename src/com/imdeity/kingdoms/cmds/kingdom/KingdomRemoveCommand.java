@@ -16,11 +16,6 @@ public class KingdomRemoveCommand extends DeityCommandReceiver {
         if (resident == null) { return false; }
         if (args.length == 0) { return false; }
         
-        if (!resident.isLeastLevelOneNoble()) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_TOWN_NOT_NOBLE);
-            return true;
-        }
-        
         if (resident.getTown() == null || resident.getTown().getKingdom() == null || !resident.isKing()) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_KINGDOM_REQUEST_NOT_KING);
             return true;

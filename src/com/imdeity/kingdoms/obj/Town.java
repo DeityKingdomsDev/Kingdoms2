@@ -15,7 +15,6 @@ import com.imdeity.deityapi.records.DatabaseResults;
 import com.imdeity.kingdoms.main.KingdomsConfigHelper;
 import com.imdeity.kingdoms.main.KingdomsMain;
 import com.imdeity.kingdoms.obj.KingdomsChunk.ChunkPermissionGroupTypes;
-import com.imdeity.protect.DeityProtect;
 import com.imdeity.protect.enums.DeityChunkPermissionTypes;
 
 public class Town {
@@ -32,6 +31,7 @@ public class Town {
     private Date creationDate;
     private List<String> residents = new ArrayList<String>();
     private List<Integer> land = new ArrayList<Integer>();
+    private Map<String, Integer> warps = new HashMap<String, Integer>();
     private Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions = new HashMap<DeityChunkPermissionTypes, ChunkPermissionGroupTypes>();
     
     private boolean hasUpdated = false;
@@ -55,12 +55,13 @@ public class Town {
         this.hasUpdated = false;
         initLand();
         initResidents();
+        initWarps();
     }
     
     public void initLand() {
-        String sql = "SELECT dpc.id AS 'dpcId', dpc.owner AS 'owner', dpc.world, dpc.x_coord, dpc.z_coord, kc.id, kc.town_id, kc.for_sale, kc.price, kc.can_mobs_spawn, kc.can_pvp FROM " + DeityProtect.plugin.db.tableName("deity_protect_", "chunks") + " dpc, "
-                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks") + " kc" + " WHERE kc.town_id = ? AND dpc.id = kc.deity_protect_id;";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().Read2(sql, this.getId());
+        String sql = "SELECT dpc.id AS 'dpcId', dpc.owner AS 'owner', dpc.world, dpc.x_coord, dpc.z_coord, kc.id, kc.town_id, kc.for_sale, kc.price, kc.can_mobs_spawn, kc.can_pvp FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, "
+                + KingdomsMain.getChunkTableName() + " kc" + " WHERE kc.town_id = ? AND dpc.id = kc.deity_protect_id;";
+        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, this.getId());
         if (query != null && query.hasRows()) {
             for (int i = 0; i < query.rowCount(); i++) {
                 try {
@@ -75,7 +76,7 @@ public class Town {
                     boolean canMobsSpawn = (query.getInteger(i, "can_mobs_spawn") == 1);
                     boolean canPvp = (query.getInteger(i, "can_pvp") == 1);
                     
-                    KingdomsChunk chunk = new KingdomsChunk(protectionId, Deity.server.getServer().getWorld(world), xCoord, zCoord, owner, id, KingdomsChunk.ChunkType.TOWN, this, forSale, price, canMobsSpawn, canPvp);
+                    KingdomsChunk chunk = new KingdomsChunk(protectionId, KingdomsMain.plugin.getServer().getWorld(world), xCoord, zCoord, owner, id, KingdomsChunk.ChunkType.TOWN, this, forSale, price, canMobsSpawn, canPvp);
                     chunk.save();
                     this.land.add(chunk.getId());
                     KingdomsManager.addKingdomsChunkToCache(chunk);
@@ -87,8 +88,8 @@ public class Town {
     }
     
     public void initResidents() {
-        String residentSql = "SELECT id FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "residents") + " WHERE town_id = ?";
-        DatabaseResults residentQuery = DeityAPI.getAPI().getDataAPI().getMySQL().Read2(residentSql, id);
+        String residentSql = "SELECT id FROM " + KingdomsMain.getResidentTableName() + " WHERE town_id = ?";
+        DatabaseResults residentQuery = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(residentSql, id);
         if (residentQuery != null && residentQuery.hasRows()) {
             for (int i = 0; i < residentQuery.rowCount(); i++) {
                 Resident resident = null;
@@ -99,6 +100,23 @@ public class Town {
                 }
                 if (resident != null) {
                     residents.add(resident.getName());
+                }
+            }
+        }
+    }
+    
+    public void initWarps() {
+        String sql = "SELECT id, name FROM " + KingdomsMain.getWarpTableName() + " WHERE town_id = ?;";
+        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, getId());
+        if (query != null && query.hasRows()) {
+            for (int i = 0; i < query.rowCount(); i++) {
+                try {
+                    int id = query.getInteger(i, "id");
+                    String name = query.getString(i, "name");
+                    KingdomsManager.getTownWarp(id);
+                    warps.put(name.toLowerCase(), id);
+                } catch (SQLDataException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -307,36 +325,35 @@ public class Town {
         this.hasUpdated();
     }
     
-    public void save() {
-        if (hasUpdated) {
-            DeityAPI.getAPI()
-                    .getDataAPI()
-                    .getMySQL()
-                    .Write("UPDATE " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "towns") + " SET name = ?, kingdom_id = ?, town_board = ?, default_plot_price = ?, spawn_location_id = ?, is_public = ?, is_capital = ?, creation_date = ? WHERE id = ?;", name,
-                            (kingdom != null ? kingdom.getId() : -1), townBoard, defaultPlotPrice, spawnLocation.getId(), (isPublic() ? 1 : 0), (isCapital() ? 1 : 0), creationDate, id);
-            hasUpdated = false;
-        }
+    public void addTownWarp(String name, Location location, int price) {
+        warps.put(name.toLowerCase(), KingdomsManager.addNewTownWarp(name, this.getId(), location, price).getId());
     }
     
-    public void remove() {
-        Deity.econ.removeAccount(getEconName());
-        for (KingdomsChunk chunk : this.getLand()) {
-            chunk.remove();
+    public TownWarp getTownWarp(String name) {
+        if (warps.get(name.toLowerCase()) != null) { return KingdomsManager.getTownWarp(warps.get(name.toLowerCase())); }
+        return null;
+    }
+    
+    public List<TownWarp> getAllTownWarps() {
+        List<TownWarp> townWarps = new ArrayList<TownWarp>();
+        for (Integer i : warps.values()) {
+            townWarps.add(KingdomsManager.getTownWarp(i));
         }
-        this.getLand().clear();
-        for (String s : residents) {
-            Resident r = KingdomsManager.getResident(s);
-            r.setMayor(false);
-            r.setKing(false);
-            r.setAssistant(false);
-            r.setHelper(false);
-            r.setTown(null);
-            r.save();
+        return townWarps;
+    }
+    
+    public List<String> getAllTownWarpNames() {
+        List<String> warps = new ArrayList<String>();
+        for (TownWarp warp : getAllTownWarps()) {
+            warps.add(warp.getName());
         }
-        
-        this.residents.clear();
-        DeityAPI.getAPI().getDataAPI().getMySQL().Write("DELETE FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "towns") + " WHERE id = ?;", id);
-        KingdomsManager.removeTown(this);
+        return warps;
+    }
+    
+    public void removeWarp(String name) {
+        if (warps.containsKey(name)) {
+            warps.remove(name);
+        }
     }
     
     public String getEconName() {
@@ -344,27 +361,27 @@ public class Town {
     }
     
     public double getBalance() {
-        return Deity.econ.getBalance(getEconName());
+        return DeityAPI.getAPI().getEconAPI().getBalance(getEconName());
     }
     
     public void createBankAccount() {
-        Deity.econ.createAccount(getEconName());
+        DeityAPI.getAPI().getEconAPI().createAccount(getEconName());
     }
     
     public boolean canPay(double cost) {
-        return Deity.econ.canPay(getEconName(), cost);
+        return DeityAPI.getAPI().getEconAPI().canPay(getEconName(), cost);
     }
     
     public void pay(double cost, String note) {
         try {
-            Deity.econ.send(getEconName(), cost, note);
+            DeityAPI.getAPI().getEconAPI().send(getEconName(), cost, note);
         } catch (NegativeMoneyException e) {
         }
     }
     
     public void pay(String receiver, double cost, String note) {
         try {
-            Deity.econ.sendTo(getEconName(), receiver, cost, note);
+            DeityAPI.getAPI().getEconAPI().sendTo(getEconName(), receiver, cost, note);
         } catch (NegativeMoneyException e) {
         }
     }
@@ -388,22 +405,22 @@ public class Town {
             out.add("&" + outputColor[0] + this.getMayor().getTownFriendlyTitle() + ": &" + outputColor[1] + this.getMayor().getName());
         }
         if (this.getAssistants() != null && this.getAssistantNames().size() > 0) {
-            out.add("&" + outputColor[0] + "Assistants: &" + outputColor[1] + Deity.utils.string.join(this.getAssistantNames(), ", "));
+            out.add("&" + outputColor[0] + "Assistants: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getAssistantNames(), ", "));
         }
         if (this.getHelpers() != null && this.getHelperNames().size() > 0) {
-            out.add("&" + outputColor[0] + "Helpers: &" + outputColor[1] + Deity.utils.string.join(this.getHelperNames(), ", "));
+            out.add("&" + outputColor[0] + "Helpers: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getHelperNames(), ", "));
         }
-        out.add("&" + outputColor[0] + "Creation Date: &" + outputColor[1] + (this.getCreationDate() == null ? "Right Now" : Deity.utils.time.getFriendlyDate(this.getCreationDate(), false)));
+        out.add("&" + outputColor[0] + "Creation Date: &" + outputColor[1] + (this.getCreationDate() == null ? "Right Now" : DeityAPI.getAPI().getUtilAPI().getTimeUtils().getFriendlyDate(this.getCreationDate(), false)));
         out.add("&" + outputColor[0] + "Balance: &" + outputColor[1] + this.getBalance());
         out.add("&" + outputColor[0] + "Permissions:" + "&" + outputColor[1] + " Edit&8: &7" + this.getPermission(DeityChunkPermissionTypes.EDIT).getName() + "&" + outputColor[1] + " Use&8: &7" + this.getPermission(DeityChunkPermissionTypes.USE).getName() + "&" + outputColor[1] + " Access&8: &7"
                 + this.getPermission(DeityChunkPermissionTypes.ACCESS).getName());
         if (this.getResidentsNames() != null && !this.getResidentsNames().isEmpty()) {
             String list = "";
             if (!onlineList) {
-                list = Deity.utils.string.join(this.getResidentsNames(), ", ");
+                list = DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getResidentsNames(), ", ");
                 out.add("&" + outputColor[0] + "Residents &" + outputColor[1] + "[" + this.getResidentsNames().size() + "] &f: " + list);
             } else {
-                list = Deity.utils.string.join(this.getOnlineResidents(), "&7, " + outputColor[1]);
+                list = DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getOnlineResidents(), "&7, " + outputColor[1]);
                 if (!list.isEmpty()) {
                     out.add("&" + outputColor[0] + "Online Residents &" + outputColor[1] + "[" + this.getOnlineResidents().size() + "] &f: " + list);
                 } else {
@@ -415,5 +432,37 @@ public class Town {
             out.add("&3Residents: &fWe have no residents");
         }
         return out;
+    }
+    
+    public void save() {
+        if (hasUpdated) {
+            DeityAPI.getAPI()
+                    .getDataAPI()
+                    .getMySQL()
+                    .write("UPDATE " + KingdomsMain.getTownTableName() + " SET name = ?, kingdom_id = ?, town_board = ?, default_plot_price = ?, spawn_location_id = ?, is_public = ?, is_capital = ?, creation_date = ? WHERE id = ?;", name, (kingdom != null ? kingdom.getId() : -1), townBoard,
+                            defaultPlotPrice, spawnLocation.getId(), (isPublic() ? 1 : 0), (isCapital() ? 1 : 0), creationDate, id);
+            hasUpdated = false;
+        }
+    }
+    
+    public void remove() {
+        DeityAPI.getAPI().getEconAPI().removeAccount(getEconName());
+        for (KingdomsChunk chunk : this.getLand()) {
+            chunk.remove();
+        }
+        this.getLand().clear();
+        for (String s : residents) {
+            Resident r = KingdomsManager.getResident(s);
+            r.setMayor(false);
+            r.setKing(false);
+            r.setAssistant(false);
+            r.setHelper(false);
+            r.setTown(null);
+            r.save();
+        }
+        
+        this.residents.clear();
+        DeityAPI.getAPI().getDataAPI().getMySQL().write("DELETE FROM " + KingdomsMain.getTownTableName() + " WHERE id = ?;", id);
+        KingdomsManager.removeTown(this);
     }
 }

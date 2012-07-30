@@ -3,6 +3,7 @@ package com.imdeity.kingdoms.obj;
 import java.util.Date;
 
 import com.imdeity.deityapi.DeityAPI;
+import com.imdeity.kingdoms.main.KingdomsMain;
 import com.imdeity.kingdoms.main.KingdomsMessageHelper;
 
 public class Request {
@@ -63,17 +64,6 @@ public class Request {
         return date;
     }
     
-    public void save() {
-        if (hasUpdated) {
-            DeityAPI.getAPI()
-                    .getDataAPI()
-                    .getMySQL()
-                    .write("UPDATE " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "requests") + " SET player_name = ?, type = ?, requested_id = ?, is_approved = ?, is_closed = ? WHERE id = ?;", requestee, type.name(), requestTypeId, (isApproved ? 1 : 0), (isClosed ? 1 : 0),
-                            id);
-            hasUpdated = false;
-        }
-    }
-    
     public enum RequestType {
         KINGDOM_JOIN, KINGDOM_TOWN_CREATE;
         
@@ -101,5 +91,12 @@ public class Request {
                 return null;
         }
         return output;
+    }
+    
+    public void save() {
+        if (hasUpdated) {
+            DeityAPI.getAPI().getDataAPI().getMySQL().write("UPDATE " + KingdomsMain.getRequestTableName() + " SET player_name = ?, type = ?, requested_id = ?, is_approved = ?, is_closed = ? WHERE id = ?;", requestee, type.name(), requestTypeId, (isApproved ? 1 : 0), (isClosed ? 1 : 0), id);
+            hasUpdated = false;
+        }
     }
 }

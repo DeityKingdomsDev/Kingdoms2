@@ -20,6 +20,11 @@ public class KingdomInfoCommand extends DeityCommandReceiver {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
                 return true;
             }
+            if (resident.getTown().getKingdom() == null) {
+                KingdomsMain.plugin.chat.sendPlayerMessage(player, "Your town is not in a kingdom");
+                //TODO move to helper
+                return true;
+            }
             Kingdom kingdom = resident.getTown().getKingdom();
             for (String s : kingdom.showInfo()) {
                 KingdomsMain.plugin.chat.sendPlayerMessageNoHeader(player, s);

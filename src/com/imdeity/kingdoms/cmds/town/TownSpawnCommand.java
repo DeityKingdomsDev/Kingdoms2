@@ -2,7 +2,6 @@ package com.imdeity.kingdoms.cmds.town;
 
 import org.bukkit.entity.Player;
 
-import com.imdeity.deityapi.DeityAPI;
 import com.imdeity.deityapi.api.DeityCommandReceiver;
 import com.imdeity.kingdoms.main.KingdomsConfigHelper;
 import com.imdeity.kingdoms.main.KingdomsMain;
@@ -29,7 +28,7 @@ public class TownSpawnCommand extends DeityCommandReceiver {
                 return true;
             }
             town = resident.getTown();
-            DeityAPI.getAPI().getPlayerAPI().teleport(player, town.getSpawnLocation());
+            resident.teleport(town.getSpawnLocation());
             KingdomsMain.plugin.chat.sendPlayerMessage(player, town.getTownBoard());
             resident.pay(town.getEconName(), cost, "Town Spawn");
             return true;
@@ -40,7 +39,7 @@ public class TownSpawnCommand extends DeityCommandReceiver {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_TOWN, townName));
                 return true;
             }
-            DeityAPI.getAPI().getPlayerAPI().teleport(player, town.getSpawnLocation());
+            resident.teleport(town.getSpawnLocation());
             KingdomsMain.plugin.chat.sendPlayerMessage(player, town.getTownBoard());
             resident.pay(town.getEconName(), cost, "Town Spawn");
             return true;

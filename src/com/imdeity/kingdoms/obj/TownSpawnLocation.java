@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.imdeity.deityapi.DeityAPI;
+import com.imdeity.kingdoms.main.KingdomsMain;
 
 public class TownSpawnLocation {
     
@@ -36,12 +37,12 @@ public class TownSpawnLocation {
     }
     
     public void save() {
-        String sql = "UPDATE " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "spawn_locations") + " SET world = ?, x_coord = ?, y_coord = ?, z_coord = ?, pitch = ?, yaw = ? WHERE id = ?";
+        String sql = "UPDATE " + KingdomsMain.getTownSpawnLocationTableName() + " SET world = ?, x_coord = ?, y_coord = ?, z_coord = ?, pitch = ?, yaw = ? WHERE id = ?";
         DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, this.getLocation().getWorld().getName(), this.getLocation().getBlockX(), this.getLocation().getBlockY(), this.getLocation().getBlockZ(), this.getLocation().getPitch(), this.getLocation().getYaw(), this.getId());
     }
     
     public void remove() {
-        String sql = "DELETE FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "spawn_locations") + " WHERE id = ?";
+        String sql = "DELETE FROM " + KingdomsMain.getTownSpawnLocationTableName() + " WHERE id = ?";
         DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, this.getId());
     }
 }

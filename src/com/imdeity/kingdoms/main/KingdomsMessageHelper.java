@@ -46,6 +46,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_KINGDOM_ADMIN_SET = "You set %s to %s";
     
     public static final String CMD_FAIL_INVALID_LOCATION = "There is an existing town here. Please move away before creating your town.";
+    public static final String CMD_FAIL_RESIDENT_NOT_IN_TOWN = "%s does not belong to your town.";
     public static final String CMD_FAIL_NOT_IN_TOWN = "You do not belong to a town.";
     public static final String CMD_FAIL_NOT_IN_KINGDOM = "Your town does not belong to a kingdom, or you do not have a town";
     public static final String CMD_FAIL_PERMISSION_KING = "You need to be a king/queen before you can run that command.";
@@ -71,6 +72,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_FAIL_TOWN_KICK_INVALID_PLAYER = "%s is not a member of your town";
     public static final String CMD_FAIL_TOWN_LEAVE_DUKE = "Please set a new duke before leaving your town";
     public static final String CMD_FAIL_TOWN_SET_SPAWN = "The spawn needs to be in an unclaimed town plot";
+    public static final String CMD_FAIL_TOWN_WARP = "The warps needs to be on an unclaimed town plot";
     public static final String CMD_FAIL_TOWN_PLOT_NOT_ADJACENT = "New town plots need to be beside another town plot";
     public static final String CMD_FAIL_INVALID_PRICE = "Invalid price. Please use a valid amount";
     public static final String CMD_WARN_INVALID_PRICE = "Invalid price, Using town default instead";

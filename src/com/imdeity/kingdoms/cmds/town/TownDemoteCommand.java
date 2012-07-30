@@ -23,15 +23,16 @@ public class TownDemoteCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_DUKE);
             return true;
         }
-        if (!resident.isLeastLevelOneNoble()) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_TOWN_NOT_NOBLE);
-            return true;
-        }
         Town town = resident.getTown();
         if (args.length == 0) { return false; }
         Resident changingResident = KingdomsManager.getResident(args[0]);
         if (changingResident == null) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_RESIDENT, args[0]));
+            return true;
+        }
+        if (!changingResident.hasTown() || (changingResident.hasTown() && changingResident.getTown().getId() == town.getId())) {
+            KingdomsMain.plugin.chat.sendPlayerMessage(player, "That resident is not in your town");
+            // TODO
             return true;
         }
         if (changingResident.isMayor() || changingResident.isKing()) {

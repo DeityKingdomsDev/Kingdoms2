@@ -6,6 +6,7 @@ import java.util.Map;
 import org.bukkit.World;
 
 import com.imdeity.deityapi.DeityAPI;
+import com.imdeity.kingdoms.main.KingdomsMain;
 import com.imdeity.kingdoms.main.KingdomsMessageHelper;
 import com.imdeity.protect.api.DeityChunk;
 import com.imdeity.protect.enums.DeityChunkPermissionTypes;
@@ -144,26 +145,6 @@ public class KingdomsChunk extends DeityChunk {
         this.updated = true;
     }
     
-    public void save() {
-        if (this.updated) {
-            try {
-                super.save();
-                String sql = "UPDATE " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks") + " SET town_id = ?, for_sale = ?, price = ?, can_mobs_spawn = ?, can_pvp = ? WHERE id = ?;";
-                DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, town.getId(), (forSale ? 1 : 0), price, (canMobsSpawn ? 1 : 0), (canPvp ? 1 : 0), kingdomsId);
-                this.updated = false;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    public void remove() {
-        super.remove();
-        String sql = "DELETE FROM  " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks") + " WHERE id = ?;";
-        DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, kingdomsId);
-        KingdomsManager.removeKingdomsChunk(this);
-    }
-    
     public String getMapName(Resident resident) {
         if (this.getType() == ChunkType.WILDERNESS) {
             return getFormat(0);
@@ -295,5 +276,25 @@ public class KingdomsChunk extends DeityChunk {
                 return "P";
             }
         }
+    }
+    
+    public void save() {
+        if (this.updated) {
+            try {
+                super.save();
+                String sql = "UPDATE " + KingdomsMain.getChunkTableName() + " SET town_id = ?, for_sale = ?, price = ?, can_mobs_spawn = ?, can_pvp = ? WHERE id = ?;";
+                DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, town.getId(), (forSale ? 1 : 0), price, (canMobsSpawn ? 1 : 0), (canPvp ? 1 : 0), kingdomsId);
+                this.updated = false;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public void remove() {
+        super.remove();
+        String sql = "DELETE FROM  " + KingdomsMain.getChunkTableName() + " WHERE id = ?;";
+        DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, kingdomsId);
+        KingdomsManager.removeKingdomsChunk(this);
     }
 }

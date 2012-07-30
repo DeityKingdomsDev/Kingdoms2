@@ -21,7 +21,7 @@ public class PlotClaimCommand extends DeityCommandReceiver {
         }
         KingdomsChunk kChunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
         if (kChunk == null) { return true; }
-        if (!kChunk.getTown().equals(resident.getTown())) {
+        if (kChunk.getType() == KingdomsChunk.ChunkType.WILDERNESS || !kChunk.getTown().equals(resident.getTown())) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_INVALID_LOCATION);
             return true;
         }

@@ -7,11 +7,15 @@ import com.imdeity.kingdoms.cmds.plot.PlotUnclaimCommand;
 
 public class PlotCommand extends DeityCommandHandler {
     
+    public PlotCommand(String pluginName) {
+        super(pluginName, "Plot");
+    }
+    
     @Override
     public void initRegisteredCommands() {
         String[] setArgs = { "for-sale [price]", "not-for-sale", "mob-spawning [allow/deny]", "pvp [allow/deny]" };
-        this.registerCommand("claim", "", "Attemps to claim a plot", new PlotClaimCommand());
-        this.registerCommand("set", setArgs, "Allows user to set flags on plot", new PlotSetCommand());
-        this.registerCommand("unclaim", "", "Attempts to unclaim a plot", new PlotUnclaimCommand());
+        this.registerCommand("claim", "", "Attemps to claim a plot", new PlotClaimCommand(), "kingdoms.plot.claim");
+        this.registerCommand("set", setArgs, "Allows user to set flags on plot", new PlotSetCommand(), "kingdoms.plot.set");
+        this.registerCommand("unclaim", "", "Attempts to unclaim a plot", new PlotUnclaimCommand(), "kingdoms.plot.unclaim");
     }
 }

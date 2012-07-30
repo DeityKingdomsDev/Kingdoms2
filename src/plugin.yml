@@ -1,10 +1,9 @@
-name: Kingdoms
+name: Kingdoms-2
 main: com.imdeity.kingdoms.main.KingdomsMain
-version: 12.07.15
-language: english.yml
+version: 12.07.30
 author: vanZeben
-website: http://ImDeity.com
-softdepend: [DeityAPI, DeityProtect]
+website: http://dev.bukkit.org/server-mods/kingdoms-2/
+depend: [DeityAPI, DeityProtect]
 commands:
     Kingdoms:
         aliases: []
