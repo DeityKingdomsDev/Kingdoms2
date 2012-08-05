@@ -12,7 +12,7 @@ public class KingdomsCommand extends DeityCommandHandler {
     
     @Override
     public void initRegisteredCommands() {
-        this.registerCommand("prices", "", "Lists Prices", new KingdomsPricesCommand(), "kingdoms.kingdoms.proices");
+        this.registerCommand("prices", "", "Lists Prices", new KingdomsPricesCommand(), "kingdoms.kingdoms.prices");
         this.registerCommand("map", "<help/on/off>", "Shows a map of the land", new KingdomsMapCommand(), "kingdoms.kingdoms.map");
     }
 }
