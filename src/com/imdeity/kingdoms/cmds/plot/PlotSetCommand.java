@@ -53,7 +53,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
             } else if (args[0].equalsIgnoreCase("mob-spawning")) {
                 boolean allow = args[1].equalsIgnoreCase("allow");
                 if (allow) {
-                    double cost = KingdomsMain.plugin.config.getDouble(KingdomsConfigHelper.TOWN_PRICES_SET_MOB_SPAWN);
+                    double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_MOB_SPAWN, player.getWorld().getName()));
                     if (!town.canPay(cost)) {
                         KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
                         return true;
@@ -67,7 +67,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
             } else if (args[0].equalsIgnoreCase("pvp")) {
                 boolean allow = args[1].equalsIgnoreCase("allow");
                 if (allow) {
-                    double cost = KingdomsMain.plugin.config.getDouble(KingdomsConfigHelper.TOWN_PRICES_SET_PVP);
+                    double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_PVP, player.getWorld().getName()));
                     if (!town.canPay(cost)) {
                         KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
                         return true;

@@ -1,6 +1,6 @@
 name: Kingdoms-2
 main: com.imdeity.kingdoms.main.KingdomsMain
-version: 12.07.30
+version: 12.08.05
 author: vanZeben
 website: http://dev.bukkit.org/server-mods/kingdoms-2/
 depend: [DeityAPI, DeityProtect]
@@ -8,12 +8,16 @@ commands:
     Kingdoms:
         aliases: []
     Kingdom:
-        aliases: []
+        aliases: [k]
     Plot:
-        aliases: []
+        aliases: [p]
     Resident:
         aliases: [res]
     Town:
-        aliases: []
+        aliases: [t]
     KingdomsAdmin:
         aliases: [ka]
+    TownChat:
+        aliases: [tc]
+    KingdomChat:
+        aliases: [kc]

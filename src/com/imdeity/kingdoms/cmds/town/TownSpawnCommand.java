@@ -17,17 +17,19 @@ public class TownSpawnCommand extends DeityCommandReceiver {
         Resident resident = KingdomsManager.getResident(player.getName());
         if (resident == null) { return false; }
         Town town = null;
-        double cost = KingdomsMain.plugin.config.getDouble(KingdomsConfigHelper.TOWN_PRICES_SPAWN);
-        if (!resident.canPay(cost)) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY);
-            return true;
-        }
         if (args.length == 0) {
             if (!resident.hasTown()) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
                 return true;
             }
             town = resident.getTown();
+            
+            double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SPAWN, town.getSpawnLocation().getWorld().getName()));
+            if (!resident.canPay(cost)) {
+                KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY);
+                return true;
+            }
+            
             resident.teleport(town.getSpawnLocation());
             KingdomsMain.plugin.chat.sendPlayerMessage(player, town.getTownBoard());
             resident.pay(town.getEconName(), cost, "Town Spawn");
@@ -37,6 +39,11 @@ public class TownSpawnCommand extends DeityCommandReceiver {
             town = KingdomsManager.getTown(townName);
             if (town == null) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_TOWN, townName));
+                return true;
+            }
+            double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SPAWN, town.getSpawnLocation().getWorld().getName()));
+            if (!resident.canPay(cost)) {
+                KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY);
                 return true;
             }
             resident.teleport(town.getSpawnLocation());

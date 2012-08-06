@@ -52,7 +52,6 @@ public class KingdomsPlayerListener extends DeityListener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove(PlayerMoveEvent event) {
         if (this.fixLocation(event.getFrom()).distance(this.fixLocation(event.getTo())) == 0.0) { return; }
-        if (KingdomsMain.getKingdomWorld() != event.getFrom().getWorld()) { return; }
         Player p = event.getPlayer();
         World world = event.getFrom().getWorld();
         Chunk chunkFrom = world.getChunkAt(event.getFrom());

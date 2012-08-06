@@ -69,13 +69,16 @@ public class Kingdom {
         return null;
     }
     
-    public List<String> getTownNames() {
-        List<String> tmp = new ArrayList<String>();
-        for (String s : this.towns) {
-            Town town = KingdomsManager.getTown(s);
-            tmp.add(town.getName());
+    public List<Town> getTowns() {
+        List<Town> tmp = new ArrayList<Town>();
+        for (String s : towns) {
+            tmp.add(KingdomsManager.getTown(s));
         }
         return tmp;
+    }
+    
+    public List<String> getTownNames() {
+        return this.towns;
     }
     
     public void setTowns(List<String> towns) {
@@ -245,5 +248,17 @@ public class Kingdom {
             out.add("&" + outputColor[0] + "Towns &" + outputColor[1] + "[" + this.getTownNames().size() + "] &f: " + list);
         }
         return out;
+    }
+    
+    public void sendMessage(String message) {
+        for (Town town : this.getTowns()) {
+            town.sendMessage(message);
+        }
+    }
+    
+    public void sendMessageNoHeader(String message) {
+        for (Town town : this.getTowns()) {
+            town.sendMessageNoHeader(message);
+        }
     }
 }

@@ -104,6 +104,25 @@ public class KingdomsManager {
                 }
             }
         }
+        
+        String townSql = "SELECT id, name FROM " + KingdomsMain.getResidentTableName() + ";";
+        
+        DatabaseResults townQuery = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(townSql);
+        if (townQuery != null && townQuery.hasRows()) {
+            for (int i = 0; i < townQuery.rowCount(); i++) {
+                try {
+                    int id = townQuery.getInteger(i, "id");
+                    String name = townQuery.getString(i, "name");
+                    if (towns.containsKey(name)) {
+                        continue;
+                    } else {
+                        getTown(id);
+                    }
+                } catch (SQLDataException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         return residentCount;
     }
     
@@ -340,7 +359,7 @@ public class KingdomsManager {
     
     public static Town addNewTown(String townName, TownSpawnLocation location, boolean isCapital) {
         String sql = "INSERT INTO " + KingdomsMain.getTownTableName() + " (name, town_board, spawn_location_id, is_public, is_capital, creation_date) VALUES " + " (?,?,?,?,?,NOW());";
-        DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, townName, KingdomsMain.plugin.config.getString(KingdomsConfigHelper.DEFAULT_TOWN_BOARD), location.getId(), 1, (isCapital ? 1 : 0));
+        DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, townName, KingdomsMain.plugin.config.getString(String.format(KingdomsConfigHelper.DEFAULT_TOWN_BOARD, location.getLocation().getWorld().getName())), location.getId(), 1, (isCapital ? 1 : 0));
         getTown(townName).createBankAccount();
         return getTown(townName);
     }
@@ -368,7 +387,7 @@ public class KingdomsManager {
     }
     
     public static void removeTown(String townName) {
-        getTown(townName);
+        removeTown(getTown(townName));
     }
     
     public static void removeKingdomsChunk(World world, int xCoord, int zCoord) {
@@ -390,17 +409,8 @@ public class KingdomsManager {
     }
     
     public static void removeTown(Town town) {
-        int index = -1;
-        for (int i = 0; i < towns.size(); i++) {
-            Town t = towns.get(i);
-            if (t != null && t.getId() == town.getId()) {
-                index = i;
-                break;
-            }
-        }
-        if (index != -1) {
-            towns.remove(index);
-        }
+        town.remove();
+        towns.remove(town.getName().toLowerCase());
     }
     
     public static void loadOpenRequests(Kingdom kingdom) {
@@ -540,5 +550,24 @@ public class KingdomsManager {
         townWarps.remove(index);
         warp.getTown().removeWarp(warp.getName());
         warp.remove();
+    }
+    
+    public static int getNumTowns() {
+        return towns.size();
+    }
+    
+    public static int getNumResidents() {
+        return residents.size();
+    }
+    
+    public static Town getLargestTown() {
+        if (towns.isEmpty()) { return null; }
+        Town largestTown = towns.values().iterator().next();
+        for (Town town : towns.values()) {
+            if (largestTown.getResidentsNames().size() < town.getResidentsNames().size()) {
+                largestTown = town;
+            }
+        }
+        return largestTown;
     }
 }

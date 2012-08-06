@@ -283,6 +283,12 @@ public class Resident {
         }
     }
     
+    public void sendMessageNoHeader(String message) {
+        if (this.isOnline()) {
+            KingdomsMain.plugin.chat.sendPlayerMessageNoHeader(this.getPlayer(), message);
+        }
+    }
+    
     public Player getPlayer() {
         return KingdomsMain.plugin.getServer().getPlayer(getName());
     }

@@ -13,6 +13,8 @@ import com.imdeity.kingdoms.cmds.KingdomsCommand;
 import com.imdeity.kingdoms.cmds.PlotCommand;
 import com.imdeity.kingdoms.cmds.ResidentCommand;
 import com.imdeity.kingdoms.cmds.TownCommand;
+import com.imdeity.kingdoms.cmds.kingdom.KingdomChatCommand;
+import com.imdeity.kingdoms.cmds.town.TownChatCommand;
 import com.imdeity.kingdoms.listener.KingdomsPlayerListener;
 import com.imdeity.kingdoms.obj.KingdomsManager;
 
@@ -28,10 +30,11 @@ public class KingdomsMain extends DeityPlugin {
         this.registerCommand(new TownCommand("Kingdoms 2"));
         this.registerCommand(new PlotCommand("Kingdoms 2"));
         this.registerCommand(new ResidentCommand("Kingdoms 2"));
+        this.getCommand("TownChat").setExecutor(new TownChatCommand());
+        this.getCommand("KingdomChat").setExecutor(new KingdomChatCommand());
     }
     
     protected void initDatabase() {
-        
         DeityAPI.getAPI()
                 .getDataAPI()
                 .getMySQL()
@@ -85,18 +88,22 @@ public class KingdomsMain extends DeityPlugin {
     
     @Override
     public void initConfig() {
-        this.config.addDefaultConfigValue(KingdomsConfigHelper.ENABLED_WORLD_NAME, "world");
-        this.config.addDefaultConfigValue(KingdomsConfigHelper.KINGDOM_PRICES_CREATE, 100000.0D);
-        this.config.addDefaultConfigValue(KingdomsConfigHelper.TOWN_PRICES_CREATE, 50000.0D);
-        this.config.addDefaultConfigValue(KingdomsConfigHelper.TOWN_PRICES_CLAIM, 500.0D);
-        this.config.addDefaultConfigValue(KingdomsConfigHelper.TOWN_PRICES_SPAWN, 10.0D);
-        this.config.addDefaultConfigValue(KingdomsConfigHelper.TOWN_PRICES_SET_MOB_SPAWN, 250.0D);
-        this.config.addDefaultConfigValue(KingdomsConfigHelper.TOWN_PRICES_SET_PVP, 1000.0D);
-        this.config.addDefaultConfigValue(KingdomsConfigHelper.TOWN_PRICES_WARP_ADD, 2500.0D);
-        this.config.addDefaultConfigValue(KingdomsConfigHelper.DEFAULT_TOWN_BOARD, "Welcome to the town!");
-        this.config.addDefaultConfigValue(KingdomsConfigHelper.TOWN_BORDER, 20);
-        this.config.addDefaultConfigValue(KingdomsConfigHelper.KINGDOM_BORDER, 50);
-        this.config.addDefaultConfigValue(KingdomsConfigHelper.TOWN_PLOTS_PER_RESIDENT, 4);
+        for (World world : this.getServer().getWorlds()) {
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.KINGDOM_PRICES_CREATE, world.getName()), 100000.0D);
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.TOWN_PRICES_CREATE, world.getName()), 50000.0D);
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.TOWN_PRICES_CLAIM, world.getName()), 500.0D);
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.TOWN_PRICES_SPAWN, world.getName()), 10.0D);
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_MOB_SPAWN, world.getName()), 250.0D);
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_PVP, world.getName()), 1000.0D);
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.TOWN_PRICES_WARP_ADD, world.getName()), 2500.0D);
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.DEFAULT_TOWN_BOARD, world.getName()), "Welcome to the town!");
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.TOWN_BORDER, world.getName()), 20);
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.KINGDOM_BORDER, world.getName()), 50);
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.TOWN_PLOTS_PER_RESIDENT, world.getName()), 4);
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.USE_KINGDOMS_PREFIX, world.getName()), true);
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.TOWN_CHAT_MESSAGE_FORMAT, world.getName()), "&7[&bTC&7] %player%&7: %message%");
+            this.config.addDefaultConfigValue(String.format(KingdomsConfigHelper.KINGDOM_CHAT_MESSAGE_FORMAT, world.getName()), "&7[&6KC&7] %player%&7: %message%");
+        }
     }
     
     @Override
@@ -120,10 +127,6 @@ public class KingdomsMain extends DeityPlugin {
     
     @Override
     public void initTasks() {
-    }
-    
-    public static World getKingdomWorld() {
-        return plugin.getServer().getWorld(KingdomsMain.plugin.config.getString(KingdomsConfigHelper.ENABLED_WORLD_NAME));
     }
     
     public static String getKingdomTableName() {

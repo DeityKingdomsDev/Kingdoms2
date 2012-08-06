@@ -179,8 +179,9 @@ public class Town {
     }
     
     public void claim(KingdomsChunk chunk) {
-        this.land.add(chunk.getId());
         chunk.setTown(this);
+        chunk.save();
+        this.land.add(chunk.getId());
     }
     
     public Resident getMayor() {
@@ -296,7 +297,7 @@ public class Town {
     }
     
     public int getMaxLandSize() {
-        return residents.size() * KingdomsMain.plugin.config.getInt(KingdomsConfigHelper.TOWN_PLOTS_PER_RESIDENT);
+        return residents.size() * KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.TOWN_PLOTS_PER_RESIDENT, this.getSpawnLocation().getWorld()));
     }
     
     public int getDefaultPlotPrice() {
@@ -393,6 +394,13 @@ public class Town {
         }
     }
     
+    public void sendMessageNoHeader(String message) {
+        for (String s : residents) {
+            Resident r = KingdomsManager.getResident(s);
+            r.sendMessageNoHeader(message);
+        }
+    }
+    
     public List<String> showInfo(boolean onlineList) {
         List<String> out = new ArrayList<String>();
         out.add("&" + outputColor[0] + "+-----------------------------+");
@@ -429,7 +437,7 @@ public class Town {
                 out.add("&8Use '/town info [name] -o' to view the full resident list");
             }
         } else {
-            out.add("&3Residents: &fWe have no residents");
+            out.add("&" + outputColor[0] + "Residents: &fWe have no residents");
         }
         return out;
     }
@@ -450,7 +458,7 @@ public class Town {
         for (KingdomsChunk chunk : this.getLand()) {
             chunk.remove();
         }
-        this.getLand().clear();
+        this.land.clear();
         for (String s : residents) {
             Resident r = KingdomsManager.getResident(s);
             r.setMayor(false);
@@ -463,6 +471,5 @@ public class Town {
         
         this.residents.clear();
         DeityAPI.getAPI().getDataAPI().getMySQL().write("DELETE FROM " + KingdomsMain.getTownTableName() + " WHERE id = ?;", id);
-        KingdomsManager.removeTown(this);
     }
 }
