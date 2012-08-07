@@ -25,7 +25,7 @@ public class PlotUnclaimCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_INVALID_LOCATION);
             return true;
         }
-        if (resident.isMayor() || resident.isAssistant() || resident.isHelper() || resident.isKing() || !resident.equals(kChunk.getOwner())) {
+        if (resident.isMayor() || resident.isSeniorAssistant() || resident.isAssistant() || resident.isKing() || !resident.equals(kChunk.getOwner())) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_NOT_OWNER);
             return true;
         }

@@ -206,6 +206,25 @@ public class Town {
         }
     }
     
+    public List<Resident> getSeniorAssistants() {
+        List<Resident> tmp = new ArrayList<Resident>();
+        for (String s : residents) {
+            Resident r = KingdomsManager.getResident(s);
+            if (r.isSeniorAssistant()) {
+                tmp.add(r);
+            }
+        }
+        return tmp;
+    }
+    
+    public List<String> getSeniorAssistantNames() {
+        List<String> tmp = new ArrayList<String>();
+        for (Resident r : getSeniorAssistants()) {
+            tmp.add(r.getName());
+        }
+        return tmp;
+    }
+    
     public List<Resident> getAssistants() {
         List<Resident> tmp = new ArrayList<Resident>();
         for (String s : residents) {
@@ -225,29 +244,10 @@ public class Town {
         return tmp;
     }
     
-    public List<Resident> getHelpers() {
-        List<Resident> tmp = new ArrayList<Resident>();
-        for (String s : residents) {
-            Resident r = KingdomsManager.getResident(s);
-            if (r.isHelper()) {
-                tmp.add(r);
-            }
-        }
-        return tmp;
-    }
-    
-    public List<String> getHelperNames() {
-        List<String> tmp = new ArrayList<String>();
-        for (Resident r : getHelpers()) {
-            tmp.add(r.getName());
-        }
-        return tmp;
-    }
-    
     public boolean hasStaff(String resident) {
         if (getKingdom() != null && getKingdom().getKing().getName().equalsIgnoreCase(resident)) { return true; }
         if (getMayor().getName().equalsIgnoreCase(resident)) { return true; }
-        return getAssistantNames().contains(resident) || getHelperNames().contains(resident);
+        return getSeniorAssistantNames().contains(resident) || getAssistantNames().contains(resident);
     }
     
     public boolean hasResident(String resident) {
@@ -415,11 +415,11 @@ public class Town {
         if (this.getMayor() != null) {
             out.add("&" + outputColor[0] + this.getMayor().getTownFriendlyTitle() + ": &" + outputColor[1] + this.getMayor().getName());
         }
-        if (this.getAssistants() != null && this.getAssistantNames().size() > 0) {
-            out.add("&" + outputColor[0] + "Assistants: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getAssistantNames(), ", "));
+        if (this.getSeniorAssistantNames() != null && this.getSeniorAssistantNames().size() > 0) {
+            out.add("&" + outputColor[0] + "Senior Assistants: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getSeniorAssistantNames(), ", "));
         }
-        if (this.getHelpers() != null && this.getHelperNames().size() > 0) {
-            out.add("&" + outputColor[0] + "Helpers: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getHelperNames(), ", "));
+        if (this.getAssistantNames() != null && this.getAssistantNames().size() > 0) {
+            out.add("&" + outputColor[0] + "Assistants: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getAssistantNames(), ", "));
         }
         out.add("&" + outputColor[0] + "Creation Date: &" + outputColor[1] + (this.getCreationDate() == null ? "Right Now" : DeityAPI.getAPI().getUtilAPI().getTimeUtils().getFriendlyDate(this.getCreationDate(), false)));
         out.add("&" + outputColor[0] + "Balance: &" + outputColor[1] + this.getBalance());
@@ -466,8 +466,8 @@ public class Town {
             Resident r = KingdomsManager.getResident(s);
             r.setMayor(false);
             r.setKing(false);
+            r.setSeniorAssistant(false);
             r.setAssistant(false);
-            r.setHelper(false);
             r.setTown(null);
             r.save();
         }

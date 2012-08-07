@@ -76,10 +76,13 @@ public class KingdomsManager {
                     String name = residentQuery.getString(i, "name");
                     boolean isKing = residentQuery.getInteger(i, "is_king") == 1;
                     boolean isMayor = residentQuery.getInteger(i, "is_mayor") == 1;
+                    boolean isSeniorAssistant = residentQuery.getInteger(i, "is_senior_assistant") == 1;
                     boolean isAssistant = residentQuery.getInteger(i, "is_assistant") == 1;
-                    boolean isHelper = residentQuery.getInteger(i, "is_helper") == 1;
                     boolean isMale = residentQuery.getInteger(i, "is_male") == 1;
                     int deed = residentQuery.getInteger(i, "deed");
+                    Date firstOnline = residentQuery.getDate(0, "first_online");
+                    Date lastOnline = residentQuery.getDate(0, "last_online");
+                    int totalOnline = residentQuery.getInteger(0, "total_time_online");
                     Map<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes> permissions = new HashMap<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes>();
                     permissions.put(DeityChunkPermissionTypes.EDIT, ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(i, "edit_permission")));
                     permissions.put(DeityChunkPermissionTypes.USE, ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(i, "use_permission")));
@@ -95,7 +98,7 @@ public class KingdomsManager {
                             friends.add(friendName);
                         }
                     }
-                    Resident resident = new Resident(id, name, null, isKing, isMayor, isAssistant, isHelper, isMale, deed, friends, permissions);
+                    Resident resident = new Resident(id, name, null, isKing, isMayor, isSeniorAssistant, isAssistant, isMale, deed, friends, permissions, lastOnline, firstOnline, totalOnline);
                     residents.put(name, resident);
                     resident.setTown(getTown(residentQuery.getInteger(i, "town_id")));
                     residentCount++;
@@ -279,11 +282,14 @@ public class KingdomsManager {
                 String name = residentQuery.getString(0, "name");
                 boolean isKing = residentQuery.getInteger(0, "is_king") == 1;
                 boolean isMayor = residentQuery.getInteger(0, "is_mayor") == 1;
+                boolean isSeniorAssistant = residentQuery.getInteger(0, "is_senior_assistant") == 1;
                 boolean isAssistant = residentQuery.getInteger(0, "is_assistant") == 1;
-                boolean isHelper = residentQuery.getInteger(0, "is_helper") == 1;
                 boolean isMale = residentQuery.getInteger(0, "is_male") == 1;
                 int townId = residentQuery.getInteger(0, "town_id");
                 int deed = residentQuery.getInteger(0, "deed");
+                Date firstOnline = residentQuery.getDate(0, "first_online");
+                Date lastOnline = residentQuery.getDate(0, "last_online");
+                int totalOnline = residentQuery.getInteger(0, "total_time_online");
                 Map<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes> permissions = new HashMap<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes>();
                 permissions.put(DeityChunkPermissionTypes.EDIT, ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(0, "edit_permission")));
                 permissions.put(DeityChunkPermissionTypes.USE, ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(0, "use_permission")));
@@ -299,14 +305,17 @@ public class KingdomsManager {
                         friends.add(friendName);
                     }
                 }
-                Resident resident = new Resident(id, name, null, isKing, isMayor, isAssistant, isHelper, isMale, deed, friends, permissions);
+                Resident resident = new Resident(id, name, null, isKing, isMayor, isSeniorAssistant, isAssistant, isMale, deed, friends, permissions, firstOnline, lastOnline, totalOnline);
                 residents.put(name, resident);
+                System.out.println("7");
+                
                 if (townId > 0) {
                     resident.setTown(getTown(townId));
                 }
                 return resident;
             } catch (SQLDataException e) {
                 e.printStackTrace();
+                return null;
             }
         }
         return null;
@@ -326,7 +335,7 @@ public class KingdomsManager {
     }
     
     public static void addNewResident(String playerName) {
-        String sql = "INSERT INTO " + KingdomsMain.getResidentTableName() + " (name, town_id, is_king, is_mayor, is_assistant, is_helper, is_male) VALUES " + " (?,?,?,?,?,?,?);";
+        String sql = "INSERT INTO " + KingdomsMain.getResidentTableName() + " (name, town_id, is_king, is_mayor, is_senior_assistant, is_assistant, is_male, last_online, total_time_online) VALUES " + " (?,?,?,?,?,?,?, CURRENT_TIMESTAMP, 0);";
         DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, playerName, -1, 0, 0, 0, 0, 1);
         getResident(playerName);
     }

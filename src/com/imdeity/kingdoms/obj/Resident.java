@@ -23,30 +23,39 @@ public class Resident {
     private Town town;
     private boolean isKing;
     private boolean isMayor;
+    private boolean isSeniorAssistant;
     private boolean isAssistant;
-    private boolean isHelper;
     private boolean isMale;
     private int deed;
+    private Date firstOnline;
+    private Date lastOnline;
+    private long loginTime;
+    private int totalOnline;
     private List<String> friends = new ArrayList<String>();
     private Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions;
     
     private boolean hasUpdated;
     char[] outputColor = { '6', 'e' };
     
-    public Resident(int id, String name, Town town, boolean isKing, boolean isMayor, boolean isAssistant, boolean isHelper, boolean isMale, int deed, List<String> friends, Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions) {
-        this.setAllFields(id, name, town, isKing, isMayor, isAssistant, isHelper, isMale, deed, friends, permissions);
+    public Resident(int id, String name, Town town, boolean isKing, boolean isMayor, boolean isSeniorAssistant, boolean isAssistant, boolean isMale, int deed, List<String> friends, Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions, Date firstOnline, Date lastOnline,
+            int totalOnline) {
+        this.setAllFields(id, name, town, isKing, isMayor, isSeniorAssistant, isAssistant, isMale, deed, friends, permissions, firstOnline, lastOnline, totalOnline);
     }
     
-    public void setAllFields(int id, String name, Town town, boolean isKing, boolean isMayor, boolean isAssistant, boolean isHelper, boolean isMale, int deed, List<String> friends, Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions) {
+    public void setAllFields(int id, String name, Town town, boolean isKing, boolean isMayor, boolean isSeniorAssistant, boolean isAssistant, boolean isMale, int deed, List<String> friends, Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions, Date firstOnline, Date lastOnline,
+            int totalOnline) {
         this.id = id;
         this.name = name;
         this.town = town;
         this.isKing = isKing;
         this.isMayor = isMayor;
+        this.isSeniorAssistant = isSeniorAssistant;
         this.isAssistant = isAssistant;
-        this.isHelper = isHelper;
         this.isMale = isMale;
         this.deed = deed;
+        this.firstOnline = firstOnline;
+        this.lastOnline = lastOnline;
+        this.totalOnline = totalOnline;
         this.permissions = permissions;
         if (friends != null) {
             this.friends = friends;
@@ -83,12 +92,12 @@ public class Resident {
         return isMayor;
     }
     
-    public boolean isAssistant() {
-        return isAssistant;
+    public boolean isSeniorAssistant() {
+        return isSeniorAssistant;
     }
     
-    public boolean isHelper() {
-        return isHelper;
+    public boolean isAssistant() {
+        return isAssistant;
     }
     
     public boolean isMale() {
@@ -108,6 +117,32 @@ public class Resident {
         this.hasUpdated();
     }
     
+    public Date getFirstOnline() {
+        return firstOnline;
+    }
+    
+    public Date getLastOnline() {
+        return lastOnline;
+    }
+    
+    public void setLastOnline() {
+        this.lastOnline = new Date();
+        this.hasUpdated();
+    }
+    
+    public void setLoginTime() {
+        this.loginTime = System.currentTimeMillis();
+    }
+    
+    public int getTotalTimeOnlineInMinutes() {
+        return totalOnline;
+    }
+    
+    public void setTotalTimeOnline() {
+        this.totalOnline += (int) ((System.currentTimeMillis() - this.loginTime) / (60 * 1000));
+        this.hasUpdated();
+    }
+    
     public void setKing(boolean isKing) {
         this.isKing = isKing;
         this.hasUpdated();
@@ -118,13 +153,13 @@ public class Resident {
         this.hasUpdated();
     }
     
-    public void setAssistant(boolean isAssistant) {
-        this.isAssistant = isAssistant;
+    public void setSeniorAssistant(boolean isSeniorAssistant) {
+        this.isSeniorAssistant = isSeniorAssistant;
         this.hasUpdated();
     }
     
-    public void setHelper(boolean isHelper) {
-        this.isHelper = isHelper;
+    public void setAssistant(boolean isAssistant) {
+        this.isAssistant = isAssistant;
         this.hasUpdated();
     }
     
@@ -157,20 +192,20 @@ public class Resident {
         if (isMale()) {
             if (isMayor()) {
                 return "Mayor";
+            } else if (isSeniorAssistant()) {
+                return "SeniorAssistant";
             } else if (isAssistant()) {
                 return "Assistant";
-            } else if (isHelper()) {
-                return "Helper";
             } else {
                 return "";
             }
         } else {
             if (isMayor()) {
                 return "Mayor";
+            } else if (isSeniorAssistant()) {
+                return "SeniorAssistant";
             } else if (isAssistant()) {
                 return "Assistant";
-            } else if (isHelper()) {
-                return "Helper";
             } else {
                 return "";
             }
@@ -296,10 +331,6 @@ public class Resident {
     public List<String> showInfo(boolean onlineFriends) {
         List<String> out = new ArrayList<String>();
         
-        Date firstOnline = new Date();
-        Date lastOnline = new Date();
-        long totalTimeOnline = 0;
-        
         out.add("&" + outputColor[0] + "+-----------------------------+");
         out.add("&" + outputColor[0] + "Resident: &" + outputColor[1] + this.getName());
         out.add("&" + outputColor[0] + "First Online: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getTimeUtils().getFriendlyDate(firstOnline, false));
@@ -308,7 +339,7 @@ public class Resident {
         } else {
             out.add("&" + outputColor[0] + "Last Online: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getTimeUtils().timeApproxToDate(lastOnline));
         }
-        out.add("&" + outputColor[0] + "Total Time Online: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getTimeUtils().timeConvert(totalTimeOnline));
+        out.add("&" + outputColor[0] + "Total Time Online: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getTimeUtils().timeConvert(totalOnline));
         out.add("&" + outputColor[0] + "Balance: &" + outputColor[1] + DeityAPI.getAPI().getEconAPI().getBalance(name));
         if (this.hasTown()) {
             if (this.getTown().getKingdom() != null) {
@@ -345,8 +376,8 @@ public class Resident {
             DeityAPI.getAPI()
                     .getDataAPI()
                     .getMySQL()
-                    .write("UPDATE " + KingdomsMain.getResidentTableName() + " SET name = ?, town_id = ?, is_king = ?, is_mayor = ?, is_assistant = ?, is_helper = ?, is_male = ?, deed = ? WHERE id = ?;", name, (town != null ? town.getId() : -1), (isKing() ? 1 : 0), (isMayor() ? 1 : 0),
-                            (isAssistant() ? 1 : 0), (isHelper() ? 1 : 0), (isMale() ? 1 : 0), deed, id);
+                    .write("UPDATE " + KingdomsMain.getResidentTableName() + " SET name = ?, town_id = ?, is_king = ?, is_mayor = ?, is_senior_assistant = ?, is_assistant = ?, is_male = ?, deed = ?, first_online = ?, last_online = ?, total_time_online = ? WHERE id = ?;", name,
+                            (town != null ? town.getId() : -1), (isKing() ? 1 : 0), (isMayor() ? 1 : 0), (isSeniorAssistant() ? 1 : 0), (isAssistant() ? 1 : 0), (isMale() ? 1 : 0), deed, firstOnline, lastOnline, totalOnline, id);
             hasUpdated = false;
         }
     }

@@ -24,15 +24,16 @@ public class TownSpawnCommand extends DeityCommandReceiver {
             }
             town = resident.getTown();
             
-            double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SPAWN, town.getSpawnLocation().getWorld().getName()));
-            if (!resident.canPay(cost)) {
-                KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY);
-                return true;
+            if (!resident.isMayor() && !resident.isSeniorAssistant() && !resident.isAssistant()) {
+                double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SPAWN, town.getSpawnLocation().getWorld().getName()));
+                if (!resident.canPay(cost)) {
+                    KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY);
+                    return true;
+                }
+                resident.pay(town.getEconName(), cost, "Town Spawn");
             }
-            
             resident.teleport(town.getSpawnLocation());
             KingdomsMain.plugin.chat.sendPlayerMessage(player, town.getTownBoard());
-            resident.pay(town.getEconName(), cost, "Town Spawn");
             return true;
         } else {
             String townName = args[0];

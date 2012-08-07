@@ -1,7 +1,6 @@
 package com.imdeity.kingdoms.listener;
 
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,6 +10,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import com.imdeity.deityapi.DeityAPI;
 import com.imdeity.deityapi.api.DeityListener;
 import com.imdeity.kingdoms.main.KingdomsMain;
 import com.imdeity.kingdoms.obj.KingdomsChunk;
@@ -27,12 +27,22 @@ public class KingdomsPlayerListener extends DeityListener {
             if (KingdomsManager.getResident(player.getName()) == null) {
                 KingdomsManager.addNewResident(player.getName());
             }
+            Resident resident = KingdomsManager.getResident(player.getName());
+            if (resident != null) {
+                resident.setLoginTime();
+            }
         }
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        Resident resident = KingdomsManager.getResident(player.getName());
+        if (resident != null) {
+            resident.setTotalTimeOnline();
+            resident.setLastOnline();
+            resident.save();
+        }
         if (player != null) {
             KingdomsManager.removeResident(player.getName());
         }
@@ -51,7 +61,7 @@ public class KingdomsPlayerListener extends DeityListener {
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove(PlayerMoveEvent event) {
-        if (this.fixLocation(event.getFrom()).distance(this.fixLocation(event.getTo())) == 0.0) { return; }
+        if (DeityAPI.getAPI().getUtilAPI().fixLocation(event.getFrom()).distance(DeityAPI.getAPI().getUtilAPI().fixLocation(event.getTo())) == 0.0) { return; }
         Player p = event.getPlayer();
         World world = event.getFrom().getWorld();
         Chunk chunkFrom = world.getChunkAt(event.getFrom());
@@ -68,7 +78,7 @@ public class KingdomsPlayerListener extends DeityListener {
             if (kChunkFrom.getType() == kChunkTo.getType()) {
                 if (kChunkTo.getType() == KingdomsChunk.ChunkType.TOWN) {
                     if (kChunkTo.canPvp() == kChunkFrom.canPvp() && kChunkFrom.getTown().getName().equalsIgnoreCase(kChunkTo.getTown().getName()) && kChunkFrom.getOwner() != null && kChunkTo.getOwner() != null && kChunkFrom.getOwner().equalsIgnoreCase(kChunkTo.getOwner())) { return; }
-                    if (kChunkTo.canPvp() == kChunkFrom.canPvp()  && kChunkFrom.getTown().getName().equalsIgnoreCase(kChunkTo.getTown().getName()) && kChunkFrom.getOwner() == null && kChunkTo.getOwner() == null) { return; }
+                    if (kChunkTo.canPvp() == kChunkFrom.canPvp() && kChunkFrom.getTown().getName().equalsIgnoreCase(kChunkTo.getTown().getName()) && kChunkFrom.getOwner() == null && kChunkTo.getOwner() == null) { return; }
                 } else {
                     return;
                 }
@@ -79,13 +89,5 @@ public class KingdomsPlayerListener extends DeityListener {
                 return;
             }
         }
-    }
-    
-    private Location fixLocation(Location loc) {
-        // TODO MOVE OUT
-        loc.setX((int) loc.getX());
-        loc.setY((int) loc.getY());
-        loc.setZ((int) loc.getZ());
-        return loc;
     }
 }

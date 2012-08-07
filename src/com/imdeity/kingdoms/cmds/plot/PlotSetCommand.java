@@ -21,7 +21,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
             return true;
         }
-        if (!resident.isMayor() && !resident.isAssistant() && !resident.isHelper()) {
+        if (!resident.isMayor() && !resident.isSeniorAssistant() && !resident.isAssistant()) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
             return true;
         }
