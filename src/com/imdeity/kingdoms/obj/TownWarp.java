@@ -45,12 +45,12 @@ public class TownWarp {
         return location;
     }
     
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-    
     public int getCost() {
         return cost;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
     
     public void setCost(int cost) {

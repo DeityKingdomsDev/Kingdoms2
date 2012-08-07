@@ -35,7 +35,7 @@ public class Resident {
     private Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions;
     
     private boolean hasUpdated;
-    char[] outputColor = { '6', 'e' };
+    private char[] outputColor = { '6', 'e' };
     
     public Resident(int id, String name, Town town, boolean isKing, boolean isMayor, boolean isSeniorAssistant, boolean isAssistant, boolean isMale, int deed, List<String> friends, Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions, Date firstOnline, Date lastOnline,
             int totalOnline) {
@@ -71,17 +71,16 @@ public class Resident {
         return name;
     }
     
+    public Player getPlayer() {
+        return KingdomsMain.plugin.getServer().getPlayer(getName());
+    }
+
     public boolean hasTown() {
         return (town != null);
     }
     
     public Town getTown() {
         return town;
-    }
-    
-    public void setTown(Town town) {
-        this.town = town;
-        this.hasUpdated();
     }
     
     public boolean isKing() {
@@ -112,11 +111,6 @@ public class Resident {
         return deed;
     }
     
-    public void setDeed(int deed) {
-        this.deed = deed;
-        this.hasUpdated();
-    }
-    
     public Date getFirstOnline() {
         return firstOnline;
     }
@@ -125,19 +119,111 @@ public class Resident {
         return lastOnline;
     }
     
-    public void setLastOnline() {
-        this.lastOnline = new Date();
-        this.hasUpdated();
-    }
-    
-    public void setLoginTime() {
-        this.loginTime = System.currentTimeMillis();
-    }
-    
     public int getTotalTimeOnlineInMinutes() {
         return totalOnline;
     }
     
+    public String getKingdomFriendlyTitle() {
+        if (isMale()) {
+            if (isKing()) {
+                return "King";
+            } else if (isMayor()) {
+                return "Council Member";
+            } else {
+                return "";
+            }
+        } else {
+            if (isKing()) {
+                return "Queen";
+            } else if (isMayor()) {
+                return "Council Member";
+            } else {
+                return "";
+            }
+        }
+    }
+
+    public String getTownFriendlyTitle() {
+        if (isMale()) {
+            if (isMayor()) {
+                return "Mayor";
+            } else if (isSeniorAssistant()) {
+                return "SeniorAssistant";
+            } else if (isAssistant()) {
+                return "Assistant";
+            } else {
+                return "";
+            }
+        } else {
+            if (isMayor()) {
+                return "Mayor";
+            } else if (isSeniorAssistant()) {
+                return "SeniorAssistant";
+            } else if (isAssistant()) {
+                return "Assistant";
+            } else {
+                return "";
+            }
+        }
+    }
+
+    public boolean isOnline() {
+        return (KingdomsMain.plugin.getServer().getPlayer(getName()) != null && KingdomsMain.plugin.getServer().getPlayer(getName()).isOnline());
+    }
+
+    public List<String> getFriends() {
+        return friends;
+    }
+
+    public List<Resident> getResidentFriends() {
+        List<Resident> tmp = new ArrayList<Resident>();
+        for (String s : friends) {
+            tmp.add(KingdomsManager.getResident(s));
+        }
+        return tmp;
+    }
+
+    public List<String> getOnlineFriends() {
+        List<String> tmp = new ArrayList<String>();
+        for (Resident r : getResidentFriends()) {
+            if (r.isOnline()) {
+                tmp.add(r.getName());
+            }
+        }
+        return tmp;
+    }
+
+    public int getPlotCount() {
+        return KingdomsManager.getNumberOfPlots(this.getName());
+    }
+
+    public Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> getPermissions() {
+        return permissions;
+    }
+
+    public ChunkPermissionGroupTypes getPermission(DeityChunkPermissionTypes type) {
+        return permissions.get(type);
+    }
+
+    public void setDeed(int deed) {
+        this.deed = deed;
+        this.hasUpdated();
+    }
+
+    public void setLoginTime() {
+        this.loginTime = System.currentTimeMillis();
+    }
+
+    public void setLastOnline() {
+        this.lastOnline = new Date();
+        this.hasUpdated();
+    }
+
+    public void setTown(Town town) {
+        this.town = town;
+        this.hasUpdated();
+    }
+
     public void setTotalTimeOnline() {
         this.totalOnline += (int) ((System.currentTimeMillis() - this.loginTime) / (60 * 1000));
         this.hasUpdated();
@@ -168,76 +254,11 @@ public class Resident {
         this.hasUpdated();
     }
     
-    public String getKingdomFriendlyTitle() {
-        if (isMale()) {
-            if (isKing()) {
-                return "King";
-            } else if (isMayor()) {
-                return "Council Member";
-            } else {
-                return "";
-            }
-        } else {
-            if (isKing()) {
-                return "Queen";
-            } else if (isMayor()) {
-                return "Council Member";
-            } else {
-                return "";
-            }
-        }
+    public void setPermissions(DeityChunkPermissionTypes type, ChunkPermissionGroupTypes group) {
+        this.permissions.put(type, group);
+        this.hasUpdated();
     }
-    
-    public String getTownFriendlyTitle() {
-        if (isMale()) {
-            if (isMayor()) {
-                return "Mayor";
-            } else if (isSeniorAssistant()) {
-                return "SeniorAssistant";
-            } else if (isAssistant()) {
-                return "Assistant";
-            } else {
-                return "";
-            }
-        } else {
-            if (isMayor()) {
-                return "Mayor";
-            } else if (isSeniorAssistant()) {
-                return "SeniorAssistant";
-            } else if (isAssistant()) {
-                return "Assistant";
-            } else {
-                return "";
-            }
-        }
-    }
-    
-    public boolean isOnline() {
-        return (KingdomsMain.plugin.getServer().getPlayer(getName()) != null && KingdomsMain.plugin.getServer().getPlayer(getName()).isOnline());
-    }
-    
-    public List<String> getFriends() {
-        return friends;
-    }
-    
-    public List<Resident> getResidentFriends() {
-        List<Resident> tmp = new ArrayList<Resident>();
-        for (String s : friends) {
-            tmp.add(KingdomsManager.getResident(s));
-        }
-        return tmp;
-    }
-    
-    public List<String> getOnlineFriends() {
-        List<String> tmp = new ArrayList<String>();
-        for (Resident r : getResidentFriends()) {
-            if (r.isOnline()) {
-                tmp.add(r.getName());
-            }
-        }
-        return tmp;
-    }
-    
+
     public boolean hasFriend(String name) {
         for (String s : friends) {
             if (s.equalsIgnoreCase(name)) { return true; }
@@ -273,25 +294,8 @@ public class Resident {
         }
     }
     
-    public int getPlotCount() {
-        return KingdomsManager.getNumberOfPlots(this.getName());
-    }
-    
     public void hasUpdated() {
         this.hasUpdated = true;
-    }
-    
-    public Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> getPermissions() {
-        return permissions;
-    }
-    
-    public ChunkPermissionGroupTypes getPermission(DeityChunkPermissionTypes type) {
-        return permissions.get(type);
-    }
-    
-    public void setPermissions(DeityChunkPermissionTypes type, ChunkPermissionGroupTypes group) {
-        this.permissions.put(type, group);
-        this.hasUpdated();
     }
     
     public boolean canPay(double cost) {
@@ -312,22 +316,22 @@ public class Resident {
         }
     }
     
+    public void teleport(Location location) {
+        DeityAPI.getAPI().getPlayerAPI().teleport(getPlayer(), location);
+    }
+
     public void sendMessage(String message) {
         if (this.isOnline()) {
             KingdomsMain.plugin.chat.sendPlayerMessage(this.getPlayer(), message);
         }
     }
-    
+
     public void sendMessageNoHeader(String message) {
         if (this.isOnline()) {
             KingdomsMain.plugin.chat.sendPlayerMessageNoHeader(this.getPlayer(), message);
         }
     }
-    
-    public Player getPlayer() {
-        return KingdomsMain.plugin.getServer().getPlayer(getName());
-    }
-    
+
     public List<String> showInfo(boolean onlineFriends) {
         List<String> out = new ArrayList<String>();
         
@@ -370,7 +374,7 @@ public class Resident {
         
         return out;
     }
-    
+
     public void save() {
         if (hasUpdated) {
             DeityAPI.getAPI()
@@ -380,9 +384,5 @@ public class Resident {
                             (town != null ? town.getId() : -1), (isKing() ? 1 : 0), (isMayor() ? 1 : 0), (isSeniorAssistant() ? 1 : 0), (isAssistant() ? 1 : 0), (isMale() ? 1 : 0), deed, firstOnline, lastOnline, totalOnline, id);
             hasUpdated = false;
         }
-    }
-    
-    public void teleport(Location location) {
-        DeityAPI.getAPI().getPlayerAPI().teleport(getPlayer(), location);
     }
 }

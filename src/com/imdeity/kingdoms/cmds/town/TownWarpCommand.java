@@ -43,7 +43,7 @@ public class TownWarpCommand extends DeityCommandReceiver {
             List<String> output = new ArrayList<String>();
             output.add("&6Town Warps: ");
             output.add("&6+------------+");
-            output.add(DeityAPI.getAPI().getUtilAPI().getStringUtils().join(town.getAllTownWarpNames(), "&7, &f"));
+            output.add(DeityAPI.getAPI().getUtilAPI().getStringUtils().join(town.getAllWarpNames(), "&7, &f"));
             for (String s : output) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, s);
             }
@@ -122,7 +122,7 @@ public class TownWarpCommand extends DeityCommandReceiver {
                 return true;
             }
             Town town = resident.getTown();
-            TownWarp warp = town.getTownWarp(args[0]);
+            TownWarp warp = town.getWarp(args[0]);
             if (warp == null) {
                 resident.sendMessage("Something went wrong. Please try again..");
                 return true;
@@ -157,12 +157,12 @@ public class TownWarpCommand extends DeityCommandReceiver {
         }
         
         public void run() {
-            if (town.getTownWarp(name) != null) {
+            if (town.getWarp(name) != null) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, "Warp " + name + " already exists");
                 return;
             }
             resident.pay(price, "Town Warp Create");
-            town.addTownWarp(name, player.getLocation(), cost);
+            town.addWarp(name, player.getLocation(), cost);
             KingdomsMain.plugin.chat.sendPlayerMessage(player, "Added the warp: " + name);
         }
     }
@@ -180,7 +180,7 @@ public class TownWarpCommand extends DeityCommandReceiver {
         }
         
         public void run() {
-            TownWarp warp = town.getTownWarp(name);
+            TownWarp warp = town.getWarp(name);
             if (warp != null) {
                 KingdomsManager.removeTownWarp(warp.getId());
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, "Removed " + name);

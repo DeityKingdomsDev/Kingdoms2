@@ -17,9 +17,10 @@ public class Kingdom {
     private String name = "";
     private List<String> towns = new ArrayList<String>();
     private Date creationDate;
-    private char[] outputColor = { '6', 'e' };
     private List<Request> requests = new ArrayList<Request>();
     
+    private char[] outputColor = { '6', 'e' };
+
     public Kingdom(int id, String name, List<String> towns, Date creationDate) {
         this.setAllFields(id, name, towns, creationDate);
     }
@@ -73,10 +74,94 @@ public class Kingdom {
         return this.towns;
     }
     
+    public Town getCapital() {
+        for (String s : this.towns) {
+            Town town = KingdomsManager.getTown(s);
+            if (town.isCapital()) { return town; }
+        }
+        return null;
+    }
+
+    public Resident getKing() {
+        return this.getCapital().getMayor();
+    }
+
+    public List<Resident> getCouncil() {
+        List<Resident> tmp = new ArrayList<Resident>();
+        for (String s : this.towns) {
+            Town town = KingdomsManager.getTown(s);
+            if (!town.isCapital()) {
+                tmp.add(town.getMayor());
+            }
+        }
+        return tmp;
+    }
+
+    public List<String> getCouncilNames() {
+        List<String> tmp = new ArrayList<String>();
+        for (Resident r : getCouncil()) {
+            tmp.add(r.getName());
+        }
+        return tmp;
+    }
+
+    public List<String> getAllResidents() {
+        List<String> residents = new ArrayList<String>();
+        for (String s : this.towns) {
+            Town town = KingdomsManager.getTown(s);
+            residents.addAll(town.getResidentsNames());
+        }
+        return residents;
+    }
+
+    public List<String> getOnlineResidents() {
+        List<String> residents = new ArrayList<String>();
+        for (String s : this.towns) {
+            Town town = KingdomsManager.getTown(s);
+            residents.addAll(town.getResidentsNames());
+        }
+        return residents;
+    }
+
+    public String getEconName() {
+        return ECON_PREFIX + getName();
+    }
+
+    public double getBalance() {
+        return DeityAPI.getAPI().getEconAPI().getBalance(getEconName());
+    }
+
+    public List<Request> getRequests() {
+        List<Request> openRequests = new ArrayList<Request>();
+        List<Request> closedRequests = new ArrayList<Request>();
+        for (Request r : requests) {
+            if (!r.isClosed()) {
+                openRequests.add(r);
+            } else {
+                closedRequests.add(r);
+            }
+        }
+        List<Request> requests = new ArrayList<Request>();
+        requests.addAll(openRequests);
+        requests.addAll(closedRequests);
+        return requests;
+    }
+
+    public Request getRequest(int requestId) {
+        for (Request r : requests) {
+            if (r.getId() == requestId) { return r; }
+        }
+        return null;
+    }
+
     public void setTowns(List<String> towns) {
         this.towns = towns;
     }
     
+    public void setRequests(List<Request> requests) {
+        this.requests = requests;
+    }
+
     public void addTown(Town town, boolean isCapital) {
         this.towns.add(town.getName());
         
@@ -90,6 +175,13 @@ public class Kingdom {
         KingdomsMain.plugin.chat.sendGlobalMessage(String.format(KingdomsMessageHelper.CMD_KINGDOM_TOWN_ADD, town.getName(), getName()));
     }
     
+    public void addRequest(Request request) {
+        this.requests.add(request);
+        if (getKing().isOnline()) {
+            KingdomsMain.plugin.chat.sendPlayerMessage(this.getKing().getPlayer(), KingdomsMessageHelper.CMD_REQUEST_KIGDOM_NEW);
+        }
+    }
+
     public void removeTown(Town town) {
         this.towns.remove(town);
         
@@ -97,70 +189,19 @@ public class Kingdom {
         town.save();
     }
     
-    public Town getCapital() {
-        for (String s : this.towns) {
-            Town town = KingdomsManager.getTown(s);
-            if (town.isCapital()) { return town; }
-        }
-        return null;
+    public void removeRequest(Request request) {
+        request.setClosed(true);
+        request.save();
+        this.requests.remove(request);
     }
-    
-    public Resident getKing() {
-        return this.getCapital().getMayor();
-    }
-    
-    public List<Resident> getCouncil() {
-        List<Resident> tmp = new ArrayList<Resident>();
-        for (String s : this.towns) {
-            Town town = KingdomsManager.getTown(s);
-            if (!town.isCapital()) {
-                tmp.add(town.getMayor());
-            }
-        }
-        return tmp;
-    }
-    
-    public List<String> getCouncilNames() {
-        List<String> tmp = new ArrayList<String>();
-        for (Resident r : getCouncil()) {
-            tmp.add(r.getName());
-        }
-        return tmp;
-    }
-    
+
     public boolean hasResident(String resident) {
         return getAllResidents().contains(resident);
-    }
-    
-    public List<String> getAllResidents() {
-        List<String> residents = new ArrayList<String>();
-        for (String s : this.towns) {
-            Town town = KingdomsManager.getTown(s);
-            residents.addAll(town.getResidentsNames());
-        }
-        return residents;
-    }
-    
-    public List<String> getOnlineResidents() {
-        List<String> residents = new ArrayList<String>();
-        for (String s : this.towns) {
-            Town town = KingdomsManager.getTown(s);
-            residents.addAll(town.getResidentsNames());
-        }
-        return residents;
     }
     
     public boolean hasStaff(String resident) {
         if (getKing().getName().equalsIgnoreCase(resident)) { return true; }
         return getCouncilNames().contains(resident);
-    }
-    
-    public String getEconName() {
-        return ECON_PREFIX + getName();
-    }
-    
-    public double getBalance() {
-        return DeityAPI.getAPI().getEconAPI().getBalance(getEconName());
     }
     
     public void createBankAccount() {
@@ -185,46 +226,18 @@ public class Kingdom {
         }
     }
     
-    public List<Request> getRequests() {
-        List<Request> openRequests = new ArrayList<Request>();
-        List<Request> closedRequests = new ArrayList<Request>();
-        for (Request r : requests) {
-            if (!r.isClosed()) {
-                openRequests.add(r);
-            } else {
-                closedRequests.add(r);
-            }
-        }
-        List<Request> requests = new ArrayList<Request>();
-        requests.addAll(openRequests);
-        requests.addAll(closedRequests);
-        return requests;
-    }
-    
-    public Request getRequest(int requestId) {
-        for (Request r : requests) {
-            if (r.getId() == requestId) { return r; }
-        }
-        return null;
-    }
-    
-    public void setRequests(List<Request> requests) {
-        this.requests = requests;
-    }
-    
-    public void addRequest(Request request) {
-        this.requests.add(request);
-        if (getKing().isOnline()) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(this.getKing().getPlayer(), KingdomsMessageHelper.CMD_REQUEST_KIGDOM_NEW);
+    public void sendMessage(String message) {
+        for (Town town : this.getTowns()) {
+            town.sendMessage(message);
         }
     }
     
-    public void removeRequest(Request request) {
-        request.setClosed(true);
-        request.save();
-        this.requests.remove(request);
+    public void sendMessageNoHeader(String message) {
+        for (Town town : this.getTowns()) {
+            town.sendMessageNoHeader(message);
+        }
     }
-    
+
     public List<String> showInfo() {
         List<String> out = new ArrayList<String>();
         out.add("&" + outputColor[0] + "+-----------------------------+");
@@ -240,17 +253,5 @@ public class Kingdom {
             out.add("&" + outputColor[0] + "Towns &" + outputColor[1] + "[" + this.getTownNames().size() + "] &f: " + list);
         }
         return out;
-    }
-    
-    public void sendMessage(String message) {
-        for (Town town : this.getTowns()) {
-            town.sendMessage(message);
-        }
-    }
-    
-    public void sendMessageNoHeader(String message) {
-        for (Town town : this.getTowns()) {
-            town.sendMessageNoHeader(message);
-        }
     }
 }

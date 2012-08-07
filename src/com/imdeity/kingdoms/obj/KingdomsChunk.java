@@ -13,6 +13,38 @@ import com.imdeity.protect.enums.DeityChunkPermissionTypes;
 
 public class KingdomsChunk extends DeityChunk {
     
+    public static String getFormat(int levelOfAccess) {
+        String output = "&7[";
+        switch (levelOfAccess) {
+            default:
+            case 0:
+                // wilderness
+                output += "&2-";
+                break;
+            case 1:
+                // for sale
+                output += "&6$";
+                break;
+            case 2:
+                // your plots
+                output += "&aT";
+                break;
+            case 3:
+                // owned plots
+                output += "&eT";
+                break;
+            case 4:
+                // free plots
+                output += "&6T";
+                break;
+            case 5:
+                // other towns
+                output += "&8T";
+                break;
+        }
+        return output + "&7]";
+    }
+
     private int kingdomsId;
     private ChunkType type;
     private Town town = null;
@@ -52,27 +84,82 @@ public class KingdomsChunk extends DeityChunk {
         return ((this.getType() == ChunkType.TOWN) && getOwner() != null);
     }
     
+    public Resident getResidentOwner() {
+        return KingdomsManager.getResident(getOwner());
+    }
+
     public Town getTown() {
         return town;
-    }
-    
-    public void setTown(Town town) {
-        this.town = town;
-        this.type = ChunkType.TOWN;
-        this.setUpdated();
     }
     
     public boolean isForSale() {
         return forSale;
     }
     
+    public int getPrice() {
+        return price;
+    }
+
+    public boolean canMobsSpawn() {
+        return this.canMobsSpawn;
+    }
+
+    public boolean canPvp() {
+        return canPvp;
+    }
+
+    public boolean canExplode() {
+        return canExplode;
+    }
+
+    public String getMapName(Resident resident) {
+        if (this.getType() == ChunkType.WILDERNESS) {
+            return getFormat(0);
+        } else {
+            if (resident.getTown() != null) {
+                if (resident.getTown().getName().equalsIgnoreCase(this.getTown().getName())) {
+                    if (getOwner() != null) {
+                        if (getOwner().equalsIgnoreCase(resident.getName())) {
+                            return getFormat(2);
+                        } else {
+                            return getFormat(3);
+                        }
+                    } else if (this.isForSale()) { return getFormat(1); }
+                    return getFormat(4);
+                }
+            }
+            return getFormat(5);
+        }
+    }
+
+    public String getMoveMessage() {
+        String output = "";
+        if (this.getType() == KingdomsChunk.ChunkType.WILDERNESS) {
+            output = KingdomsMessageHelper.MOVEMENT_WILDERNESS;
+        } else {
+            if (this.isForSale()) {
+                output = String.format(KingdomsMessageHelper.MOVEMENT_TOWN_UNCLAIMED_SALE, this.getPrice(), this.getTown().getName());
+            } else if (this.getOwner() != null) {
+                output = String.format(KingdomsMessageHelper.MOVEMENT_TOWN_CLAIMED, this.getOwner(), this.getTown().getName());
+            } else {
+                output = String.format(KingdomsMessageHelper.MOVEMENT_TOWN_UNCLAIMED, this.getTown().getName());
+            }
+        }
+        if (canPvp()) {
+            output += " &6[PvP]";
+        }
+        return output;
+    }
+
+    public void setTown(Town town) {
+        this.town = town;
+        this.type = ChunkType.TOWN;
+        this.setUpdated();
+    }
+
     public void setForSale(boolean forSale) {
         this.forSale = forSale;
         this.setUpdated();
-    }
-    
-    public int getPrice() {
-        return price;
     }
     
     public void setPrice(int price) {
@@ -80,17 +167,9 @@ public class KingdomsChunk extends DeityChunk {
         this.setUpdated();
     }
     
-    public boolean canMobsSpawn() {
-        return this.canMobsSpawn;
-    }
-    
     public void setMobSpawning(boolean canMobsSpawn) {
         this.canMobsSpawn = canMobsSpawn;
         this.setUpdated();
-    }
-    
-    public boolean canPvp() {
-        return canPvp;
     }
     
     public void setPvp(boolean canPvp) {
@@ -98,17 +177,13 @@ public class KingdomsChunk extends DeityChunk {
         this.setUpdated();
     }
     
-    public boolean canExplode() {
-        return canExplode;
-    }
-    
     public void setExplode(boolean canExplode) {
         this.canExplode = canExplode;
         this.setUpdated();
     }
     
-    public Resident getResidentOwner() {
-        return KingdomsManager.getResident(getOwner());
+    public void setUpdated() {
+        this.updated = true;
     }
     
     @Override
@@ -151,86 +226,31 @@ public class KingdomsChunk extends DeityChunk {
             return true;
         }
     }
-    
-    public void setUpdated() {
-        this.updated = true;
-    }
-    
-    public String getMapName(Resident resident) {
-        if (this.getType() == ChunkType.WILDERNESS) {
-            return getFormat(0);
-        } else {
-            if (resident.getTown() != null) {
-                if (resident.getTown().getName().equalsIgnoreCase(this.getTown().getName())) {
-                    if (getOwner() != null) {
-                        if (getOwner().equalsIgnoreCase(resident.getName())) {
-                            return getFormat(2);
-                        } else {
-                            return getFormat(3);
-                        }
-                    } else if (this.isForSale()) { return getFormat(1); }
-                    return getFormat(4);
-                }
-            }
-            return getFormat(5);
-        }
-    }
-    
-    public static String getFormat(int levelOfAccess) {
-        String output = "&7[";
-        switch (levelOfAccess) {
-            default:
-            case 0:
-                // wilderness
-                output += "&2-";
-                break;
-            case 1:
-                // for sale
-                output += "&6$";
-                break;
-            case 2:
-                // your plots
-                output += "&aT";
-                break;
-            case 3:
-                // owned plots
-                output += "&eT";
-                break;
-            case 4:
-                // free plots
-                output += "&6T";
-                break;
-            case 5:
-                // other towns
-                output += "&8T";
-                break;
-        }
-        return output + "&7]";
-    }
-    
-    public String getMoveMessage() {
-        String output = "";
-        if (this.getType() == KingdomsChunk.ChunkType.WILDERNESS) {
-            output = KingdomsMessageHelper.MOVEMENT_WILDERNESS;
-        } else {
-            if (this.isForSale()) {
-                output = String.format(KingdomsMessageHelper.MOVEMENT_TOWN_UNCLAIMED_SALE, this.getPrice(), this.getTown().getName());
-            } else if (this.getOwner() != null) {
-                output = String.format(KingdomsMessageHelper.MOVEMENT_TOWN_CLAIMED, this.getOwner(), this.getTown().getName());
-            } else {
-                output = String.format(KingdomsMessageHelper.MOVEMENT_TOWN_UNCLAIMED, this.getTown().getName());
+
+    public void save() {
+        if (this.updated) {
+            try {
+                super.save();
+                String sql = "UPDATE " + KingdomsMain.getChunkTableName() + " SET town_id = ?, for_sale = ?, price = ?, can_mobs_spawn = ?, can_pvp = ?, can_explode = ? WHERE id = ?;";
+                DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, town.getId(), (forSale ? 1 : 0), price, (canMobsSpawn ? 1 : 0), (canPvp ? 1 : 0), (canExplode ? 1 : 0), kingdomsId);
+                this.updated = false;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-        if (canPvp()) {
-            output += " &6[PvP]";
-        }
-        return output;
     }
     
+    public void remove() {
+        super.remove();
+        String sql = "DELETE FROM  " + KingdomsMain.getChunkTableName() + " WHERE id = ?;";
+        DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, kingdomsId);
+        KingdomsManager.removeKingdomsChunk(this);
+    }
+
     public enum ChunkType {
         TOWN, WILDERNESS;
     }
-    
+
     public enum ChunkPermissionGroupTypes {
         PUBLIC, FRIEND, TOWN, KINGDOM, TOWN_STAFF, KINGDOM_STAFF;
         
@@ -287,25 +307,5 @@ public class KingdomsChunk extends DeityChunk {
                 return "P";
             }
         }
-    }
-    
-    public void save() {
-        if (this.updated) {
-            try {
-                super.save();
-                String sql = "UPDATE " + KingdomsMain.getChunkTableName() + " SET town_id = ?, for_sale = ?, price = ?, can_mobs_spawn = ?, can_pvp = ?, can_explode = ? WHERE id = ?;";
-                DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, town.getId(), (forSale ? 1 : 0), price, (canMobsSpawn ? 1 : 0), (canPvp ? 1 : 0), (canExplode ? 1 : 0), kingdomsId);
-                this.updated = false;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    public void remove() {
-        super.remove();
-        String sql = "DELETE FROM  " + KingdomsMain.getChunkTableName() + " WHERE id = ?;";
-        DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, kingdomsId);
-        KingdomsManager.removeKingdomsChunk(this);
     }
 }

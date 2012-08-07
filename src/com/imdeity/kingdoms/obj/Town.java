@@ -60,14 +60,6 @@ public class Town {
         KingdomsManager.loadAllChunks(this);
     }
     
-    public void setLand(List<Integer> townLand) {
-        this.land = townLand;
-    }
-    
-    public void setWarps(Map<String, Integer> warps) {
-        this.warps = warps;
-    }
-    
     public void initResidents() {
         KingdomsManager.loadAllResident(this);
     }
@@ -88,18 +80,8 @@ public class Town {
         return kingdom;
     }
     
-    public void setKingdom(Kingdom kingdom) {
-        this.kingdom = kingdom;
-        this.hasUpdated();
-    }
-    
     public String getTownBoard() {
         return townBoard;
-    }
-    
-    public void setTownBoard(String newTownBoard) {
-        this.townBoard = newTownBoard;
-        this.hasUpdated();
     }
     
     public TownSpawnLocation getTownSpawnLocation() {
@@ -114,28 +96,12 @@ public class Town {
         return isPublic;
     }
     
-    public void setPublic(boolean isPublic) {
-        this.isPublic = isPublic;
-        this.hasUpdated();
-    }
-    
     public boolean isCapital() {
         return isCapital;
     }
     
-    public void setCapital(boolean isCapital) {
-        this.isCapital = isCapital;
-        this.hasUpdated();
-    }
-    
     public Date getCreationDate() {
         return creationDate;
-    }
-    
-    public void claim(KingdomsChunk chunk) {
-        chunk.setTown(this);
-        chunk.save();
-        this.land.add(chunk.getId());
     }
     
     public Resident getMayor() {
@@ -144,20 +110,6 @@ public class Town {
             if (r.isMayor()) { return r; }
         }
         return null;
-    }
-    
-    public void setMayor(Resident resident) {
-        for (String s : residents) {
-            Resident r = KingdomsManager.getResident(s);
-            if (r.isMayor()) {
-                r.setMayor(false);
-            }
-        }
-        if (resident != null) {
-            resident.setMayor(true);
-            resident.setAssistant(false);
-            resident.save();
-        }
     }
     
     public List<Resident> getSeniorAssistants() {
@@ -198,16 +150,6 @@ public class Town {
         return tmp;
     }
     
-    public boolean hasStaff(String resident) {
-        if (getKingdom() != null && getKingdom().getKing().getName().equalsIgnoreCase(resident)) { return true; }
-        if (getMayor().getName().equalsIgnoreCase(resident)) { return true; }
-        return getSeniorAssistantNames().contains(resident) || getAssistantNames().contains(resident);
-    }
-    
-    public boolean hasResident(String resident) {
-        return getResidentsNames().contains(resident);
-    }
-    
     public List<String> getResidentsNames() {
         return residents;
     }
@@ -221,24 +163,6 @@ public class Town {
             }
         }
         return tmp;
-    }
-    
-    public void setResidents(List<String> residents) {
-        if (residents != null) {
-            this.residents = residents;
-        }
-    }
-    
-    public void addResident(Resident resident) {
-        residents.add(resident.getName());
-        resident.setTown(this);
-        resident.save();
-    }
-    
-    public void removeResident(Resident resident) {
-        residents.remove(resident.getName());
-        resident.setTown(null);
-        resident.save();
     }
     
     public List<KingdomsChunk> getLand() {
@@ -261,15 +185,6 @@ public class Town {
         return this.defaultPlotPrice;
     }
     
-    public void setDefaultPlotPrice(int price) {
-        this.defaultPlotPrice = price;
-        this.hasUpdated();
-    }
-    
-    public void hasUpdated() {
-        hasUpdated = true;
-    }
-    
     public Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> getPermissions() {
         return permissions;
     }
@@ -278,21 +193,12 @@ public class Town {
         return permissions.get(type);
     }
     
-    public void setPermissions(DeityChunkPermissionTypes type, ChunkPermissionGroupTypes group) {
-        this.permissions.put(type, group);
-        this.hasUpdated();
-    }
-    
-    public void addTownWarp(String name, Location location, int price) {
-        warps.put(name.toLowerCase(), KingdomsManager.addNewTownWarp(name, this.getId(), location, price).getId());
-    }
-    
-    public TownWarp getTownWarp(String name) {
+    public TownWarp getWarp(String name) {
         if (warps.get(name.toLowerCase()) != null) { return KingdomsManager.getTownWarp(warps.get(name.toLowerCase())); }
         return null;
     }
     
-    public List<TownWarp> getAllTownWarps() {
+    public List<TownWarp> getAllWarps() {
         List<TownWarp> townWarps = new ArrayList<TownWarp>();
         for (Integer i : warps.values()) {
             townWarps.add(KingdomsManager.getTownWarp(i));
@@ -300,18 +206,12 @@ public class Town {
         return townWarps;
     }
     
-    public List<String> getAllTownWarpNames() {
+    public List<String> getAllWarpNames() {
         List<String> warps = new ArrayList<String>();
-        for (TownWarp warp : getAllTownWarps()) {
+        for (TownWarp warp : getAllWarps()) {
             warps.add(warp.getName());
         }
         return warps;
-    }
-    
-    public void removeWarp(String name) {
-        if (warps.containsKey(name)) {
-            warps.remove(name);
-        }
     }
     
     public String getEconName() {
@@ -322,10 +222,110 @@ public class Town {
         return DeityAPI.getAPI().getEconAPI().getBalance(getEconName());
     }
     
+    public void setDefaultPlotPrice(int price) {
+        this.defaultPlotPrice = price;
+        this.hasUpdated();
+    }
+
+    public void setResidents(List<String> residents) {
+        if (residents != null) {
+            this.residents = residents;
+        }
+    }
+
+    public void setMayor(Resident resident) {
+        for (String s : residents) {
+            Resident r = KingdomsManager.getResident(s);
+            if (r.isMayor()) {
+                r.setMayor(false);
+            }
+        }
+        if (resident != null) {
+            resident.setMayor(true);
+            resident.setAssistant(false);
+            resident.save();
+        }
+    }
+
+    public void setCapital(boolean isCapital) {
+        this.isCapital = isCapital;
+        this.hasUpdated();
+    }
+
+    public void setPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+        this.hasUpdated();
+    }
+
+    public void setTownBoard(String newTownBoard) {
+        this.townBoard = newTownBoard;
+        this.hasUpdated();
+    }
+
+    public void setKingdom(Kingdom kingdom) {
+        this.kingdom = kingdom;
+        this.hasUpdated();
+    }
+
+    public void setLand(List<Integer> townLand) {
+        this.land = townLand;
+    }
+
+    public void setWarps(Map<String, Integer> warps) {
+        this.warps = warps;
+    }
+
+    public void setPermissions(DeityChunkPermissionTypes type, ChunkPermissionGroupTypes group) {
+        this.permissions.put(type, group);
+        this.hasUpdated();
+    }
+
+    public boolean hasStaff(String resident) {
+        if (getKingdom() != null && getKingdom().getKing().getName().equalsIgnoreCase(resident)) { return true; }
+        if (getMayor().getName().equalsIgnoreCase(resident)) { return true; }
+        return getSeniorAssistantNames().contains(resident) || getAssistantNames().contains(resident);
+    }
+
+    public boolean hasResident(String resident) {
+        return getResidentsNames().contains(resident);
+    }
+
+    public void addResident(Resident resident) {
+        residents.add(resident.getName());
+        resident.setTown(this);
+        resident.save();
+    }
+
+    public void addWarp(String name, Location location, int price) {
+        warps.put(name.toLowerCase(), KingdomsManager.addNewTownWarp(name, this.getId(), location, price).getId());
+    }
+
+    public void removeResident(Resident resident) {
+        residents.remove(resident.getName());
+        resident.setTown(null);
+        resident.save();
+    }
+
+    public void removeWarp(String name) {
+        if (warps.containsKey(name)) {
+            warps.remove(name);
+        }
+    }
+
+    public void claim(KingdomsChunk chunk) {
+        chunk.setTown(this);
+        chunk.save();
+        this.land.add(chunk.getId());
+    }
+
     public void createBankAccount() {
         DeityAPI.getAPI().getEconAPI().createAccount(getEconName());
     }
     
+    public void hasUpdated() {
+        hasUpdated = true;
+    }
+
     public boolean canPay(double cost) {
         return DeityAPI.getAPI().getEconAPI().canPay(getEconName(), cost);
     }
