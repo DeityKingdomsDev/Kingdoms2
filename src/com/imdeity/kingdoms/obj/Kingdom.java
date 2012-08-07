@@ -1,13 +1,11 @@
 package com.imdeity.kingdoms.obj;
 
-import java.sql.SQLDataException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.imdeity.deityapi.DeityAPI;
 import com.imdeity.deityapi.exception.NegativeMoneyException;
-import com.imdeity.deityapi.records.DatabaseResults;
 import com.imdeity.kingdoms.main.KingdomsMain;
 import com.imdeity.kingdoms.main.KingdomsMessageHelper;
 
@@ -31,22 +29,16 @@ public class Kingdom {
         this.name = name;
         this.towns = towns;
         this.creationDate = creationDate;
+        initTowns();
+        initRequests();
     }
     
-    public void init() {
-        towns = new ArrayList<String>();
-        String sql = "SELECT id FROM " + KingdomsMain.getTownTableName() + " WHERE kingdom_id = ?;";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, this.getId());
-        if (query != null && query.hasRows()) {
-            for (int i = 0; i < query.rowCount(); i++) {
-                try {
-                    Town town = KingdomsManager.getTown(query.getInteger(i, "id"));
-                    this.towns.add(town.getName());
-                } catch (SQLDataException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    public void initTowns() {
+        KingdomsManager.loadAllTowns(this);
+    }
+    
+    public void initRequests() {
+        KingdomsManager.loadOpenRequests(this);
     }
     
     public int getId() {

@@ -1,6 +1,5 @@
 package com.imdeity.kingdoms.obj;
 
-import java.sql.SQLDataException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,7 +10,6 @@ import org.bukkit.Location;
 
 import com.imdeity.deityapi.DeityAPI;
 import com.imdeity.deityapi.exception.NegativeMoneyException;
-import com.imdeity.deityapi.records.DatabaseResults;
 import com.imdeity.kingdoms.main.KingdomsConfigHelper;
 import com.imdeity.kingdoms.main.KingdomsMain;
 import com.imdeity.kingdoms.obj.KingdomsChunk.ChunkPermissionGroupTypes;
@@ -59,67 +57,23 @@ public class Town {
     }
     
     public void initLand() {
-        String sql = "SELECT dpc.id AS 'dpcId', dpc.owner AS 'owner', dpc.world, dpc.x_coord, dpc.z_coord, kc.id, kc.town_id, kc.for_sale, kc.price, kc.can_mobs_spawn, kc.can_pvp FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, "
-                + KingdomsMain.getChunkTableName() + " kc" + " WHERE kc.town_id = ? AND dpc.id = kc.deity_protect_id;";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, this.getId());
-        if (query != null && query.hasRows()) {
-            for (int i = 0; i < query.rowCount(); i++) {
-                try {
-                    int protectionId = query.getInteger(i, "dpcId");
-                    String owner = query.getString(i, "owner");
-                    String world = query.getString(i, "world");
-                    int xCoord = query.getInteger(i, "x_coord");
-                    int zCoord = query.getInteger(i, "z_coord");
-                    
-                    boolean forSale = (query.getInteger(i, "for_sale") == 1);
-                    int price = query.getInteger(i, "price");
-                    boolean canMobsSpawn = (query.getInteger(i, "can_mobs_spawn") == 1);
-                    boolean canPvp = (query.getInteger(i, "can_pvp") == 1);
-                    
-                    KingdomsChunk chunk = new KingdomsChunk(protectionId, KingdomsMain.plugin.getServer().getWorld(world), xCoord, zCoord, owner, id, KingdomsChunk.ChunkType.TOWN, this, forSale, price, canMobsSpawn, canPvp);
-                    chunk.save();
-                    this.land.add(chunk.getId());
-                    KingdomsManager.addKingdomsChunkToCache(chunk);
-                } catch (SQLDataException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        KingdomsManager.loadAllChunks(this);
+    }
+    
+    public void setLand(List<Integer> townLand) {
+        this.land = townLand;
+    }
+    
+    public void setWarps(Map<String, Integer> warps) {
+        this.warps = warps;
     }
     
     public void initResidents() {
-        String residentSql = "SELECT id FROM " + KingdomsMain.getResidentTableName() + " WHERE town_id = ?";
-        DatabaseResults residentQuery = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(residentSql, id);
-        if (residentQuery != null && residentQuery.hasRows()) {
-            for (int i = 0; i < residentQuery.rowCount(); i++) {
-                Resident resident = null;
-                try {
-                    resident = KingdomsManager.getResident(residentQuery.getInteger(i, "id"));
-                } catch (SQLDataException e) {
-                    e.printStackTrace();
-                }
-                if (resident != null) {
-                    residents.add(resident.getName());
-                }
-            }
-        }
+        KingdomsManager.loadAllResident(this);
     }
     
     public void initWarps() {
-        String sql = "SELECT id, name FROM " + KingdomsMain.getWarpTableName() + " WHERE town_id = ?;";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, getId());
-        if (query != null && query.hasRows()) {
-            for (int i = 0; i < query.rowCount(); i++) {
-                try {
-                    int id = query.getInteger(i, "id");
-                    String name = query.getString(i, "name");
-                    KingdomsManager.getTownWarp(id);
-                    warps.put(name.toLowerCase(), id);
-                } catch (SQLDataException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        KingdomsManager.loadAllWarps(this);
     }
     
     public int getId() {

@@ -12,6 +12,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_PLOT_SET_NOTFORSALE_PLAYER = "You took this plot down from sale";
     public static final String CMD_PLOT_SET_MOBSPAWN_PLAYER = "You set this plot to %s mob spawning";
     public static final String CMD_PLOT_SET_PVP_PLAYER = "You set this plot to %s pvp";
+    public static final String CMD_PLOT_SET_EXPLODE_PLAYER = "You set this plot to %s explosions";
     public static final String CMD_RES_ADD_FRIEND_PLAYER = "You added %s to your friends";
     public static final String CMD_RES_REMOVE_FRIEND_PLAYER = "You removed %s from your friends";
     public static final String CMD_RES_SET_PERMISSIONS_UPDATED = "You updated your %s permission to %s";

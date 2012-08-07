@@ -24,19 +24,20 @@ public class KingdomsMain extends DeityPlugin {
     public List<String> residentsInMapMode = new ArrayList<String>();
     
     protected void initCmds() {
-        this.registerCommand(new KingdomsAdminCommand("Kingdoms 2"));
-        this.registerCommand(new KingdomsCommand("Kingdoms 2"));
-        this.registerCommand(new KingdomCommand("Kingdoms 2"));
-        this.registerCommand(new TownCommand("Kingdoms 2"));
-        this.registerCommand(new PlotCommand("Kingdoms 2"));
-        this.registerCommand(new ResidentCommand("Kingdoms 2"));
+        this.registerCommand(new KingdomsAdminCommand(this.getName()));
+        this.registerCommand(new KingdomsCommand(this.getName()));
+        this.registerCommand(new KingdomCommand(this.getName()));
+        this.registerCommand(new TownCommand(this.getName()));
+        this.registerCommand(new PlotCommand(this.getName()));
+        this.registerCommand(new ResidentCommand(this.getName()));
         this.getCommand("TownChat").setExecutor(new TownChatCommand());
         this.getCommand("KingdomChat").setExecutor(new KingdomChatCommand());
     }
     
     protected void initDatabase() {
-        DeityAPI.getAPI().getDataAPI().getMySQL().writeNoError("ALTER TABLE `kingdoms2_residents` CHANGE `is_assistant` `is_senior_assistant` INT( 1 ) NOT NULL, CHANGE `is_helper` `is_assistant` INT( 1 ) NOT NULL;");
-        DeityAPI.getAPI().getDataAPI().getMySQL().writeNoError("ALTER TABLE `kingdoms2_residents` ADD (`first_online` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `last_online` TIMESTAMP NULL, `total_time_online` INT(16) NOT NULL DEFAULT '0');");
+        DeityAPI.getAPI().getDataAPI().getMySQL().writeNoError("ALTER TABLE " + getResidentTableName() + " CHANGE `is_assistant` `is_senior_assistant` INT( 1 ) NOT NULL, CHANGE `is_helper` `is_assistant` INT( 1 ) NOT NULL;");
+        DeityAPI.getAPI().getDataAPI().getMySQL().writeNoError("ALTER TABLE " + getResidentTableName() + " ADD (`first_online` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `last_online` TIMESTAMP NULL, `total_time_online` INT(16) NOT NULL DEFAULT '0');");
+        DeityAPI.getAPI().getDataAPI().getMySQL().writeNoError("ALTER TABLE " + getChunkTableName() + " ADD (`can_explode` INT(1) NOT NULL DEFAULT '0');");
         DeityAPI.getAPI()
                 .getDataAPI()
                 .getMySQL()
@@ -61,15 +62,15 @@ public class KingdomsMain extends DeityPlugin {
                 .getDataAPI()
                 .getMySQL()
                 .write("CREATE TABLE IF NOT EXISTS " + getChunkTableName() + "( " + "`id` INT(16) NOT NULL AUTO_INCREMENT, " + "`deity_protect_id` INT(16) NOT NULL, " + " `town_id` INT(16) NOT NULL, " + " `for_sale` INT(1) NOT NULL, " + " `price` INT(4) NOT NULL DEFAULT '0', "
-                        + " `can_mobs_spawn` INT(1) NOT NULL DEFAULT '1', " + " `can_pvp` INT(1) NOT NULL DEFAULT '0', " + " PRIMARY KEY (`id`), INDEX (`deity_protect_id`) " + ") ENGINE = MYISAM;");
+                        + " `can_mobs_spawn` INT(1) NOT NULL DEFAULT '1', " + " `can_pvp` INT(1) NOT NULL DEFAULT '0', " + " `can_explode` INT(1) NOT NULL DEFAULT '0', " + " PRIMARY KEY (`id`), INDEX (`deity_protect_id`) " + ") ENGINE = MYISAM;");
         
         DeityAPI.getAPI()
                 .getDataAPI()
                 .getMySQL()
                 .write("CREATE TABLE IF NOT EXISTS " + getResidentTableName() + " (" + " `id` INT(16) NOT NULL AUTO_INCREMENT, " + " `name` VARCHAR(30) NOT NULL, " + " `town_id` INT(16) NOT NULL, " + " `is_king` INT(1) NOT NULL, " + " `is_mayor` INT(1) NOT NULL, "
                         + " `is_senior_assistant` INT(1) NOT NULL, " + " `is_assistant_helper` INT(1) NOT NULL, " + " `is_male` INT(1) NOT NULL, " + "`deed` INT(16) NOT NULL DEFAULT '-1', " + " `edit_permission` INT(1) NOT NULL DEFAULT '4', " + " `use_permission` INT(1) NOT NULL DEFAULT '4', "
-                        + " `access_permission` INT(1) NOT NULL DEFAULT '2', " + "`first_online` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + "`last_online` TIMESTAMP NULL, " + "`total_time_online` INT(16) NOT NULL DEFAULT '0', " + " PRIMARY KEY (`id`), "
-                        + " UNIQUE KEY (`name`) ," + " INDEX (`town_id`)" + ") ENGINE = MYISAM;");
+                        + " `access_permission` INT(1) NOT NULL DEFAULT '2', " + "`first_online` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + "`last_online` TIMESTAMP NULL, " + "`total_time_online` INT(16) NOT NULL DEFAULT '0', " + " PRIMARY KEY (`id`), " + " UNIQUE KEY (`name`) ,"
+                        + " INDEX (`town_id`)" + ") ENGINE = MYISAM;");
         
         DeityAPI.getAPI().getDataAPI().getMySQL()
                 .write("CREATE TABLE IF NOT EXISTS " + getResidentFriendTableName() + " (" + " `id` INT(16) NOT NULL AUTO_INCREMENT, " + " `resident_id` INT(16) NOT NULL, " + " `friend_id` INT(16) NOT NULL, " + " PRIMARY KEY (`id`), " + " INDEX (`resident_id`)" + ") ENGINE = MYISAM;");

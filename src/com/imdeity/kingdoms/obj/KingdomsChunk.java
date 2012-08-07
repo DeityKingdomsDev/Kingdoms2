@@ -20,9 +20,10 @@ public class KingdomsChunk extends DeityChunk {
     private int price = 0;
     private boolean canMobsSpawn = true;
     private boolean canPvp = false;
+    private boolean canExplode = false;
     private boolean updated = false;
     
-    public KingdomsChunk(int id, World world, int xCoord, int zCoord, String owner, int kingdomsId, ChunkType type, Town town, boolean forSale, int price, boolean canMobsSpawn, boolean canPvp) {
+    public KingdomsChunk(int id, World world, int xCoord, int zCoord, String owner, int kingdomsId, ChunkType type, Town town, boolean forSale, int price, boolean canMobsSpawn, boolean canPvp, boolean canExplode) {
         super(id, world, xCoord, zCoord, owner);
         this.kingdomsId = kingdomsId;
         this.type = type;
@@ -31,6 +32,7 @@ public class KingdomsChunk extends DeityChunk {
         this.price = price;
         this.canMobsSpawn = canMobsSpawn;
         this.canPvp = canPvp;
+        this.canExplode = canExplode;
     }
     
     public KingdomsChunk(World world, int xCoord, int zCoord) {
@@ -96,6 +98,15 @@ public class KingdomsChunk extends DeityChunk {
         this.setUpdated();
     }
     
+    public boolean canExplode() {
+        return canExplode;
+    }
+    
+    public void setExplode(boolean canExplode) {
+        this.canExplode = canExplode;
+        this.setUpdated();
+    }
+    
     public Resident getResidentOwner() {
         return KingdomsManager.getResident(getOwner());
     }
@@ -106,7 +117,7 @@ public class KingdomsChunk extends DeityChunk {
             
             if (type == DeityChunkPermissionTypes.MOB_SPAWNING) { return this.canMobsSpawn(); }
             if (type == DeityChunkPermissionTypes.PVP) { return this.canPvp(); }
-            
+            if (type == DeityChunkPermissionTypes.EXPLOSION) { return this.canExplode(); }
             Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permission = new HashMap<DeityChunkPermissionTypes, ChunkPermissionGroupTypes>();
             
             if (getOwner() != null) {
@@ -282,8 +293,8 @@ public class KingdomsChunk extends DeityChunk {
         if (this.updated) {
             try {
                 super.save();
-                String sql = "UPDATE " + KingdomsMain.getChunkTableName() + " SET town_id = ?, for_sale = ?, price = ?, can_mobs_spawn = ?, can_pvp = ? WHERE id = ?;";
-                DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, town.getId(), (forSale ? 1 : 0), price, (canMobsSpawn ? 1 : 0), (canPvp ? 1 : 0), kingdomsId);
+                String sql = "UPDATE " + KingdomsMain.getChunkTableName() + " SET town_id = ?, for_sale = ?, price = ?, can_mobs_spawn = ?, can_pvp = ?, can_explode = ? WHERE id = ?;";
+                DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, town.getId(), (forSale ? 1 : 0), price, (canMobsSpawn ? 1 : 0), (canPvp ? 1 : 0), (canExplode ? 1 : 0), kingdomsId);
                 this.updated = false;
             } catch (Exception e) {
                 e.printStackTrace();

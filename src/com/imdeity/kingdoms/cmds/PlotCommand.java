@@ -13,7 +13,7 @@ public class PlotCommand extends DeityCommandHandler {
     
     @Override
     public void initRegisteredCommands() {
-        String[] setArgs = { "for-sale [price]", "not-for-sale", "mob-spawning [allow/deny]", "pvp [allow/deny]" };
+        String[] setArgs = { "for-sale [price]", "not-for-sale", "mob-spawning [allow/deny]", "pvp [allow/deny]", "explode [allow/deny]" };
         this.registerCommand("claim", null, "", "Attemps to claim a plot", new PlotClaimCommand(), "kingdoms.plot.claim");
         this.registerCommand("set", null, setArgs, "Allows user to set flags on plot", new PlotSetCommand(), "kingdoms.plot.set");
         this.registerCommand("unclaim", null, "", "Attempts to unclaim a plot", new PlotUnclaimCommand(), "kingdoms.plot.unclaim");

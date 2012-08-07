@@ -9,6 +9,7 @@ public class KingdomsConfigHelper {
     public static final String TOWN_PRICES_SPAWN = "kingdoms.worlds.%s.town.prices.spawn";
     public static final String TOWN_PRICES_SET_MOB_SPAWN = "kingdoms.worlds.%s.town.prices.set.mob_spawn";
     public static final String TOWN_PRICES_SET_PVP = "kingdoms.worlds.%s.town.prices.set.pvp";
+    public static final String TOWN_PRICES_SET_EXPLODE = "kingdoms.worlds.%s.town.prices.set.explode";
     public static final String TOWN_PRICES_WARP_ADD = "kingdoms.worlds.%s.town.prices.warp";
     public static final String TOWN_PLOTS_PER_RESIDENT = "kingdoms.worlds.%s.town.plots_per_resident";
     public static final String DEFAULT_TOWN_BOARD = "kingdoms.worlds.%s.town.defaults.board";

@@ -78,6 +78,20 @@ public class PlotSetCommand extends DeityCommandReceiver {
                 chunk.save();
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_PVP_PLAYER, (allow ? "allow" : "deny")));
                 return true;
+            } else if (args[0].equalsIgnoreCase("explode")) {
+                boolean allow = args[1].equalsIgnoreCase("allow");
+                if (allow) {
+                    double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_EXPLODE, player.getWorld().getName()));
+                    if (!town.canPay(cost)) {
+                        KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
+                        return true;
+                    }
+                    town.pay(cost, "Plot Set Explode - " + player.getName());
+                }
+                chunk.setExplode(allow);
+                chunk.save();
+                KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_EXPLODE_PLAYER, (allow ? "allow" : "deny")));
+                return true;
             }
         }
         return false;
