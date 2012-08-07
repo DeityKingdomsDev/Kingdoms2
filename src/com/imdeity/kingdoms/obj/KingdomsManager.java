@@ -48,7 +48,8 @@ public class KingdomsManager {
     }
     
     public static void loadOpenRequests(Kingdom kingdom) {
-        String sql = "SELECT * FROM " + KingdomsMain.getRequestTableName() + " WHERE requested_id = ? AND type LIKE 'KINGDOM_%' AND is_closed = 0;";
+        String sql = "SELECT * FROM " + KingdomsMain.getRequestTableName()
+                + " WHERE requested_id = ? AND type LIKE 'KINGDOM_%' AND is_closed = 0;";
         DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, kingdom.getId());
         if (query != null && query.hasRows()) {
             List<Request> requests = new ArrayList<Request>();
@@ -89,12 +90,17 @@ public class KingdomsManager {
                         boolean isPublic = (query.getInteger(i, "is_public") == 1);
                         boolean isCapital = (query.getInteger(i, "is_capital") == 1);
                         Date creationDate = query.getDate(i, "creation_date");
+                        int numBonusPlots = query.getInteger(i, "num_bonus_plots");
                         Map<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes> permissions = new HashMap<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes>();
-                        permissions.put(DeityChunkPermissionTypes.EDIT, ChunkPermissionGroupTypes.getFromId(query.getInteger(i, "edit_permission")));
-                        permissions.put(DeityChunkPermissionTypes.USE, ChunkPermissionGroupTypes.getFromId(query.getInteger(i, "use_permission")));
-                        permissions.put(DeityChunkPermissionTypes.ACCESS, ChunkPermissionGroupTypes.getFromId(query.getInteger(i, "access_permission")));
+                        permissions.put(DeityChunkPermissionTypes.EDIT,
+                                ChunkPermissionGroupTypes.getFromId(query.getInteger(i, "edit_permission")));
+                        permissions.put(DeityChunkPermissionTypes.USE,
+                                ChunkPermissionGroupTypes.getFromId(query.getInteger(i, "use_permission")));
+                        permissions.put(DeityChunkPermissionTypes.ACCESS,
+                                ChunkPermissionGroupTypes.getFromId(query.getInteger(i, "access_permission")));
                         
-                        Town town = new Town(id, name, kingdom, townBoard, defaultPlotPrice, spawnLocation, isPublic, isCapital, creationDate, permissions);
+                        Town town = new Town(id, name, kingdom, townBoard, defaultPlotPrice, spawnLocation, isPublic, isCapital,
+                                creationDate, permissions, numBonusPlots);
                         towns.put(name.toLowerCase(), town);
                     } catch (SQLDataException e) {
                         e.printStackTrace();
@@ -123,12 +129,17 @@ public class KingdomsManager {
                     boolean isPublic = (query.getInteger(i, "is_public") == 1);
                     boolean isCapital = (query.getInteger(i, "is_capital") == 1);
                     Date creationDate = query.getDate(i, "creation_date");
+                    int numBonusPlots = query.getInteger(i, "num_bonus_plots");
                     Map<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes> permissions = new HashMap<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes>();
-                    permissions.put(DeityChunkPermissionTypes.EDIT, ChunkPermissionGroupTypes.getFromId(query.getInteger(i, "edit_permission")));
-                    permissions.put(DeityChunkPermissionTypes.USE, ChunkPermissionGroupTypes.getFromId(query.getInteger(i, "use_permission")));
-                    permissions.put(DeityChunkPermissionTypes.ACCESS, ChunkPermissionGroupTypes.getFromId(query.getInteger(i, "access_permission")));
+                    permissions.put(DeityChunkPermissionTypes.EDIT,
+                            ChunkPermissionGroupTypes.getFromId(query.getInteger(i, "edit_permission")));
+                    permissions.put(DeityChunkPermissionTypes.USE,
+                            ChunkPermissionGroupTypes.getFromId(query.getInteger(i, "use_permission")));
+                    permissions.put(DeityChunkPermissionTypes.ACCESS,
+                            ChunkPermissionGroupTypes.getFromId(query.getInteger(i, "access_permission")));
                     
-                    Town town = new Town(id, name, kingdom, townBoard, defaultPlotPrice, spawnLocation, isPublic, isCapital, creationDate, permissions);
+                    Town town = new Town(id, name, kingdom, townBoard, defaultPlotPrice, spawnLocation, isPublic, isCapital,
+                            creationDate, permissions, numBonusPlots);
                     towns.put(name.toLowerCase(), town);
                     kingdomTowns.add(town.getName());
                 } catch (SQLDataException e) {
@@ -159,11 +170,16 @@ public class KingdomsManager {
                     Date lastOnline = residentQuery.getDate(i, "last_online");
                     int totalOnline = residentQuery.getInteger(i, "total_time_online");
                     Map<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes> permissions = new HashMap<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes>();
-                    permissions.put(DeityChunkPermissionTypes.EDIT, ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(i, "edit_permission")));
-                    permissions.put(DeityChunkPermissionTypes.USE, ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(i, "use_permission")));
-                    permissions.put(DeityChunkPermissionTypes.ACCESS, ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(i, "access_permission")));
+                    permissions.put(DeityChunkPermissionTypes.EDIT,
+                            ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(i, "edit_permission")));
+                    permissions.put(DeityChunkPermissionTypes.USE,
+                            ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(i, "use_permission")));
+                    permissions.put(DeityChunkPermissionTypes.ACCESS,
+                            ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(i, "access_permission")));
                     
-                    String friendsSql = "SELECT res.name FROM " + KingdomsMain.getResidentTableName() + " res, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "friend_listings") + " WHERE resident_id = ? AND res.id = friend_id;";
+                    String friendsSql = "SELECT res.name FROM " + KingdomsMain.getResidentTableName() + " res, "
+                            + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "friend_listings")
+                            + " WHERE resident_id = ? AND res.id = friend_id;";
                     DatabaseResults friendsQuery = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(friendsSql, id);
                     List<String> friends = null;
                     if (friendsQuery != null && friendsQuery.hasRows()) {
@@ -173,7 +189,8 @@ public class KingdomsManager {
                             friends.add(friendName);
                         }
                     }
-                    Resident resident = new Resident(id, name, null, isKing, isMayor, isSeniorAssistant, isAssistant, isMale, deed, friends, permissions, lastOnline, firstOnline, totalOnline);
+                    Resident resident = new Resident(id, name, null, isKing, isMayor, isSeniorAssistant, isAssistant, isMale, deed,
+                            friends, permissions, lastOnline, firstOnline, totalOnline);
                     residents.put(name, resident);
                     resident.setTown(town);
                     townResidents.add(resident.getName());
@@ -187,7 +204,9 @@ public class KingdomsManager {
     
     public static void loadAllChunks(Town town) {
         List<Integer> townLand = new ArrayList<Integer>();
-        String sql = "SELECT dpc.id AS 'dpcId', dpc.owner AS 'owner', dpc.world, dpc.x_coord, dpc.z_coord, kc.id, kc.town_id, kc.for_sale, kc.price, kc.can_mobs_spawn, kc.can_pvp, kc.can_explode FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, "
+        String sql = "SELECT dpc.id AS 'dpcId', dpc.owner AS 'owner', dpc.world, dpc.x_coord, dpc.z_coord, kc.id, kc.town_id, kc.for_sale, kc.price, kc.can_mobs_spawn, kc.can_pvp, kc.can_explode FROM "
+                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
+                + " dpc, "
                 + KingdomsMain.getChunkTableName() + " kc" + " WHERE kc.town_id = ? AND dpc.id = kc.deity_protect_id;";
         DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, town.getId());
         if (query != null && query.hasRows()) {
@@ -205,7 +224,9 @@ public class KingdomsManager {
                     boolean canPvp = (query.getInteger(i, "can_pvp") == 1);
                     boolean canExplode = (query.getInteger(i, "can_explode") == 1);
                     
-                    KingdomsChunk chunk = new KingdomsChunk(protectionId, KingdomsMain.plugin.getServer().getWorld(world), xCoord, zCoord, owner, town.getId(), KingdomsChunk.ChunkType.TOWN, town, forSale, price, canMobsSpawn, canPvp, canExplode);
+                    KingdomsChunk chunk = new KingdomsChunk(protectionId, KingdomsMain.plugin.getServer().getWorld(world), xCoord,
+                            zCoord, owner, town.getId(), KingdomsChunk.ChunkType.TOWN, town, forSale, price, canMobsSpawn, canPvp,
+                            canExplode);
                     KingdomsManager.addKingdomsChunkToCache(chunk);
                     townLand.add(chunk.getId());
                 } catch (SQLDataException e) {
@@ -225,8 +246,10 @@ public class KingdomsManager {
                 try {
                     int id = query.getInteger(i, "id");
                     String warpName = query.getString(i, "name");
-                    Location location = new Location(KingdomsMain.plugin.getServer().getWorld(query.getString(i, "world")), (double) query.getInteger(i, "x_coord"), (double) query.getInteger(i, "y_coord"), (double) query.getInteger(i, "z_coord"), (float) query.getInteger(i, "yaw"),
-                            (float) query.getInteger(i, "pitch"));
+                    Location location = new Location(KingdomsMain.plugin.getServer().getWorld(query.getString(i, "world")),
+                            (double) query.getInteger(i, "x_coord"), (double) query.getInteger(i, "y_coord"),
+                            (double) query.getInteger(i, "z_coord"), (float) query.getInteger(i, "yaw"), (float) query.getInteger(i,
+                                    "pitch"));
                     int cost = query.getInteger(i, "cost");
                     TownWarp warp = new TownWarp(id, warpName, town.getId(), location, cost);
                     townWarps.add(warp);
@@ -312,12 +335,17 @@ public class KingdomsManager {
                 boolean isPublic = (query.getInteger(0, "is_public") == 1);
                 boolean isCapital = (query.getInteger(0, "is_capital") == 1);
                 Date creationDate = query.getDate(0, "creation_date");
+                int numBonusPlots = query.getInteger(0, "num_bonus_plots");
                 Map<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes> permissions = new HashMap<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes>();
-                permissions.put(DeityChunkPermissionTypes.EDIT, ChunkPermissionGroupTypes.getFromId(query.getInteger(0, "edit_permission")));
-                permissions.put(DeityChunkPermissionTypes.USE, ChunkPermissionGroupTypes.getFromId(query.getInteger(0, "use_permission")));
-                permissions.put(DeityChunkPermissionTypes.ACCESS, ChunkPermissionGroupTypes.getFromId(query.getInteger(0, "access_permission")));
+                permissions.put(DeityChunkPermissionTypes.EDIT,
+                        ChunkPermissionGroupTypes.getFromId(query.getInteger(0, "edit_permission")));
+                permissions.put(DeityChunkPermissionTypes.USE,
+                        ChunkPermissionGroupTypes.getFromId(query.getInteger(0, "use_permission")));
+                permissions.put(DeityChunkPermissionTypes.ACCESS,
+                        ChunkPermissionGroupTypes.getFromId(query.getInteger(0, "access_permission")));
                 
-                Town town = new Town(id, name, kingdom, townBoard, defaultPlotPrice, spawnLocation, isPublic, isCapital, creationDate, permissions);
+                Town town = new Town(id, name, kingdom, townBoard, defaultPlotPrice, spawnLocation, isPublic, isCapital, creationDate,
+                        permissions, numBonusPlots);
                 towns.put(name.toLowerCase(), town);
                 return town;
             } catch (SQLDataException e) {
@@ -349,7 +377,8 @@ public class KingdomsManager {
                 int zCoord = query.getInteger(0, "z_coord");
                 int pitch = query.getInteger(0, "pitch");
                 int yaw = query.getInteger(0, "yaw");
-                TownSpawnLocation location = new TownSpawnLocation(id, new Location(KingdomsMain.plugin.getServer().getWorld(world), xCoord, yCoord, zCoord, pitch, yaw));
+                TownSpawnLocation location = new TownSpawnLocation(id, new Location(KingdomsMain.plugin.getServer().getWorld(world),
+                        xCoord, yCoord, zCoord, pitch, yaw));
                 return location;
             } catch (SQLDataException e) {
                 e.printStackTrace();
@@ -359,8 +388,10 @@ public class KingdomsManager {
     }
     
     public static TownSpawnLocation getTownSpawnLocation(Location location) {
-        String sql = "SELECT id FROM " + KingdomsMain.getTownSpawnLocationTableName() + " WHERE world = ? AND x_coord = ? AND y_coord = ? AND z_coord = ?";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        String sql = "SELECT id FROM " + KingdomsMain.getTownSpawnLocationTableName()
+                + " WHERE world = ? AND x_coord = ? AND y_coord = ? AND z_coord = ?";
+        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL()
+                .readEnhanced(sql, location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
         if (query != null && query.hasRows()) {
             try {
                 int id = query.getInteger(0, "id");
@@ -384,7 +415,11 @@ public class KingdomsManager {
             if (chunk.isChunk(world.getName(), xCoord, zCoord) && chunk.getKingdomsId() > 0) { return chunk; }
         }
         if (checkDatabase) {
-            String sql = "SELECT dpc.id AS 'dpcId', dpc.owner AS 'owner', kc.id, kc.town_id, kc.for_sale, kc.price, kc.can_mobs_spawn, kc.can_pvp, kc.can_explode FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + KingdomsMain.getChunkTableName() + " kc"
+            String sql = "SELECT dpc.id AS 'dpcId', dpc.owner AS 'owner', kc.id, kc.town_id, kc.for_sale, kc.price, kc.can_mobs_spawn, kc.can_pvp, kc.can_explode FROM "
+                    + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
+                    + " dpc, "
+                    + KingdomsMain.getChunkTableName()
+                    + " kc"
                     + " WHERE dpc.world = ? AND dpc.x_coord = ? AND dpc.z_coord = ? AND dpc.id = kc.deity_protect_id;";
             DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, world.getName(), xCoord, zCoord);
             if (query != null && query.hasRows()) {
@@ -398,7 +433,9 @@ public class KingdomsManager {
                     boolean canMobsSpawn = (query.getInteger(0, "can_mobs_spawn") == 1);
                     boolean canPvp = (query.getInteger(0, "can_pvp") == 1);
                     boolean canExplode = (query.getInteger(0, "can_explode") == 1);
-                    KingdomsChunk chunk = new KingdomsChunk(protectId, world, xCoord, zCoord, owner, id, (town != null ? KingdomsChunk.ChunkType.TOWN : KingdomsChunk.ChunkType.WILDERNESS), town, forSale, price, canMobsSpawn, canPvp, canExplode);
+                    KingdomsChunk chunk = new KingdomsChunk(protectId, world, xCoord, zCoord, owner, id,
+                            (town != null ? KingdomsChunk.ChunkType.TOWN : KingdomsChunk.ChunkType.WILDERNESS), town, forSale, price,
+                            canMobsSpawn, canPvp, canExplode);
                     loadedChunks.add(chunk);
                     return chunk;
                 } catch (SQLDataException e) {
@@ -406,7 +443,8 @@ public class KingdomsManager {
                 }
             }
         }
-        return new KingdomsChunk(-1, world, xCoord, zCoord, null, -1, KingdomsChunk.ChunkType.WILDERNESS, null, false, 0, true, false, false);
+        return new KingdomsChunk(-1, world, xCoord, zCoord, null, -1, KingdomsChunk.ChunkType.WILDERNESS, null, false, 0, true, false,
+                false);
     }
     
     public static KingdomsChunk getKingdomsChunk(Location location, boolean checkDatabase) {
@@ -436,11 +474,15 @@ public class KingdomsManager {
                 Date lastOnline = residentQuery.getDate(0, "last_online");
                 int totalOnline = residentQuery.getInteger(0, "total_time_online");
                 Map<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes> permissions = new HashMap<DeityChunkPermissionTypes, KingdomsChunk.ChunkPermissionGroupTypes>();
-                permissions.put(DeityChunkPermissionTypes.EDIT, ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(0, "edit_permission")));
-                permissions.put(DeityChunkPermissionTypes.USE, ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(0, "use_permission")));
-                permissions.put(DeityChunkPermissionTypes.ACCESS, ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(0, "access_permission")));
+                permissions.put(DeityChunkPermissionTypes.EDIT,
+                        ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(0, "edit_permission")));
+                permissions.put(DeityChunkPermissionTypes.USE,
+                        ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(0, "use_permission")));
+                permissions.put(DeityChunkPermissionTypes.ACCESS,
+                        ChunkPermissionGroupTypes.getFromId(residentQuery.getInteger(0, "access_permission")));
                 
-                String friendsSql = "SELECT res.name FROM " + KingdomsMain.getResidentTableName() + " res, " + KingdomsMain.getResidentFriendTableName() + " WHERE resident_id = ? AND res.id = friend_id;";
+                String friendsSql = "SELECT res.name FROM " + KingdomsMain.getResidentTableName() + " res, "
+                        + KingdomsMain.getResidentFriendTableName() + " WHERE resident_id = ? AND res.id = friend_id;";
                 DatabaseResults friendsQuery = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(friendsSql, id);
                 List<String> friends = null;
                 if (friendsQuery != null && friendsQuery.hasRows()) {
@@ -450,9 +492,9 @@ public class KingdomsManager {
                         friends.add(friendName);
                     }
                 }
-                Resident resident = new Resident(id, name, null, isKing, isMayor, isSeniorAssistant, isAssistant, isMale, deed, friends, permissions, firstOnline, lastOnline, totalOnline);
+                Resident resident = new Resident(id, name, null, isKing, isMayor, isSeniorAssistant, isAssistant, isMale, deed,
+                        friends, permissions, firstOnline, lastOnline, totalOnline);
                 residents.put(name, resident);
-                System.out.println("7");
                 
                 if (townId > 0) {
                     resident.setTown(getTown(townId));
@@ -480,7 +522,8 @@ public class KingdomsManager {
     }
     
     private static Request getRequest(String name, RequestType type, int requestedId) {
-        String sql = "SELECT * FROM " + KingdomsMain.getRequestTableName() + " WHERE player_name = ? AND type = ? AND requested_id = ? AND is_closed = 0;";
+        String sql = "SELECT * FROM " + KingdomsMain.getRequestTableName()
+                + " WHERE player_name = ? AND type = ? AND requested_id = ? AND is_closed = 0;";
         DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, name, type.name(), requestedId);
         if (query != null && query.hasRows()) {
             try {
@@ -507,8 +550,10 @@ public class KingdomsManager {
                 try {
                     int townId = query.getInteger(i, "town_id");
                     String warpName = query.getString(i, "name");
-                    Location location = new Location(KingdomsMain.plugin.getServer().getWorld(query.getString(i, "world")), (double) query.getInteger(i, "x_coord"), (double) query.getInteger(i, "y_coord"), (double) query.getInteger(i, "z_coord"), (float) query.getInteger(i, "yaw"),
-                            (float) query.getInteger(i, "pitch"));
+                    Location location = new Location(KingdomsMain.plugin.getServer().getWorld(query.getString(i, "world")),
+                            (double) query.getInteger(i, "x_coord"), (double) query.getInteger(i, "y_coord"),
+                            (double) query.getInteger(i, "z_coord"), (float) query.getInteger(i, "yaw"), (float) query.getInteger(i,
+                                    "pitch"));
                     int cost = query.getInteger(i, "cost");
                     TownWarp warp = new TownWarp(id, warpName, townId, location, cost);
                     townWarps.add(warp);
@@ -537,7 +582,9 @@ public class KingdomsManager {
     }
     
     public static int getNumberOfPlots(String playerName) {
-        String sql = "SELECT kc.id FROM " + KingdomsMain.getChunkTableName() + " dpc, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks") + " kc" + " WHERE dpc.owner = ? AND dpc.id = kc.deity_protect_id;";
+        String sql = "SELECT kc.id FROM " + KingdomsMain.getChunkTableName() + " dpc, "
+                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks") + " kc"
+                + " WHERE dpc.owner = ? AND dpc.id = kc.deity_protect_id;";
         DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, playerName);
         if (query != null && query.hasRows()) { return query.rowCount(); }
         return 0;
@@ -571,34 +618,51 @@ public class KingdomsManager {
     
     public static Request addNewRequest(String name, RequestType type, int requestedId) {
         if (getRequest(name, type, requestedId) == null) {
-            String sql = "INSERT INTO " + KingdomsMain.getRequestTableName() + " (player_name, type, requested_id, is_closed) VALUES (?,?,?,?);";
+            String sql = "INSERT INTO " + KingdomsMain.getRequestTableName()
+                    + " (player_name, type, requested_id, is_closed) VALUES (?,?,?,?);";
             DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, name, type.name(), requestedId, 0);
         }
         return getRequest(name, type, requestedId);
     }
     
     public static Town addNewTown(String townName, TownSpawnLocation location, boolean isCapital) {
-        String sql = "INSERT INTO " + KingdomsMain.getTownTableName() + " (name, town_board, spawn_location_id, is_public, is_capital, creation_date) VALUES " + " (?,?,?,?,?,NOW());";
-        DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, townName, KingdomsMain.plugin.config.getString(String.format(KingdomsConfigHelper.DEFAULT_TOWN_BOARD, location.getLocation().getWorld().getName())), location.getId(), 1, (isCapital ? 1 : 0));
+        String sql = "INSERT INTO " + KingdomsMain.getTownTableName()
+                + " (name, town_board, spawn_location_id, is_public, is_capital, creation_date) VALUES " + " (?,?,?,?,?,NOW());";
+        DeityAPI.getAPI()
+                .getDataAPI()
+                .getMySQL()
+                .write(sql,
+                        townName,
+                        KingdomsMain.plugin.config.getString(String.format(KingdomsConfigHelper.DEFAULT_TOWN_BOARD, location
+                                .getLocation().getWorld().getName())), location.getId(), 1, (isCapital ? 1 : 0));
         getTown(townName).createBankAccount();
         return getTown(townName);
     }
     
     public static TownSpawnLocation addNewSpawnLocation(Location location) {
-        String sql = "INSERT INTO " + KingdomsMain.getTownSpawnLocationTableName() + " (world, x_coord, y_coord, z_coord, pitch, yaw) VALUES (?,?,?,?,?,?);";
-        DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), (int) location.getPitch(), (int) location.getYaw());
+        String sql = "INSERT INTO " + KingdomsMain.getTownSpawnLocationTableName()
+                + " (world, x_coord, y_coord, z_coord, pitch, yaw) VALUES (?,?,?,?,?,?);";
+        DeityAPI.getAPI()
+                .getDataAPI()
+                .getMySQL()
+                .write(sql, location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(),
+                        (int) location.getPitch(), (int) location.getYaw());
         return getTownSpawnLocation(location);
     }
     
     public static KingdomsChunk addNewKingdomsChunk(World world, int xCoord, int zCoord, Town town) {
         int protectionId = ProtectionManager.addNewDeityChunk(world.getName(), xCoord, zCoord);
-        String sql = "INSERT INTO " + KingdomsMain.getChunkTableName() + " (deity_protect_id, town_id, for_sale, price) VALUES (?, ?, 0, 0)";
+        String sql = "INSERT INTO " + KingdomsMain.getChunkTableName()
+                + " (deity_protect_id, town_id, for_sale, price) VALUES (?, ?, 0, 0)";
         DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, protectionId, town.getId());
         return getKingdomsChunk(world, xCoord, zCoord, true);
     }
     
     public static void addNewResident(String playerName) {
-        String sql = "INSERT INTO " + KingdomsMain.getResidentTableName() + " (name, town_id, is_king, is_mayor, is_senior_assistant, is_assistant, is_male, last_online, total_time_online) VALUES " + " (?,?,?,?,?,?,?, CURRENT_TIMESTAMP, 0);";
+        String sql = "INSERT INTO "
+                + KingdomsMain.getResidentTableName()
+                + " (name, town_id, is_king, is_mayor, is_senior_assistant, is_assistant, is_male, last_online, total_time_online) VALUES "
+                + " (?,?,?,?,?,?,?, CURRENT_TIMESTAMP, 0);";
         DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, playerName, -1, 0, 0, 0, 0, 1);
         getResident(playerName);
     }
@@ -611,8 +675,13 @@ public class KingdomsManager {
     }
     
     public static TownWarp addNewTownWarp(String warpName, int townId, Location location, int price) {
-        String sql = "INSERT INTO " + KingdomsMain.getWarpTableName() + " (name, town_id, price, world, x_coord, y_coord, z_coord, yaw, pitch) VALUES (?, ?,?,?,?,?,?,?,?);";
-        DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, warpName, townId, price, location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getYaw(), location.getPitch());
+        String sql = "INSERT INTO " + KingdomsMain.getWarpTableName()
+                + " (name, town_id, price, world, x_coord, y_coord, z_coord, yaw, pitch) VALUES (?, ?,?,?,?,?,?,?,?);";
+        DeityAPI.getAPI()
+                .getDataAPI()
+                .getMySQL()
+                .write(sql, warpName, townId, price, location.getWorld().getName(), location.getBlockX(), location.getBlockY(),
+                        location.getBlockZ(), location.getYaw(), location.getPitch());
         return getTownWarp(warpName, townId);
     }
     

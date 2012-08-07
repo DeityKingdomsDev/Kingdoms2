@@ -31,8 +31,11 @@ public class TownUnclaimCommand extends DeityCommandReceiver {
             return true;
         } else {
             Town town = resident.getTown();
-            town.getLand().remove(chunk);
-            chunk.remove();
+            if (town.getLandSize() == 1) {
+                KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_MIN_PLOTS);
+                return true;
+            }
+            town.unclaim(chunk);
             town.sendMessage(String.format(KingdomsMessageHelper.CMD_TOWN_CLAIM_TOWN, player.getName(), chunk.getX(), chunk.getZ()));
             return true;
         }

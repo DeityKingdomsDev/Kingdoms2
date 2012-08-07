@@ -20,7 +20,7 @@ public class Kingdom {
     private List<Request> requests = new ArrayList<Request>();
     
     private char[] outputColor = { '6', 'e' };
-
+    
     public Kingdom(int id, String name, List<String> towns, Date creationDate) {
         this.setAllFields(id, name, towns, creationDate);
     }
@@ -81,11 +81,11 @@ public class Kingdom {
         }
         return null;
     }
-
+    
     public Resident getKing() {
         return this.getCapital().getMayor();
     }
-
+    
     public List<Resident> getCouncil() {
         List<Resident> tmp = new ArrayList<Resident>();
         for (String s : this.towns) {
@@ -96,7 +96,7 @@ public class Kingdom {
         }
         return tmp;
     }
-
+    
     public List<String> getCouncilNames() {
         List<String> tmp = new ArrayList<String>();
         for (Resident r : getCouncil()) {
@@ -104,7 +104,7 @@ public class Kingdom {
         }
         return tmp;
     }
-
+    
     public List<String> getAllResidents() {
         List<String> residents = new ArrayList<String>();
         for (String s : this.towns) {
@@ -113,7 +113,7 @@ public class Kingdom {
         }
         return residents;
     }
-
+    
     public List<String> getOnlineResidents() {
         List<String> residents = new ArrayList<String>();
         for (String s : this.towns) {
@@ -122,15 +122,19 @@ public class Kingdom {
         }
         return residents;
     }
-
+    
     public String getEconName() {
         return ECON_PREFIX + getName();
     }
-
+    
     public double getBalance() {
         return DeityAPI.getAPI().getEconAPI().getBalance(getEconName());
     }
-
+    
+    public String getFormattedBalance() {
+        return DeityAPI.getAPI().getEconAPI().getFormattedBalance(getEconName());
+    }
+    
     public List<Request> getRequests() {
         List<Request> openRequests = new ArrayList<Request>();
         List<Request> closedRequests = new ArrayList<Request>();
@@ -146,14 +150,14 @@ public class Kingdom {
         requests.addAll(closedRequests);
         return requests;
     }
-
+    
     public Request getRequest(int requestId) {
         for (Request r : requests) {
             if (r.getId() == requestId) { return r; }
         }
         return null;
     }
-
+    
     public void setTowns(List<String> towns) {
         this.towns = towns;
     }
@@ -161,7 +165,7 @@ public class Kingdom {
     public void setRequests(List<Request> requests) {
         this.requests = requests;
     }
-
+    
     public void addTown(Town town, boolean isCapital) {
         this.towns.add(town.getName());
         
@@ -172,7 +176,8 @@ public class Kingdom {
         }
         town.setKingdom(this);
         town.save();
-        KingdomsMain.plugin.chat.sendGlobalMessage(String.format(KingdomsMessageHelper.CMD_KINGDOM_TOWN_ADD, town.getName(), getName()));
+        KingdomsMain.plugin.chat
+                .sendGlobalMessage(String.format(KingdomsMessageHelper.CMD_KINGDOM_TOWN_ADD, town.getName(), getName()));
     }
     
     public void addRequest(Request request) {
@@ -181,7 +186,7 @@ public class Kingdom {
             KingdomsMain.plugin.chat.sendPlayerMessage(this.getKing().getPlayer(), KingdomsMessageHelper.CMD_REQUEST_KIGDOM_NEW);
         }
     }
-
+    
     public void removeTown(Town town) {
         this.towns.remove(town);
         
@@ -194,7 +199,7 @@ public class Kingdom {
         request.save();
         this.requests.remove(request);
     }
-
+    
     public boolean hasResident(String resident) {
         return getAllResidents().contains(resident);
     }
@@ -237,19 +242,26 @@ public class Kingdom {
             town.sendMessageNoHeader(message);
         }
     }
-
+    
     public List<String> showInfo() {
         List<String> out = new ArrayList<String>();
         out.add("&" + outputColor[0] + "+-----------------------------+");
         out.add("&" + outputColor[0] + "Kingdom: &" + outputColor[1] + this.getName() + " &8[" + this.getId() + "]");
         out.add("&" + outputColor[0] + this.getKing().getKingdomFriendlyTitle() + ": &" + outputColor[1] + this.getKing().getName());
         if (this.getCouncilNames() != null && this.getCouncilNames().size() > 0) {
-            out.add("&" + outputColor[0] + "Council: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getCouncilNames(), ", "));
+            out.add("&" + outputColor[0] + "Council: &" + outputColor[1]
+                    + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getCouncilNames(), ", "));
         }
-        out.add("&" + outputColor[0] + "Creation Date: &" + outputColor[1] + (this.getCreationDate() == null ? "Right Now" : DeityAPI.getAPI().getUtilAPI().getTimeUtils().getFriendlyDate(this.getCreationDate(), false)));
-        out.add("&" + outputColor[0] + "Balance: &" + outputColor[1] + this.getBalance());
+        out.add("&"
+                + outputColor[0]
+                + "Creation Date: &"
+                + outputColor[1]
+                + (this.getCreationDate() == null ? "Right Now" : DeityAPI.getAPI().getUtilAPI().getTimeUtils()
+                        .getFriendlyDate(this.getCreationDate(), false)));
+        out.add("&" + outputColor[0] + "Balance: &" + outputColor[1] + this.getFormattedBalance());
         if (this.getTownNames() != null && !this.getAllResidents().isEmpty()) {
-            String list = "&" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getTownNames(), "&7, &" + outputColor[1]);
+            String list = "&" + outputColor[1]
+                    + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getTownNames(), "&7, &" + outputColor[1]);
             out.add("&" + outputColor[0] + "Towns &" + outputColor[1] + "[" + this.getTownNames().size() + "] &f: " + list);
         }
         return out;

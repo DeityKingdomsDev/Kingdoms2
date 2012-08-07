@@ -27,6 +27,7 @@ public class Town {
     private boolean isPublic;
     private boolean isCapital;
     private Date creationDate;
+    private int numBonusPlots;
     private List<String> residents = new ArrayList<String>();
     private List<Integer> land = new ArrayList<Integer>();
     private Map<String, Integer> warps = new HashMap<String, Integer>();
@@ -37,14 +38,14 @@ public class Town {
     
     public Town(int id, String name, Kingdom kingdom, String townBoard, int defaultPlotPrice, TownSpawnLocation spawnLocation,
             boolean isPublic, boolean isCapital, Date creationDate,
-            Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions) {
+            Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions, int numBonusPlots) {
         this.setAllFields(id, name, kingdom, townBoard, defaultPlotPrice, spawnLocation, isPublic, isCapital, creationDate,
-                permissions);
+                permissions, numBonusPlots);
     }
     
     public void setAllFields(int id, String name, Kingdom kingdom, String townBoard, int defaultPlotPrice,
             TownSpawnLocation spawnLocation, boolean isPublic, boolean isCapital, Date creationDate,
-            Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions) {
+            Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions, int numBonusPlots) {
         this.id = id;
         this.name = name;
         this.kingdom = kingdom;
@@ -55,6 +56,7 @@ public class Town {
         this.isCapital = isCapital;
         this.creationDate = creationDate;
         this.permissions = permissions;
+        this.numBonusPlots = numBonusPlots;
         this.hasUpdated = false;
         initLand();
         initResidents();
@@ -183,9 +185,9 @@ public class Town {
     }
     
     public int getMaxLandSize() {
-        return residents.size()
-                * KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.TOWN_PLOTS_PER_RESIDENT, this
-                        .getSpawnLocation().getWorld().getName()));
+        return (residents.size() * KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.TOWN_PLOTS_PER_RESIDENT, this
+                .getSpawnLocation().getWorld().getName())))
+                + numBonusPlots;
     }
     
     public int getDefaultPlotPrice() {
@@ -221,12 +223,20 @@ public class Town {
         return warps;
     }
     
+    public int getNumBonusPlots() {
+        return numBonusPlots;
+    }
+    
     public String getEconName() {
         return ECON_PREFIX + getName();
     }
     
     public double getBalance() {
         return DeityAPI.getAPI().getEconAPI().getBalance(getEconName());
+    }
+    
+    public String getFormattedBalance() {
+        return DeityAPI.getAPI().getEconAPI().getFormattedBalance(getEconName());
     }
     
     public void setDefaultPlotPrice(int price) {
@@ -271,6 +281,11 @@ public class Town {
     
     public void setKingdom(Kingdom kingdom) {
         this.kingdom = kingdom;
+        this.hasUpdated();
+    }
+    
+    public void setNumBonusPlots(int numBonusPlots) {
+        this.numBonusPlots = numBonusPlots;
         this.hasUpdated();
     }
     
@@ -323,6 +338,11 @@ public class Town {
         chunk.setTown(this);
         chunk.save();
         this.land.add(chunk.getId());
+    }
+    
+    public void unclaim(KingdomsChunk chunk) {
+        this.land.remove(chunk.getId());
+        chunk.remove();
     }
     
     public void createBankAccount() {
@@ -391,7 +411,7 @@ public class Town {
                 + outputColor[1]
                 + (this.getCreationDate() == null ? "Right Now" : DeityAPI.getAPI().getUtilAPI().getTimeUtils()
                         .getFriendlyDate(this.getCreationDate(), false)));
-        out.add("&" + outputColor[0] + "Balance: &" + outputColor[1] + this.getBalance());
+        out.add("&" + outputColor[0] + "Balance: &" + outputColor[1] + this.getFormattedBalance());
         out.add("&" + outputColor[0] + "Permissions:" + "&" + outputColor[1] + " Edit&8: &7"
                 + this.getPermission(DeityChunkPermissionTypes.EDIT).getName() + "&" + outputColor[1] + " Use&8: &7"
                 + this.getPermission(DeityChunkPermissionTypes.USE).getName() + "&" + outputColor[1] + " Access&8: &7"
@@ -426,9 +446,9 @@ public class Town {
                     .getMySQL()
                     .write("UPDATE "
                             + KingdomsMain.getTownTableName()
-                            + " SET name = ?, kingdom_id = ?, town_board = ?, default_plot_price = ?, spawn_location_id = ?, is_public = ?, is_capital = ?, creation_date = ? WHERE id = ?;",
+                            + " SET name = ?, kingdom_id = ?, town_board = ?, default_plot_price = ?, spawn_location_id = ?, is_public = ?, is_capital = ?, creation_date = ?, num_bonus_plots = ? WHERE id = ?;",
                             name, (kingdom != null ? kingdom.getId() : -1), townBoard, defaultPlotPrice, spawnLocation.getId(),
-                            (isPublic() ? 1 : 0), (isCapital() ? 1 : 0), creationDate, id);
+                            (isPublic() ? 1 : 0), (isCapital() ? 1 : 0), creationDate, numBonusPlots, id);
             hasUpdated = false;
         }
     }
