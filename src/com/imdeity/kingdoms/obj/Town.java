@@ -323,6 +323,12 @@ public class Town {
     }
     
     public void removeResident(Resident resident) {
+        for (KingdomsChunk chunk : this.getLand()) {
+            if (chunk.getOwner().equalsIgnoreCase(resident.getName())) {
+                chunk.setOwner(null);
+                chunk.save();
+            }
+        }
         residents.remove(resident.getName());
         resident.setTown(null);
         resident.save();
