@@ -37,6 +37,7 @@ public class KingdomsMain extends DeityPlugin {
     protected void initDatabase() {
         DeityAPI.getAPI().getDataAPI().getMySQL().writeNoError("ALTER TABLE " + getResidentTableName() + " CHANGE `is_assistant` `is_senior_assistant` INT( 1 ) NOT NULL, CHANGE `is_helper` `is_assistant` INT( 1 ) NOT NULL;");
         DeityAPI.getAPI().getDataAPI().getMySQL().writeNoError("ALTER TABLE " + getResidentTableName() + " ADD (`first_online` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `last_online` TIMESTAMP NULL, `total_time_online` INT(16) NOT NULL DEFAULT '0');");
+        DeityAPI.getAPI().getDataAPI().getMySQL().writeNoError("UPDATE "+getResidentTableName()+" SET first_online = CURRENT_TIMESTAMP, last_online = CURRENT_TIMESTAMP, total_time_online = 0 WHERE last_online is null");
         DeityAPI.getAPI().getDataAPI().getMySQL().writeNoError("ALTER TABLE " + getChunkTableName() + " ADD (`can_explode` INT(1) NOT NULL DEFAULT '0');");
         DeityAPI.getAPI()
                 .getDataAPI()

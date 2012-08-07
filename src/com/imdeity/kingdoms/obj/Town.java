@@ -35,11 +35,16 @@ public class Town {
     private boolean hasUpdated = false;
     private char[] outputColor = { '6', 'e' };
     
-    public Town(int id, String name, Kingdom kingdom, String townBoard, int defaultPlotPrice, TownSpawnLocation spawnLocation, boolean isPublic, boolean isCapital, Date creationDate, Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions) {
-        this.setAllFields(id, name, kingdom, townBoard, defaultPlotPrice, spawnLocation, isPublic, isCapital, creationDate, permissions);
+    public Town(int id, String name, Kingdom kingdom, String townBoard, int defaultPlotPrice, TownSpawnLocation spawnLocation,
+            boolean isPublic, boolean isCapital, Date creationDate,
+            Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions) {
+        this.setAllFields(id, name, kingdom, townBoard, defaultPlotPrice, spawnLocation, isPublic, isCapital, creationDate,
+                permissions);
     }
     
-    public void setAllFields(int id, String name, Kingdom kingdom, String townBoard, int defaultPlotPrice, TownSpawnLocation spawnLocation, boolean isPublic, boolean isCapital, Date creationDate, Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions) {
+    public void setAllFields(int id, String name, Kingdom kingdom, String townBoard, int defaultPlotPrice,
+            TownSpawnLocation spawnLocation, boolean isPublic, boolean isCapital, Date creationDate,
+            Map<DeityChunkPermissionTypes, ChunkPermissionGroupTypes> permissions) {
         this.id = id;
         this.name = name;
         this.kingdom = kingdom;
@@ -178,7 +183,9 @@ public class Town {
     }
     
     public int getMaxLandSize() {
-        return residents.size() * KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.TOWN_PLOTS_PER_RESIDENT, this.getSpawnLocation().getWorld()));
+        return residents.size()
+                * KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.TOWN_PLOTS_PER_RESIDENT, this
+                        .getSpawnLocation().getWorld().getName()));
     }
     
     public int getDefaultPlotPrice() {
@@ -226,13 +233,13 @@ public class Town {
         this.defaultPlotPrice = price;
         this.hasUpdated();
     }
-
+    
     public void setResidents(List<String> residents) {
         if (residents != null) {
             this.residents = residents;
         }
     }
-
+    
     public void setMayor(Resident resident) {
         for (String s : residents) {
             Resident r = KingdomsManager.getResident(s);
@@ -246,78 +253,78 @@ public class Town {
             resident.save();
         }
     }
-
+    
     public void setCapital(boolean isCapital) {
         this.isCapital = isCapital;
         this.hasUpdated();
     }
-
+    
     public void setPublic(boolean isPublic) {
         this.isPublic = isPublic;
         this.hasUpdated();
     }
-
+    
     public void setTownBoard(String newTownBoard) {
         this.townBoard = newTownBoard;
         this.hasUpdated();
     }
-
+    
     public void setKingdom(Kingdom kingdom) {
         this.kingdom = kingdom;
         this.hasUpdated();
     }
-
+    
     public void setLand(List<Integer> townLand) {
         this.land = townLand;
     }
-
+    
     public void setWarps(Map<String, Integer> warps) {
         this.warps = warps;
     }
-
+    
     public void setPermissions(DeityChunkPermissionTypes type, ChunkPermissionGroupTypes group) {
         this.permissions.put(type, group);
         this.hasUpdated();
     }
-
+    
     public boolean hasStaff(String resident) {
         if (getKingdom() != null && getKingdom().getKing().getName().equalsIgnoreCase(resident)) { return true; }
         if (getMayor().getName().equalsIgnoreCase(resident)) { return true; }
         return getSeniorAssistantNames().contains(resident) || getAssistantNames().contains(resident);
     }
-
+    
     public boolean hasResident(String resident) {
         return getResidentsNames().contains(resident);
     }
-
+    
     public void addResident(Resident resident) {
         residents.add(resident.getName());
         resident.setTown(this);
         resident.save();
     }
-
+    
     public void addWarp(String name, Location location, int price) {
         warps.put(name.toLowerCase(), KingdomsManager.addNewTownWarp(name, this.getId(), location, price).getId());
     }
-
+    
     public void removeResident(Resident resident) {
         residents.remove(resident.getName());
         resident.setTown(null);
         resident.save();
     }
-
+    
     public void removeWarp(String name) {
         if (warps.containsKey(name)) {
             warps.remove(name);
         }
     }
-
+    
     public void claim(KingdomsChunk chunk) {
         chunk.setTown(this);
         chunk.save();
         this.land.add(chunk.getId());
     }
-
+    
     public void createBankAccount() {
         DeityAPI.getAPI().getEconAPI().createAccount(getEconName());
     }
@@ -325,7 +332,7 @@ public class Town {
     public void hasUpdated() {
         hasUpdated = true;
     }
-
+    
     public boolean canPay(double cost) {
         return DeityAPI.getAPI().getEconAPI().canPay(getEconName(), cost);
     }
@@ -362,7 +369,8 @@ public class Town {
         List<String> out = new ArrayList<String>();
         out.add("&" + outputColor[0] + "+-----------------------------+");
         out.add("&" + outputColor[0] + "Town: &" + outputColor[1] + this.getName());
-        out.add("&" + outputColor[0] + "Size: &" + outputColor[1] + this.getLandSize() + "    &" + outputColor[0] + "Max Size: &" + outputColor[1] + this.getMaxLandSize());
+        out.add("&" + outputColor[0] + "Size: &" + outputColor[1] + this.getLandSize() + "    &" + outputColor[0] + "Max Size: &"
+                + outputColor[1] + this.getMaxLandSize());
         if (this.getKingdom() != null) {
             out.add("&" + outputColor[0] + "Kingdom: &" + outputColor[1] + this.getKingdom().getName());
         }
@@ -370,26 +378,38 @@ public class Town {
             out.add("&" + outputColor[0] + this.getMayor().getTownFriendlyTitle() + ": &" + outputColor[1] + this.getMayor().getName());
         }
         if (this.getSeniorAssistantNames() != null && this.getSeniorAssistantNames().size() > 0) {
-            out.add("&" + outputColor[0] + "Senior Assistants: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getSeniorAssistantNames(), ", "));
+            out.add("&" + outputColor[0] + "Senior Assistants: &" + outputColor[1]
+                    + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getSeniorAssistantNames(), ", "));
         }
         if (this.getAssistantNames() != null && this.getAssistantNames().size() > 0) {
-            out.add("&" + outputColor[0] + "Assistants: &" + outputColor[1] + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getAssistantNames(), ", "));
+            out.add("&" + outputColor[0] + "Assistants: &" + outputColor[1]
+                    + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getAssistantNames(), ", "));
         }
-        out.add("&" + outputColor[0] + "Creation Date: &" + outputColor[1] + (this.getCreationDate() == null ? "Right Now" : DeityAPI.getAPI().getUtilAPI().getTimeUtils().getFriendlyDate(this.getCreationDate(), false)));
+        out.add("&"
+                + outputColor[0]
+                + "Creation Date: &"
+                + outputColor[1]
+                + (this.getCreationDate() == null ? "Right Now" : DeityAPI.getAPI().getUtilAPI().getTimeUtils()
+                        .getFriendlyDate(this.getCreationDate(), false)));
         out.add("&" + outputColor[0] + "Balance: &" + outputColor[1] + this.getBalance());
-        out.add("&" + outputColor[0] + "Permissions:" + "&" + outputColor[1] + " Edit&8: &7" + this.getPermission(DeityChunkPermissionTypes.EDIT).getName() + "&" + outputColor[1] + " Use&8: &7" + this.getPermission(DeityChunkPermissionTypes.USE).getName() + "&" + outputColor[1] + " Access&8: &7"
+        out.add("&" + outputColor[0] + "Permissions:" + "&" + outputColor[1] + " Edit&8: &7"
+                + this.getPermission(DeityChunkPermissionTypes.EDIT).getName() + "&" + outputColor[1] + " Use&8: &7"
+                + this.getPermission(DeityChunkPermissionTypes.USE).getName() + "&" + outputColor[1] + " Access&8: &7"
                 + this.getPermission(DeityChunkPermissionTypes.ACCESS).getName());
         if (this.getResidentsNames() != null && !this.getResidentsNames().isEmpty()) {
             String list = "";
             if (!onlineList) {
                 list = DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getResidentsNames(), ", ");
-                out.add("&" + outputColor[0] + "Residents &" + outputColor[1] + "[" + this.getResidentsNames().size() + "] &f: " + list);
+                out.add("&" + outputColor[0] + "Residents &" + outputColor[1] + "[" + this.getResidentsNames().size() + "] &f: "
+                        + list);
             } else {
                 list = DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getOnlineResidents(), "&7, " + outputColor[1]);
                 if (!list.isEmpty()) {
-                    out.add("&" + outputColor[0] + "Online Residents &" + outputColor[1] + "[" + this.getOnlineResidents().size() + "] &f: " + list);
+                    out.add("&" + outputColor[0] + "Online Residents &" + outputColor[1] + "[" + this.getOnlineResidents().size()
+                            + "] &f: " + list);
                 } else {
-                    out.add("&" + outputColor[0] + "Residents &" + outputColor[1] + "[" + this.getResidentsNames().size() + "] &f: &fWe have no online residents");
+                    out.add("&" + outputColor[0] + "Residents &" + outputColor[1] + "[" + this.getResidentsNames().size()
+                            + "] &f: &fWe have no online residents");
                 }
                 out.add("&8Use '/town info [name] -o' to view the full resident list");
             }
@@ -404,8 +424,11 @@ public class Town {
             DeityAPI.getAPI()
                     .getDataAPI()
                     .getMySQL()
-                    .write("UPDATE " + KingdomsMain.getTownTableName() + " SET name = ?, kingdom_id = ?, town_board = ?, default_plot_price = ?, spawn_location_id = ?, is_public = ?, is_capital = ?, creation_date = ? WHERE id = ?;", name, (kingdom != null ? kingdom.getId() : -1), townBoard,
-                            defaultPlotPrice, spawnLocation.getId(), (isPublic() ? 1 : 0), (isCapital() ? 1 : 0), creationDate, id);
+                    .write("UPDATE "
+                            + KingdomsMain.getTownTableName()
+                            + " SET name = ?, kingdom_id = ?, town_board = ?, default_plot_price = ?, spawn_location_id = ?, is_public = ?, is_capital = ?, creation_date = ? WHERE id = ?;",
+                            name, (kingdom != null ? kingdom.getId() : -1), townBoard, defaultPlotPrice, spawnLocation.getId(),
+                            (isPublic() ? 1 : 0), (isCapital() ? 1 : 0), creationDate, id);
             hasUpdated = false;
         }
     }

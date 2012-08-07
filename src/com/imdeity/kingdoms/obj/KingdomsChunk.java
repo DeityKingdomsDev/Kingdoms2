@@ -3,6 +3,7 @@ package com.imdeity.kingdoms.obj;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.imdeity.deityapi.DeityAPI;
@@ -241,6 +242,11 @@ public class KingdomsChunk extends DeityChunk {
     }
     
     public void remove() {
+        //TODO RealmCraft specific. Remove when protect regen is implemented
+        Location minLocation = new Location(this.getWorld(), this.getX() * 16, 0, this.getZ() * 16);
+        Location maxLocation = new Location(this.getWorld(), this.getX() * 16 + 15, this.getWorld().getMaxHeight(), this.getZ() * 16 + 15);
+        DeityAPI.getAPI().getWorldEditAPI().regenArea(minLocation, maxLocation);
+        
         super.remove();
         String sql = "DELETE FROM  " + KingdomsMain.getChunkTableName() + " WHERE id = ?;";
         DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, kingdomsId);
