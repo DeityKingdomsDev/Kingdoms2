@@ -17,4 +17,5 @@ public class KingdomsConfigHelper {
     public static final String USE_KINGDOMS_PREFIX = "kingdoms.worlds.%s.use_kingdoms_prefix_in_chat";
     public static final String TOWN_CHAT_MESSAGE_FORMAT = "kingdoms.worlds.%s.town_chat_format";
     public static final String KINGDOM_CHAT_MESSAGE_FORMAT = "kingdoms.worlds.%s.kingdom_chat_format";
+    public static final String RESIDENT_CLAIM_IN_KINGDOM = "kingdoms.worlds.%s.residents_claim_plots_in_kingdom";
 }

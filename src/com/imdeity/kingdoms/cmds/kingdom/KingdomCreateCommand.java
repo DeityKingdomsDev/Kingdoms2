@@ -23,6 +23,10 @@ public class KingdomCreateCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_KINGDOM_CREATE_NO_TOWN);
             return true;
         }
+        if (resident.getTown().getKingdom() != null) {
+            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_KINGDOM_CREATE_ALREADY_IN_KINGDOM);
+            return true;
+        }
         double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.KINGDOM_PRICES_CREATE, player.getWorld().getName()));
         if (!resident.canPay(cost)) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY);

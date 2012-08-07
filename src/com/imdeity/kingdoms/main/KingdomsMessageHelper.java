@@ -79,6 +79,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_FAIL_CANNOT_PROMOTE = "You cannot promote %s to any higher ranks";
     public static final String CMD_FAIL_CANNOT_DEMOTE = "You cannot demote %s to any lower ranks";
     public static final String CMD_FAIL_KINGDOM_CREATE_NO_TOWN = "You need to own a town before creating a kingdom";
+    public static final String CMD_FAIL_KINGDOM_CREATE_ALREADY_IN_KINGDOM = "You are already in a kingdom. Please leave your kingdom before attempting to create another";
     public static final String CMD_FAIL_TOWN_NOT_NOBLE = "You are not a level one Noble";
     public static final String CMD_FAIL_KINGDOM_REQUEST_NOT_KING = "You need to be a king to use this command";
     public static final String CMD_FAIL_KINGDOM_REMOVE_CAPITAL = "You are attempting to remove the capital. Please set another capital before leaving your kingdom";

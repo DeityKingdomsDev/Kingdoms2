@@ -22,7 +22,7 @@ public class KingdomRemoveCommand extends DeityCommandReceiver {
         }
         Kingdom kingdom = resident.getTown().getKingdom();
         String townName = args[0];
-        if (kingdom.getCapital().getName().equalsIgnoreCase("townName")) {
+        if (kingdom.getCapital().getName().equalsIgnoreCase(townName)) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_KINGDOM_REMOVE_CAPITAL);
             return true;
         }

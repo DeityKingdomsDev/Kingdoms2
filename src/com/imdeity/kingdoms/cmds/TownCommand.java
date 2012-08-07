@@ -30,7 +30,7 @@ public class TownCommand extends DeityCommandHandler {
     public void initRegisteredCommands() {
         String[] setArgs = { "town-board [message]", "plot-price [amount]", "spawn", "public [on/off]", "permissions edit [P/F/T/K/TS/KS]", "permissions use [P/F/T/K/TS/KS]", "permissions access [P/F/T/K/TS/KS]" };
         String[] voteArgs = { "create", "[assistant-name]", "check" };
-        String[] warpArgs = { "list", "[warp-name]", "add [warp-name]", "remove [warp-name]" };
+        String[] warpArgs = { "list", "[warp-name]", "add [warp-name]", "add [warp-name] [cost]", "remove [warp-name]" };
         this.registerCommand("list", null, "", "Lists all towns", new TownListCommand(), "kingdoms.town.list");
         this.registerCommand("info", null, "<town-name> <-o>", "Displays a towns information", new TownInfoCommand(), "kingdoms.town.info");
         this.registerCommand("create", null, "[town-name]", "Creates a new Town", new TownCreateCommand(), "kingdoms.town.create");

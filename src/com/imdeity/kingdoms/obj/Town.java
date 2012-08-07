@@ -199,8 +199,11 @@ public class Town {
                 r.setMayor(false);
             }
         }
-        resident.setMayor(true);
-        resident.save();
+        if (resident != null) {
+            resident.setMayor(true);
+            resident.setAssistant(false);
+            resident.save();
+        }
     }
     
     public List<Resident> getAssistants() {
