@@ -109,8 +109,8 @@ public class KingdomsHelper {
         int zCoord = location.getChunk().getZ();
         
         String sql = "SELECT kc.town_id FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
-                + " kc WHERE dpc.id = kc.deity_protect_id  AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
+                + " kc WHERE dpc.id = kc.deity_protect_id  AND dpc.world = ? AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
+        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, location.getWorld().getName(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
         if (query != null && query.hasRows()) {
             for (int i = 0; i < query.rowCount(); i++) {
                 try {
@@ -128,8 +128,8 @@ public class KingdomsHelper {
         int zCoord = location.getChunk().getZ();
         
         String sql = "=SELECT kc.town_id FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
-                + " kc WHERE kc.town_id != ? AND dpc.id = kc.deity_protect_id AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, town.getId(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
+                + " kc WHERE kc.town_id != ? AND dpc.id = kc.deity_protect_id AND dpc.world = ? AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
+        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, town.getId(), location.getWorld().getName(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
         if (query != null && query.hasRows()) {
             for (int i = 0; i < query.rowCount(); i++) {
                 try {
@@ -147,8 +147,8 @@ public class KingdomsHelper {
         int zCoord = location.getChunk().getZ();
         
         String sql = "SELECT kc.town_id, dpc.x_coord, dpc.z_coord FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
-                + " kc WHERE dpc.id = kc.deity_protect_id AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
+                + " kc WHERE dpc.id = kc.deity_protect_id AND dpc.world = ? AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
+        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, location.getWorld().getName(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
         if (query != null && query.hasRows()) {
             for (int i = 0; i < query.rowCount(); i++) {
                 try {
@@ -166,8 +166,8 @@ public class KingdomsHelper {
         int xCoord = location.getChunk().getX();
         int zCoord = location.getChunk().getZ();
         String sql = "SELECT kc.town_id, dpc.x_coord, dpc.z_coord FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
-                + " kc WHERE kc.town_id != ? AND dpc.id = kc.deity_protect_id AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, town.getId(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
+                + " kc WHERE kc.town_id != ? AND dpc.id = kc.deity_protect_id AND dpc.world = ? AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
+        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, town.getId(), location.getWorld().getName(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
         if (query != null && query.hasRows()) {
             for (int i = 0; i < query.rowCount(); i++) {
                 try {
@@ -186,8 +186,8 @@ public class KingdomsHelper {
         int zCoord = location.getChunk().getZ();
         
         String sql = "SELECT kc.town_id, dpc.x_coord, dpc.z_coord FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "towns") + "kt,"
-                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks") + " kc WHERE kt.kingdom_id != ? AND kt.id = kc.town_id AND dpc.id = kc.deity_protect_id AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, kingdom.getId(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
+                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks") + " kc WHERE kt.kingdom_id != ? AND kt.id = kc.town_id AND dpc.id = kc.deity_protect_id AND dpc.world = ? AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
+        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, kingdom.getId(), location.getWorld().getName(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
         if (query != null && query.hasRows()) {
             for (int i = 0; i < query.rowCount(); i++) {
                 try {
@@ -206,8 +206,8 @@ public class KingdomsHelper {
         int zCoord = location.getChunk().getZ();
         
         String sql = "SELECT dpc.x_coord, dpc.z_coord FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
-                + " kc WHERE kc.town_id = ? AND dpc.id = kc.deity_protect_id AND (((dpc.x_coord = (?+1) OR dpc.x_coord = (?-1)) AND dpc.z_coord = ?) OR ((dpc.z_coord = (?+1) OR dpc.z_coord = (?-1)) AND dpc.x_coord = ?));";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, town.getId(), xCoord, xCoord, zCoord, zCoord, zCoord, xCoord);
+                + " kc WHERE kc.town_id = ? AND dpc.id = kc.deity_protect_id AND dpc.world = ? AND (((dpc.x_coord = (?+1) OR dpc.x_coord = (?-1)) AND dpc.z_coord = ?) OR ((dpc.z_coord = (?+1) OR dpc.z_coord = (?-1)) AND dpc.x_coord = ?));";
+        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, town.getId(), location.getWorld().getName(),  xCoord, xCoord, zCoord, zCoord, zCoord, xCoord);
         if (query != null && query.hasRows()) { return true; }
         return false;
     }

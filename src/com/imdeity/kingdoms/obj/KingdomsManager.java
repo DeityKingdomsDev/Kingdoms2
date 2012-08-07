@@ -187,7 +187,7 @@ public class KingdomsManager {
     
     public static void loadAllChunks(Town town) {
         List<Integer> townLand = new ArrayList<Integer>();
-        String sql = "SELECT dpc.id AS 'dpcId', dpc.owner AS 'owner', dpc.world, dpc.x_coord, dpc.z_coord, kc.id, kc.town_id, kc.for_sale, kc.price, kc.can_mobs_spawn, kc.can_pvp FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, "
+        String sql = "SELECT dpc.id AS 'dpcId', dpc.owner AS 'owner', dpc.world, dpc.x_coord, dpc.z_coord, kc.id, kc.town_id, kc.for_sale, kc.price, kc.can_mobs_spawn, kc.can_pvp, kc.can_explode FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, "
                 + KingdomsMain.getChunkTableName() + " kc" + " WHERE kc.town_id = ? AND dpc.id = kc.deity_protect_id;";
         DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, town.getId());
         if (query != null && query.hasRows()) {
@@ -384,7 +384,7 @@ public class KingdomsManager {
             if (chunk.isChunk(world.getName(), xCoord, zCoord) && chunk.getKingdomsId() > 0) { return chunk; }
         }
         if (checkDatabase) {
-            String sql = "SELECT dpc.id AS 'dpcId', dpc.owner AS 'owner', kc.id, kc.town_id, kc.for_sale, kc.price, kc.can_mobs_spawn, kc.can_pvp FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + KingdomsMain.getChunkTableName() + " kc"
+            String sql = "SELECT dpc.id AS 'dpcId', dpc.owner AS 'owner', kc.id, kc.town_id, kc.for_sale, kc.price, kc.can_mobs_spawn, kc.can_pvp, kc.can_explode FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + KingdomsMain.getChunkTableName() + " kc"
                     + " WHERE dpc.world = ? AND dpc.x_coord = ? AND dpc.z_coord = ? AND dpc.id = kc.deity_protect_id;";
             DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, world.getName(), xCoord, zCoord);
             if (query != null && query.hasRows()) {
