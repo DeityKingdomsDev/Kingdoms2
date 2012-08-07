@@ -38,22 +38,22 @@ public class TownPromoteCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_PROMOTE, changingResident.getName()));
             return true;
         }
-        if (!changingResident.isHelper() && !changingResident.isAssistant()) {
-            changingResident.setHelper(true);
-            changingResident.setAssistant(false);
+        if (!changingResident.isAssistant() && !changingResident.isSeniorAssistant()) {
+            changingResident.setAssistant(true);
+            changingResident.setSeniorAssistant(false);
             changingResident.save();
             town.sendMessage(String.format(KingdomsMessageHelper.CMD_TOWN_PROMOTE_HELPER_TOWN, changingResident.getName()));
             return true;
-        } else if (!changingResident.isAssistant()) {
-            changingResident.setAssistant(true);
-            changingResident.setHelper(false);
+        } else if (!changingResident.isSeniorAssistant()) {
+            changingResident.setSeniorAssistant(true);
+            changingResident.setAssistant(false);
             changingResident.save();
             town.sendMessage(String.format(KingdomsMessageHelper.CMD_TOWN_PROMOTE_ASSISTANT_TOWN, changingResident.getName()));
             return true;
         } else {
             town.setMayor(changingResident);
             changingResident.setMayor(true);
-            changingResident.setAssistant(false);
+            changingResident.setSeniorAssistant(false);
             changingResident.save();
             town.sendMessage(String.format(KingdomsMessageHelper.CMD_TOWN_PROMOTE_MAYOR_TOWN, changingResident.getName()));
             return true;

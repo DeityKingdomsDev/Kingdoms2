@@ -21,7 +21,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
             return true;
         }
-        if (!resident.isMayor() && !resident.isAssistant() && !resident.isHelper()) {
+        if (!resident.isMayor() && !resident.isSeniorAssistant() && !resident.isAssistant()) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
             return true;
         }
@@ -53,7 +53,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
             } else if (args[0].equalsIgnoreCase("mob-spawning")) {
                 boolean allow = args[1].equalsIgnoreCase("allow");
                 if (allow) {
-                    double cost = KingdomsMain.plugin.config.getDouble(KingdomsConfigHelper.TOWN_PRICES_SET_MOB_SPAWN);
+                    double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_MOB_SPAWN, player.getWorld().getName()));
                     if (!town.canPay(cost)) {
                         KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
                         return true;
@@ -67,7 +67,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
             } else if (args[0].equalsIgnoreCase("pvp")) {
                 boolean allow = args[1].equalsIgnoreCase("allow");
                 if (allow) {
-                    double cost = KingdomsMain.plugin.config.getDouble(KingdomsConfigHelper.TOWN_PRICES_SET_PVP);
+                    double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_PVP, player.getWorld().getName()));
                     if (!town.canPay(cost)) {
                         KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
                         return true;
@@ -77,6 +77,20 @@ public class PlotSetCommand extends DeityCommandReceiver {
                 chunk.setPvp(allow);
                 chunk.save();
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_PVP_PLAYER, (allow ? "allow" : "deny")));
+                return true;
+            } else if (args[0].equalsIgnoreCase("explode")) {
+                boolean allow = args[1].equalsIgnoreCase("allow");
+                if (allow) {
+                    double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_EXPLODE, player.getWorld().getName()));
+                    if (!town.canPay(cost)) {
+                        KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
+                        return true;
+                    }
+                    town.pay(cost, "Plot Set Explode - " + player.getName());
+                }
+                chunk.setExplode(allow);
+                chunk.save();
+                KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_EXPLODE_PLAYER, (allow ? "allow" : "deny")));
                 return true;
             }
         }

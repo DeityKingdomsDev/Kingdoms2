@@ -12,6 +12,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_PLOT_SET_NOTFORSALE_PLAYER = "You took this plot down from sale";
     public static final String CMD_PLOT_SET_MOBSPAWN_PLAYER = "You set this plot to %s mob spawning";
     public static final String CMD_PLOT_SET_PVP_PLAYER = "You set this plot to %s pvp";
+    public static final String CMD_PLOT_SET_EXPLODE_PLAYER = "You set this plot to %s explosions";
     public static final String CMD_RES_ADD_FRIEND_PLAYER = "You added %s to your friends";
     public static final String CMD_RES_REMOVE_FRIEND_PLAYER = "You removed %s from your friends";
     public static final String CMD_RES_SET_PERMISSIONS_UPDATED = "You updated your %s permission to %s";
@@ -67,6 +68,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_FAIL_PLOT_INVALID_LOCATION = "This plot does not belong to your town";
     public static final String CMD_FAIL_PLOT_NOT_OWNER = "You are not the owner of this plot";
     public static final String CMD_FAIL_RES_RESIDENT_INVALID = "%s can not be found";
+    public static final String CMD_FAIL_MIN_PLOTS = "You cannot unclaim the last plot of your town. Please &a/town delete &fif you wish to get rid of your town";
     public static final String CMD_FAIL_TOWN_SIZE_TOO_SMALL = "The town has reached their maximum plots. You need to recruit before you can claim more land.";
     public static final String CMD_FAIL_TOWN_CREATE_RESIDENT_IN_TOWN = "You cannot start a town while you belong to another";
     public static final String CMD_FAIL_TOWN_KICK_INVALID_PLAYER = "%s is not a member of your town";
@@ -79,6 +81,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_FAIL_CANNOT_PROMOTE = "You cannot promote %s to any higher ranks";
     public static final String CMD_FAIL_CANNOT_DEMOTE = "You cannot demote %s to any lower ranks";
     public static final String CMD_FAIL_KINGDOM_CREATE_NO_TOWN = "You need to own a town before creating a kingdom";
+    public static final String CMD_FAIL_KINGDOM_CREATE_ALREADY_IN_KINGDOM = "You are already in a kingdom. Please leave your kingdom before attempting to create another";
     public static final String CMD_FAIL_TOWN_NOT_NOBLE = "You are not a level one Noble";
     public static final String CMD_FAIL_KINGDOM_REQUEST_NOT_KING = "You need to be a king to use this command";
     public static final String CMD_FAIL_KINGDOM_REMOVE_CAPITAL = "You are attempting to remove the capital. Please set another capital before leaving your kingdom";

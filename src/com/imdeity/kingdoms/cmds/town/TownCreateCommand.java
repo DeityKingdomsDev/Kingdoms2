@@ -31,7 +31,7 @@ public class TownCreateCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_INVALID_LOCATION);
             return true;
         }
-        double cost = KingdomsMain.plugin.config.getDouble(KingdomsConfigHelper.TOWN_PRICES_CREATE);
+        double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_CREATE, player.getWorld().getName()));
         if (!resident.canPay(cost)) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY);
             return true;
@@ -75,7 +75,7 @@ public class TownCreateCommand extends DeityCommandReceiver {
         public void run() {
             try {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.VERIFING_LOCATION);
-                int[] coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), KingdomsMain.plugin.config.getInt(KingdomsConfigHelper.TOWN_BORDER));
+                int[] coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.TOWN_BORDER, player.getWorld().getName())));
                 if (coords != null) {
                     Town surroundingTown = KingdomsManager.getTown(coords[0]);
                     if (surroundingTown != null) {
@@ -91,10 +91,10 @@ public class TownCreateCommand extends DeityCommandReceiver {
                     if (resident.hasDeed()) {
                         Kingdom kingdom = KingdomsManager.getKingdom(resident.getDeed());
                         if (kingdom != null) {
-                            coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), kingdom, KingdomsMain.plugin.config.getInt(KingdomsConfigHelper.KINGDOM_BORDER));
+                            coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), kingdom, KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.KINGDOM_BORDER, player.getWorld().getName())));
                         }
                     } else {
-                        coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), KingdomsMain.plugin.config.getInt(KingdomsConfigHelper.KINGDOM_BORDER));
+                        coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.KINGDOM_BORDER, player.getWorld().getName())));
                     }
                     if (coords != null) {
                         Town surroundingTown = KingdomsManager.getTown(coords[0]);

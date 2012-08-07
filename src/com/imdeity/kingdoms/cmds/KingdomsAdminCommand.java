@@ -1,9 +1,10 @@
 package com.imdeity.kingdoms.cmds;
 
 import com.imdeity.deityapi.api.DeityCommandHandler;
+import com.imdeity.kingdoms.cmds.admin.AdminAddBonusPlotsCommand;
 import com.imdeity.kingdoms.cmds.admin.AdminReloadCommand;
 import com.imdeity.kingdoms.cmds.admin.AdminSetCommand;
-import com.imdeity.kingdoms.cmds.admin.AdminTownAddCommand;
+import com.imdeity.kingdoms.cmds.admin.AdminSetMayorCommand;
 
 public class KingdomsAdminCommand extends DeityCommandHandler {
     
@@ -13,8 +14,12 @@ public class KingdomsAdminCommand extends DeityCommandHandler {
     
     @Override
     public void initRegisteredCommands() {
-        this.registerCommand("reload", "", "Reloads cache", new AdminReloadCommand(), "kingdoms.admin.reload");
-        this.registerCommand("set", "[node] [value]", "Changes configuration options", new AdminSetCommand(), "kingdoms.admin.set");
-        this.registerCommand("mayor-set", "[town-name]", "Add's a resident to the town and adds them as mayor", new AdminTownAddCommand(), "kingdoms.admin.mayor-add");
+        this.registerCommand("reload", null, "", "Reloads cache", new AdminReloadCommand(), "kingdoms.admin.reload");
+        this.registerCommand("set", null, "[node] [value]", "Changes configuration options", new AdminSetCommand(),
+                "kingdoms.admin.set");
+        this.registerCommand("set-mayor", null, "[town-name] [player-name/NPC]",
+                "Add's a resident to the town and adds them as mayor", new AdminSetMayorCommand(), "kingdoms.admin.set-mayor");
+        this.registerCommand("add-bonus", null, "[town-name] [amount]", "Add's bonus plots to a town",
+                new AdminAddBonusPlotsCommand(), "kingdoms.admin.add-bonus");
     }
 }

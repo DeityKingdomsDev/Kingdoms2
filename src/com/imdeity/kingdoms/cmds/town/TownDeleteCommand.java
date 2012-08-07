@@ -24,7 +24,7 @@ public class TownDeleteCommand extends DeityCommandReceiver {
             return true;
         }
         Town town = resident.getTown();
-        town.remove();
+        KingdomsManager.removeTown(town);
         KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_TOWN_DELETE_PLAYER);
         return true;
     }
@@ -34,7 +34,7 @@ public class TownDeleteCommand extends DeityCommandReceiver {
         if (args.length > 0) {
             Town town = KingdomsManager.getTown(args[0]);
             if (town != null) {
-                town.remove();
+                KingdomsManager.removeTown(town);
                 KingdomsMain.plugin.chat.out(KingdomsMessageHelper.CMD_TOWN_DELETE_CONSOLE.replaceAll("%s", args[0]));
                 return true;
             }

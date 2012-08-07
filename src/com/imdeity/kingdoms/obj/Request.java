@@ -46,33 +46,22 @@ public class Request {
         return this.isClosed;
     }
     
+    public boolean isApproved() {
+        return isApproved;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
     public void setClosed(boolean isClosed) {
         this.isClosed = isClosed;
         this.hasUpdated = true;
     }
     
-    public boolean isApproved() {
-        return isApproved;
-    }
-    
     public void setApproved(boolean isApproved) {
         this.isApproved = isApproved;
         this.hasUpdated = true;
-    }
-    
-    public Date getDate() {
-        return date;
-    }
-    
-    public enum RequestType {
-        KINGDOM_JOIN, KINGDOM_TOWN_CREATE;
-        
-        public static RequestType getFromString(String type) {
-            for (RequestType rt : RequestType.values()) {
-                if (rt.name().equalsIgnoreCase(type)) { return rt; }
-            }
-            return null;
-        }
     }
     
     public String showInfo() {
@@ -92,11 +81,22 @@ public class Request {
         }
         return output;
     }
-    
+
     public void save() {
         if (hasUpdated) {
             DeityAPI.getAPI().getDataAPI().getMySQL().write("UPDATE " + KingdomsMain.getRequestTableName() + " SET player_name = ?, type = ?, requested_id = ?, is_approved = ?, is_closed = ? WHERE id = ?;", requestee, type.name(), requestTypeId, (isApproved ? 1 : 0), (isClosed ? 1 : 0), id);
             hasUpdated = false;
+        }
+    }
+
+    public enum RequestType {
+        KINGDOM_JOIN, KINGDOM_TOWN_CREATE;
+        
+        public static RequestType getFromString(String type) {
+            for (RequestType rt : RequestType.values()) {
+                if (rt.name().equalsIgnoreCase(type)) { return rt; }
+            }
+            return null;
         }
     }
 }

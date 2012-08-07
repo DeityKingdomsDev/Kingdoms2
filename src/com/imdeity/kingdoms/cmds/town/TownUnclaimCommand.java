@@ -20,18 +20,22 @@ public class TownUnclaimCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
             return true;
         }
-        if (!resident.isMayor() && !resident.isAssistant()) {
+        if (!resident.isMayor() && !resident.isSeniorAssistant()) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
             return true;
         }
         KingdomsChunk chunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
-        if (chunk != null && chunk.getType() == KingdomsChunk.ChunkType.TOWN && chunk.getTown() != null && !chunk.getTown().getName().equalsIgnoreCase(resident.getTown().getName())) {
+        if (chunk != null && chunk.getType() == KingdomsChunk.ChunkType.TOWN && chunk.getTown() != null
+                && !chunk.getTown().getName().equalsIgnoreCase(resident.getTown().getName())) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_INVALID_LOCATION);
             return true;
         } else {
             Town town = resident.getTown();
-            town.getLand().remove(chunk);
-            chunk.remove();
+            if (town.getLandSize() == 1) {
+                KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_MIN_PLOTS);
+                return true;
+            }
+            town.unclaim(chunk);
             town.sendMessage(String.format(KingdomsMessageHelper.CMD_TOWN_CLAIM_TOWN, player.getName(), chunk.getX(), chunk.getZ()));
             return true;
         }

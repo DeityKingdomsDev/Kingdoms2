@@ -39,14 +39,14 @@ public class TownDemoteCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_DEMOTE, changingResident.getName()));
             return true;
         }
-        if (changingResident.isHelper()) {
-            changingResident.setHelper(false);
+        if (changingResident.isAssistant()) {
+            changingResident.setAssistant(false);
             changingResident.save();
             town.sendMessage(String.format(KingdomsMessageHelper.CMD_TOWN_DEMOTE_HELPER_TOWN, changingResident.getName()));
             return true;
-        } else if (changingResident.isAssistant()) {
-            changingResident.setAssistant(false);
-            changingResident.setHelper(true);
+        } else if (changingResident.isSeniorAssistant()) {
+            changingResident.setSeniorAssistant(false);
+            changingResident.setAssistant(true);
             changingResident.save();
             town.sendMessage(String.format(KingdomsMessageHelper.CMD_TOWN_DEMOTE_ASSISTANT_TOWN, changingResident.getName()));
             return true;

@@ -15,6 +15,7 @@ public class AdminReloadCommand extends DeityCommandReceiver {
         if (!player.isOp()) { return false; }
         if (args.length == 1) {
             KingdomsManager.reload();
+            KingdomsMain.plugin.reloadPlugin();
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_ADMIN_RELOAD);
         } else {
             String sql = "DELETE FROM kingdoms2_chunks WHERE deity_protect_id = -1;";
@@ -22,6 +23,7 @@ public class AdminReloadCommand extends DeityCommandReceiver {
             sql = "DELETE FROM deity_protect_chunks WHERE id NOT IN (SELECT deity_protect_id FROM kingdoms2_chunks);";
             DeityAPI.getAPI().getDataAPI().getMySQL().write(sql);
             KingdomsManager.reload();
+            KingdomsMain.plugin.reloadPlugin();
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_ADMIN_RELOAD);
         }
         return true;
@@ -30,6 +32,7 @@ public class AdminReloadCommand extends DeityCommandReceiver {
     @Override
     public boolean onConsoleRunCommand(String[] args) {
         KingdomsManager.reload();
+        KingdomsMain.plugin.reloadPlugin();
         KingdomsMain.plugin.chat.out(KingdomsMessageHelper.CMD_ADMIN_RELOAD);
         return false;
     }
