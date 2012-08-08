@@ -24,8 +24,9 @@ public class TownSpawnCommand extends DeityCommandReceiver {
             }
             town = resident.getTown();
             
-            if (!resident.isMayor() && !resident.isSeniorAssistant() && !resident.isAssistant()) {
-                double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SPAWN, town.getSpawnLocation().getWorld().getName()));
+            if (!resident.isKing() && !resident.isMayor() && !resident.isSeniorAssistant() && !resident.isAssistant()) {
+                double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SPAWN, town
+                        .getSpawnLocation().getWorld().getName()));
                 if (!resident.canPay(cost)) {
                     KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY);
                     return true;
@@ -39,10 +40,12 @@ public class TownSpawnCommand extends DeityCommandReceiver {
             String townName = args[0];
             town = KingdomsManager.getTown(townName);
             if (town == null) {
-                KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_TOWN, townName));
+                KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                        String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_TOWN, townName));
                 return true;
             }
-            double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SPAWN, town.getSpawnLocation().getWorld().getName()));
+            double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SPAWN, town
+                    .getSpawnLocation().getWorld().getName()));
             if (!resident.canPay(cost)) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY);
                 return true;

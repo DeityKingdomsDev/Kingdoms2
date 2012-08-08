@@ -24,7 +24,7 @@ public class TownWithdrawCommand extends DeityCommandReceiver {
             }
             town = resident.getTown();
             
-            if (!resident.isMayor() && !resident.isAssistant()) {
+            if (!resident.isKing() && !resident.isMayor() && !resident.isAssistant()) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
                 return true;
             }
@@ -40,7 +40,8 @@ public class TownWithdrawCommand extends DeityCommandReceiver {
                 return true;
             }
             town.pay(resident.getName(), amount, "Town Withdraw");
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_WITHDRAW_PLAYER, amount, town.getName()));
+            KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_TOWN_WITHDRAW_PLAYER, amount, town.getName()));
             return true;
         }
         return false;

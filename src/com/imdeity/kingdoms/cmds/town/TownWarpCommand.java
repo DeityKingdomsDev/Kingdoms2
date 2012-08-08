@@ -28,8 +28,10 @@ public class TownWarpCommand extends DeityCommandReceiver {
         if (args.length < 1) { return false; }
         if (args[0].equalsIgnoreCase("list")) {
             if (!DeityAPI.getAPI().getPermAPI().hasPermission(player, "kingdoms.town.warp.list")) {
-                DeityAPI.getAPI().getChatAPI().sendPlayerMessage(player, KingdomsMain.plugin.getName(), "You have &cinvalid &fpermissions");
-                DeityAPI.getAPI().getChatAPI().sendPlayerMessage(player, KingdomsMain.plugin.getName(), "Type &e/town help &ffor a list of valid commands");
+                DeityAPI.getAPI().getChatAPI()
+                        .sendPlayerMessage(player, KingdomsMain.plugin.getName(), "You have &cinvalid &fpermissions");
+                DeityAPI.getAPI().getChatAPI()
+                        .sendPlayerMessage(player, KingdomsMain.plugin.getName(), "Type &e/town help &ffor a list of valid commands");
                 return true;
             }
             Resident resident = KingdomsManager.getResident(player.getName());
@@ -49,8 +51,10 @@ public class TownWarpCommand extends DeityCommandReceiver {
             }
         } else if (args[0].equalsIgnoreCase("add")) {
             if (!DeityAPI.getAPI().getPermAPI().hasPermission(player, "kingdoms.town.warp.add")) {
-                DeityAPI.getAPI().getChatAPI().sendPlayerMessage(player, KingdomsMain.plugin.getName(), "You have &cinvalid &fpermissions");
-                DeityAPI.getAPI().getChatAPI().sendPlayerMessage(player, KingdomsMain.plugin.getName(), "Type &e/town help &ffor a list of valid commands");
+                DeityAPI.getAPI().getChatAPI()
+                        .sendPlayerMessage(player, KingdomsMain.plugin.getName(), "You have &cinvalid &fpermissions");
+                DeityAPI.getAPI().getChatAPI()
+                        .sendPlayerMessage(player, KingdomsMain.plugin.getName(), "Type &e/town help &ffor a list of valid commands");
                 return true;
             }
             if (args.length < 2) { return false; }
@@ -60,12 +64,13 @@ public class TownWarpCommand extends DeityCommandReceiver {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
                 return true;
             }
-            if (!resident.isMayor() && !resident.isAssistant()) {
+            if (!resident.isKing() && !resident.isMayor() && !resident.isAssistant()) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
                 return true;
             }
             Town town = resident.getTown();
-            double price = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_WARP_ADD, town.getSpawnLocation().getWorld().getName()));
+            double price = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_WARP_ADD, town
+                    .getSpawnLocation().getWorld().getName()));
             if (!town.canPay(price)) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
                 return true;
@@ -92,8 +97,10 @@ public class TownWarpCommand extends DeityCommandReceiver {
             new WarpAdd(player, resident, town, args[1], cost, price);
         } else if (args[0].equalsIgnoreCase("remove")) {
             if (!DeityAPI.getAPI().getPermAPI().hasPermission(player, "kingdoms.town.warp.remove")) {
-                DeityAPI.getAPI().getChatAPI().sendPlayerMessage(player, KingdomsMain.plugin.getName(), "You have &cinvalid &fpermissions");
-                DeityAPI.getAPI().getChatAPI().sendPlayerMessage(player, KingdomsMain.plugin.getName(), "Type &e/town help &ffor a list of valid commands");
+                DeityAPI.getAPI().getChatAPI()
+                        .sendPlayerMessage(player, KingdomsMain.plugin.getName(), "You have &cinvalid &fpermissions");
+                DeityAPI.getAPI().getChatAPI()
+                        .sendPlayerMessage(player, KingdomsMain.plugin.getName(), "Type &e/town help &ffor a list of valid commands");
                 return true;
             }
             if (args.length < 2) { return false; }
@@ -103,7 +110,7 @@ public class TownWarpCommand extends DeityCommandReceiver {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
                 return true;
             }
-            if (!resident.isMayor() && !resident.isAssistant()) {
+            if (!resident.isKing() && !resident.isMayor() && !resident.isAssistant()) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
                 return true;
             }
@@ -111,8 +118,10 @@ public class TownWarpCommand extends DeityCommandReceiver {
             new WarpRemove(player, town, args[1]);
         } else {
             if (!DeityAPI.getAPI().getPermAPI().hasPermission(player, "kingdoms.town.warp.use")) {
-                DeityAPI.getAPI().getChatAPI().sendPlayerMessage(player, KingdomsMain.plugin.getName(), "You have &cinvalid &fpermissions");
-                DeityAPI.getAPI().getChatAPI().sendPlayerMessage(player, KingdomsMain.plugin.getName(), "Type &e/town help &ffor a list of valid commands");
+                DeityAPI.getAPI().getChatAPI()
+                        .sendPlayerMessage(player, KingdomsMain.plugin.getName(), "You have &cinvalid &fpermissions");
+                DeityAPI.getAPI().getChatAPI()
+                        .sendPlayerMessage(player, KingdomsMain.plugin.getName(), "Type &e/town help &ffor a list of valid commands");
                 return true;
             }
             Resident resident = KingdomsManager.getResident(player.getName());

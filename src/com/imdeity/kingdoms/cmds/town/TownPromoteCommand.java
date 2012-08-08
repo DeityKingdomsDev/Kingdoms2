@@ -19,7 +19,7 @@ public class TownPromoteCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
             return true;
         }
-        if (!resident.isMayor()) {
+        if (!resident.isKing() && !resident.isMayor()) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_DUKE);
             return true;
         }
@@ -27,15 +27,18 @@ public class TownPromoteCommand extends DeityCommandReceiver {
         if (args.length == 0) { return false; }
         Resident changingResident = KingdomsManager.getResident(args[0]);
         if (changingResident == null) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_RESIDENT, args[0]));
+            KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_RESIDENT, args[0]));
             return true;
         }
-        if (!changingResident.hasTown() || (changingResident.hasTown() && changingResident.getTown().getId() == town.getId())) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_FAIL_RESIDENT_NOT_IN_TOWN, changingResident.getName()));
+        if (!changingResident.hasTown() || (changingResident.hasTown() && changingResident.getTown().getId() != town.getId())) {
+            KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_FAIL_RESIDENT_NOT_IN_TOWN, changingResident.getName()));
             return true;
         }
         if (changingResident.isMayor() || changingResident.isKing()) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_PROMOTE, changingResident.getName()));
+            KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_PROMOTE, changingResident.getName()));
             return true;
         }
         if (!changingResident.isAssistant() && !changingResident.isSeniorAssistant()) {

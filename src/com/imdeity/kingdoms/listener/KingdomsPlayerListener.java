@@ -77,8 +77,8 @@ public class KingdomsPlayerListener extends DeityListener {
             
             if (kChunkFrom.getType() == kChunkTo.getType()) {
                 if (kChunkTo.getType() == KingdomsChunk.ChunkType.TOWN) {
-                    if (kChunkTo.canPvp() == kChunkFrom.canPvp() && kChunkFrom.getTown().getName().equalsIgnoreCase(kChunkTo.getTown().getName()) && kChunkFrom.getOwner() != null && kChunkTo.getOwner() != null && kChunkFrom.getOwner().equalsIgnoreCase(kChunkTo.getOwner())) { return; }
-                    if (kChunkTo.canPvp() == kChunkFrom.canPvp() && kChunkFrom.getTown().getName().equalsIgnoreCase(kChunkTo.getTown().getName()) && kChunkFrom.getOwner() == null && kChunkTo.getOwner() == null) { return; }
+                    if (kChunkTo.canPvp() == kChunkFrom.canPvp() && kChunkFrom.getTown()!= null && kChunkTo.getTown() != null &&kChunkFrom.getTown().getName().equalsIgnoreCase(kChunkTo.getTown().getName()) && kChunkFrom.getOwner() != null && kChunkTo.getOwner() != null && kChunkFrom.getOwner().equalsIgnoreCase(kChunkTo.getOwner())) { return; }
+                    if (kChunkTo.canPvp() == kChunkFrom.canPvp() && kChunkFrom.getTown()!= null && kChunkTo.getTown() != null &&kChunkFrom.getTown().getName().equalsIgnoreCase(kChunkTo.getTown().getName()) && kChunkFrom.getOwner() == null && kChunkTo.getOwner() == null) { return; }
                 } else {
                     return;
                 }

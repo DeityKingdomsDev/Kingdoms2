@@ -238,8 +238,8 @@ public class KingdomsChunk extends DeityChunk {
                 DeityAPI.getAPI()
                         .getDataAPI()
                         .getMySQL()
-                        .write(sql, town.getId(), (forSale ? 1 : 0), price, (canMobsSpawn ? 1 : 0), (canPvp ? 1 : 0),
-                                (canExplode ? 1 : 0), kingdomsId);
+                        .write(sql, (town != null ? town.getId() : -1), (forSale ? 1 : 0), price, (canMobsSpawn ? 1 : 0),
+                                (canPvp ? 1 : 0), (canExplode ? 1 : 0), kingdomsId);
                 this.updated = false;
             } catch (Exception e) {
                 e.printStackTrace();
