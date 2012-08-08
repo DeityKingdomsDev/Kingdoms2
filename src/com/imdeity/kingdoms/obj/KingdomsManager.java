@@ -582,8 +582,8 @@ public class KingdomsManager {
     }
     
     public static int getNumberOfPlots(String playerName) {
-        String sql = "SELECT kc.id FROM " + KingdomsMain.getChunkTableName() + " dpc, "
-                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks") + " kc"
+        String sql = "SELECT kc.id FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, "
+                + KingdomsMain.getChunkTableName() + " kc"
                 + " WHERE dpc.owner = ? AND dpc.id = kc.deity_protect_id;";
         DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, playerName);
         if (query != null && query.hasRows()) { return query.rowCount(); }

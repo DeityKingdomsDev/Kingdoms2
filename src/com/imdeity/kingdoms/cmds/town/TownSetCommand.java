@@ -23,14 +23,14 @@ public class TownSetCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
             return true;
         }
-        if (!resident.isMayor() && !resident.isSeniorAssistant()) {
+        if (!resident.isKing() && !resident.isMayor() && !resident.isSeniorAssistant()) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
             return true;
         }
         Town town = resident.getTown();
         if (args.length == 0) {
             return false;
-        } else if (args[0].equalsIgnoreCase("permissions")) {
+        } else if (args[0].equalsIgnoreCase("permissions") && args.length == 3) {
             String node = args[1];
             String value = args[2];
             if (DeityChunkPermissionTypes.EDIT.name().equalsIgnoreCase(node)) {
@@ -38,7 +38,10 @@ public class TownSetCommand extends DeityCommandReceiver {
                 if (group != null) {
                     town.setPermissions(DeityChunkPermissionTypes.EDIT, group);
                     town.save();
-                    KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_SET_PERMISSIONS_UPDATED, DeityChunkPermissionTypes.EDIT.toString(), group.toString()));
+                    KingdomsMain.plugin.chat.sendPlayerMessage(
+                            player,
+                            String.format(KingdomsMessageHelper.CMD_TOWN_SET_PERMISSIONS_UPDATED,
+                                    DeityChunkPermissionTypes.EDIT.toString(), group.toString()));
                     return true;
                 }
             } else if (DeityChunkPermissionTypes.USE.name().equalsIgnoreCase(node)) {
@@ -46,7 +49,10 @@ public class TownSetCommand extends DeityCommandReceiver {
                 if (group != null) {
                     town.setPermissions(DeityChunkPermissionTypes.USE, group);
                     town.save();
-                    KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_SET_PERMISSIONS_UPDATED, DeityChunkPermissionTypes.USE.toString(), group.toString()));
+                    KingdomsMain.plugin.chat.sendPlayerMessage(
+                            player,
+                            String.format(KingdomsMessageHelper.CMD_TOWN_SET_PERMISSIONS_UPDATED,
+                                    DeityChunkPermissionTypes.USE.toString(), group.toString()));
                     return true;
                 }
             } else if (DeityChunkPermissionTypes.ACCESS.name().equalsIgnoreCase(node)) {
@@ -54,7 +60,10 @@ public class TownSetCommand extends DeityCommandReceiver {
                 if (group != null) {
                     town.setPermissions(DeityChunkPermissionTypes.ACCESS, group);
                     town.save();
-                    KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_SET_PERMISSIONS_UPDATED, DeityChunkPermissionTypes.ACCESS.toString(), group.toString()));
+                    KingdomsMain.plugin.chat.sendPlayerMessage(
+                            player,
+                            String.format(KingdomsMessageHelper.CMD_TOWN_SET_PERMISSIONS_UPDATED,
+                                    DeityChunkPermissionTypes.ACCESS.toString(), group.toString()));
                     return true;
                 }
             }
@@ -67,14 +76,17 @@ public class TownSetCommand extends DeityCommandReceiver {
             }
             town.getTownSpawnLocation().setLocation(player.getLocation());
             town.getTownSpawnLocation().save();
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_SET_SPAWN_PLAYER, player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ()));
+            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_SET_SPAWN_PLAYER, player
+                    .getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ()));
             return true;
         } else if (args[0].equalsIgnoreCase("town-board")) {
             if (args.length <= 1) { return false; }
-            String newTownBoard = DeityAPI.getAPI().getUtilAPI().getStringUtils().join(DeityAPI.getAPI().getUtilAPI().getStringUtils().remFirstArg(args), " ");
+            String newTownBoard = DeityAPI.getAPI().getUtilAPI().getStringUtils()
+                    .join(DeityAPI.getAPI().getUtilAPI().getStringUtils().remFirstArg(args), " ");
             town.setTownBoard(newTownBoard);
             town.save();
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_SET_BOARD_PLAYER, newTownBoard));
+            KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_TOWN_SET_BOARD_PLAYER, newTownBoard));
             return true;
         } else if (args[0].equalsIgnoreCase("plot-price")) {
             if (args.length == 1) { return false; }
@@ -86,7 +98,8 @@ public class TownSetCommand extends DeityCommandReceiver {
             }
             town.setDefaultPlotPrice(newPrice);
             town.save();
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_SET_PLOT_PRICE_PLAYER, newPrice));
+            KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_TOWN_SET_PLOT_PRICE_PLAYER, newPrice));
             return true;
         } else if (args[0].equalsIgnoreCase("public")) {
             if (args.length == 0) { return false; }
@@ -96,7 +109,8 @@ public class TownSetCommand extends DeityCommandReceiver {
                 town.setPermissions(DeityChunkPermissionTypes.ACCESS, ChunkPermissionGroupTypes.TOWN);
             }
             town.save();
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_SET_PUBLIC_PLAYER, (isPublic ? "public" : "private")));
+            KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_TOWN_SET_PUBLIC_PLAYER, (isPublic ? "public" : "private")));
             return true;
         }
         return false;

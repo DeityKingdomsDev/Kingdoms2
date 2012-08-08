@@ -45,6 +45,10 @@ public class KingdomRequestCommand extends DeityCommandReceiver {
             if (args.length <= 1) { return false; }
             int requestId = Integer.parseInt(args[1]);
             Request request = kingdom.getRequest(requestId);
+            if (request == null) {
+                KingdomsMain.plugin.chat.sendPlayerMessage(player, "That request was invalid");
+                return true;
+            }
             request.setApproved(true);
             request.setClosed(true);
             request.save();
@@ -60,9 +64,13 @@ public class KingdomRequestCommand extends DeityCommandReceiver {
                     requesteeResident.save();
                 }
             }
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_REQUEST_ACCEPT_CONFIRM, request.getRequestee()));
+            KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_REQUEST_ACCEPT_CONFIRM, request.getRequestee()));
             try {
-                DeityAPI.getAPI().getChatAPI().sendMailToPlayer("KingdomsRequest", request.getRequestee(), String.format(KingdomsMessageHelper.CMD_REQUEST_ACCEPT_MAIL, kingdom.getName()));
+                DeityAPI.getAPI()
+                        .getChatAPI()
+                        .sendMailToPlayer("KingdomsRequest", request.getRequestee(),
+                                String.format(KingdomsMessageHelper.CMD_REQUEST_ACCEPT_MAIL, kingdom.getName()));
             } catch (Exception e) {
             }
             return true;
@@ -78,9 +86,13 @@ public class KingdomRequestCommand extends DeityCommandReceiver {
             request.setApproved(false);
             request.setClosed(true);
             request.save();
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_REQUEST_DENIED_CONFIRM, request.getRequestee()));
+            KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_REQUEST_DENIED_CONFIRM, request.getRequestee()));
             try {
-                DeityAPI.getAPI().getChatAPI().sendMailToPlayer("KingdomsRequest", request.getRequestee(), String.format(KingdomsMessageHelper.CMD_REQUEST_DENIED_MAIL, kingdom.getName()));
+                DeityAPI.getAPI()
+                        .getChatAPI()
+                        .sendMailToPlayer("KingdomsRequest", request.getRequestee(),
+                                String.format(KingdomsMessageHelper.CMD_REQUEST_DENIED_MAIL, kingdom.getName()));
             } catch (Exception e) {
             }
             return true;
@@ -89,7 +101,8 @@ public class KingdomRequestCommand extends DeityCommandReceiver {
             String kingdomName = args[1];
             Kingdom kingdom = KingdomsManager.getKingdom(kingdomName);
             if (kingdom == null) {
-                KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_KINGDOM, kingdomName));
+                KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                        String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_KINGDOM, kingdomName));
                 return true;
             }
             if (resident.hasTown()) {

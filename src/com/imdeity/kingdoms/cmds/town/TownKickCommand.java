@@ -19,7 +19,7 @@ public class TownKickCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
             return true;
         }
-        if (!resident.isMayor() && !resident.isSeniorAssistant()) {
+        if (!resident.isKing() && !resident.isMayor() && !resident.isSeniorAssistant()) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
             return true;
         }
@@ -27,15 +27,18 @@ public class TownKickCommand extends DeityCommandReceiver {
         if (args.length == 1) {
             Resident newResident = KingdomsManager.getResident(args[0]);
             if (newResident == null) {
-                KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_RESIDENT, args[0]));
+                KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                        String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_RESIDENT, args[0]));
                 return true;
             }
             if (!newResident.hasTown() || !newResident.getTown().getName().equalsIgnoreCase(town.getName())) {
-                KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_FAIL_TOWN_KICK_INVALID_PLAYER, newResident.getName()));
+                KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                        String.format(KingdomsMessageHelper.CMD_FAIL_TOWN_KICK_INVALID_PLAYER, newResident.getName()));
                 return true;
             }
             town.removeResident(newResident);
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_KICK_PLAYER, newResident.getName()));
+            KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_TOWN_KICK_PLAYER, newResident.getName()));
             return true;
         }
         return false;

@@ -100,6 +100,9 @@ public class Kingdom {
     public List<String> getCouncilNames() {
         List<String> tmp = new ArrayList<String>();
         for (Resident r : getCouncil()) {
+            if (r == null) {
+                continue;
+            }
             tmp.add(r.getName());
         }
         return tmp;
@@ -247,7 +250,10 @@ public class Kingdom {
         List<String> out = new ArrayList<String>();
         out.add("&" + outputColor[0] + "+-----------------------------+");
         out.add("&" + outputColor[0] + "Kingdom: &" + outputColor[1] + this.getName() + " &8[" + this.getId() + "]");
-        out.add("&" + outputColor[0] + this.getKing().getKingdomFriendlyTitle() + ": &" + outputColor[1] + this.getKing().getName());
+        if (this.getKing() != null) {
+            out.add("&" + outputColor[0] + this.getKing().getKingdomFriendlyTitle() + ": &" + outputColor[1]
+                    + this.getKing().getName());
+        }
         if (this.getCouncilNames() != null && this.getCouncilNames().size() > 0) {
             out.add("&" + outputColor[0] + "Council: &" + outputColor[1]
                     + DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getCouncilNames(), ", "));

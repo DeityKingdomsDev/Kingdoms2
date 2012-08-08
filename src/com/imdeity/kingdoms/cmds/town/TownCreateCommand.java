@@ -31,7 +31,8 @@ public class TownCreateCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_INVALID_LOCATION);
             return true;
         }
-        double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_CREATE, player.getWorld().getName()));
+        double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_CREATE, player.getWorld()
+                .getName()));
         if (!resident.canPay(cost)) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY);
             return true;
@@ -42,7 +43,8 @@ public class TownCreateCommand extends DeityCommandReceiver {
             return true;
         }
         if (KingdomsHelper.verifyNameExist(townName, true)) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_FAIL_TOWN_CREATE_EXIST, townName));
+            KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_FAIL_TOWN_CREATE_EXIST, townName));
             return true;
         }
         new Runner(resident, player, townName, chunk, cost);
@@ -75,14 +77,17 @@ public class TownCreateCommand extends DeityCommandReceiver {
         public void run() {
             try {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.VERIFING_LOCATION);
-                int[] coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.TOWN_BORDER, player.getWorld().getName())));
+                int[] coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), KingdomsMain.plugin.config.getInt(String
+                        .format(KingdomsConfigHelper.TOWN_BORDER, player.getWorld().getName())));
                 if (coords != null) {
                     Town surroundingTown = KingdomsManager.getTown(coords[0]);
                     if (surroundingTown != null) {
-                        Location closestLocation = new Location(player.getWorld(), coords[1] * 16, player.getLocation().getBlockY(), coords[2] * 16);
+                        Location closestLocation = new Location(player.getWorld(), coords[1] * 16, player.getLocation().getBlockY(),
+                                coords[2] * 16);
                         String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(player.getLocation(), closestLocation);
                         int distance = (int) closestLocation.distance(player.getLocation());
-                        KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_TOO_CLOSE, surroundingTown.getName(), distance, direction));
+                        KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_TOO_CLOSE,
+                                surroundingTown.getName(), distance, direction));
                         return;
                     }
                 }
@@ -91,18 +96,23 @@ public class TownCreateCommand extends DeityCommandReceiver {
                     if (resident.hasDeed()) {
                         Kingdom kingdom = KingdomsManager.getKingdom(resident.getDeed());
                         if (kingdom != null) {
-                            coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), kingdom, KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.KINGDOM_BORDER, player.getWorld().getName())));
+                            coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), kingdom, KingdomsMain.plugin.config
+                                    .getInt(String.format(KingdomsConfigHelper.KINGDOM_BORDER, player.getWorld().getName())));
                         }
                     } else {
-                        coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.KINGDOM_BORDER, player.getWorld().getName())));
+                        coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), KingdomsMain.plugin.config.getInt(String
+                                .format(KingdomsConfigHelper.KINGDOM_BORDER, player.getWorld().getName())));
                     }
                     if (coords != null) {
                         Town surroundingTown = KingdomsManager.getTown(coords[0]);
                         if (surroundingTown != null && surroundingTown.getKingdom() != null) {
-                            Location closestLocation = new Location(player.getWorld(), coords[1] * 16, player.getLocation().getBlockY(), coords[2] * 16);
+                            Location closestLocation = new Location(player.getWorld(), coords[1] * 16, player.getLocation()
+                                    .getBlockY(), coords[2] * 16);
                             String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(player.getLocation(), closestLocation);
                             int distance = (int) closestLocation.distance(player.getLocation());
-                            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_KINGDOM_TOO_CLOSE, surroundingTown.getKingdom().getName(), distance, direction));
+                            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(
+                                    KingdomsMessageHelper.CMD_KINGDOM_TOO_CLOSE, surroundingTown.getKingdom().getName(), distance,
+                                    direction));
                             return;
                         }
                     }
@@ -110,8 +120,12 @@ public class TownCreateCommand extends DeityCommandReceiver {
                 KingdomsManager.addNewSpawnLocation(player.getLocation());
                 KingdomsManager.addNewTown(townName, KingdomsManager.getTownSpawnLocation(player.getLocation()), false);
                 Town town = KingdomsManager.getTown(townName);
+                if (town == null) {
+                    town = KingdomsManager.getTown(townName);
+                }
                 if (chunk.getId() <= 0) {
-                    chunk = KingdomsManager.addNewKingdomsChunk(player.getWorld(), player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ(), town);
+                    chunk = KingdomsManager.addNewKingdomsChunk(player.getWorld(), player.getLocation().getChunk().getX(), player
+                            .getLocation().getChunk().getZ(), town);
                 }
                 town.addResident(resident);
                 town.setMayor(resident);
@@ -125,7 +139,8 @@ public class TownCreateCommand extends DeityCommandReceiver {
                 }
                 resident.save();
                 resident.pay(cost, "Town Creation");
-                KingdomsMain.plugin.chat.sendGlobalMessage(String.format(KingdomsMessageHelper.CMD_TOWN_CREATE_SUCCESS_PUBLIC, resident.getName(), town.getName()));
+                KingdomsMain.plugin.chat.sendGlobalMessage(String.format(KingdomsMessageHelper.CMD_TOWN_CREATE_SUCCESS_PUBLIC,
+                        resident.getName(), town.getName()));
             } catch (Exception e) {
             }
         }
