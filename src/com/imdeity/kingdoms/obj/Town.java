@@ -458,9 +458,9 @@ public class Town {
                     .getMySQL()
                     .write("UPDATE "
                             + KingdomsMain.getTownTableName()
-                            + " SET name = ?, kingdom_id = ?, town_board = ?, default_plot_price = ?, spawn_location_id = ?, is_public = ?, is_capital = ?, creation_date = ?, num_bonus_plots = ? WHERE id = ?;",
+                            + " SET name = ?, kingdom_id = ?, town_board = ?, default_plot_price = ?, spawn_location_id = ?, is_public = ?, is_capital = ?, creation_date = ?, num_bonus_plots = ?, edit_permission = ?, use_permission = ?, access_permission = ? WHERE id = ?;",
                             name, (kingdom != null ? kingdom.getId() : -1), townBoard, defaultPlotPrice, spawnLocation.getId(),
-                            (isPublic() ? 1 : 0), (isCapital() ? 1 : 0), creationDate, numBonusPlots, id);
+                            (isPublic() ? 1 : 0), (isCapital() ? 1 : 0), creationDate, numBonusPlots, this.permissions.get(DeityChunkPermissionTypes.EDIT).ordinal(), this.permissions.get(DeityChunkPermissionTypes.USE).ordinal(), this.permissions.get(DeityChunkPermissionTypes.ACCESS).ordinal(), id);
             hasUpdated = false;
         }
     }
