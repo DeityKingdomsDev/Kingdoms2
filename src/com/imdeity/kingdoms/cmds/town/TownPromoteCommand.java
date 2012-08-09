@@ -36,11 +36,12 @@ public class TownPromoteCommand extends DeityCommandReceiver {
                     String.format(KingdomsMessageHelper.CMD_FAIL_RESIDENT_NOT_IN_TOWN, changingResident.getName()));
             return true;
         }
-        if (changingResident.isMayor() || changingResident.isKing()) {
+        if (changingResident.isMayor()) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player,
                     String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_PROMOTE, changingResident.getName()));
             return true;
         }
+        
         if (!changingResident.isAssistant() && !changingResident.isSeniorAssistant()) {
             changingResident.setAssistant(true);
             changingResident.setSeniorAssistant(false);
@@ -53,7 +54,15 @@ public class TownPromoteCommand extends DeityCommandReceiver {
             changingResident.save();
             town.sendMessage(String.format(KingdomsMessageHelper.CMD_TOWN_PROMOTE_ASSISTANT_TOWN, changingResident.getName()));
             return true;
+        } else if(resident.isKing() && changingResident.isSeniorAssistant()) {
+			 KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_PROMOTE, changingResident.getName()));
+             return true;
         } else {
+        	
+        	resident.setMayor(false);
+        	resident.setSeniorAssistant(true);
+        	resident.save();
             town.setMayor(changingResident);
             changingResident.setMayor(true);
             changingResident.setSeniorAssistant(false);

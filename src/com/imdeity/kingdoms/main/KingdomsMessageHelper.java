@@ -6,7 +6,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_TOWN_CREATE_IN_TOWN = "You already belong to a town, please leave it before making a new one.";
     public static final String CMD_TOWN_CREATE_SUCCESS_PUBLIC = "%s created a new town named %s";
     public static final String CMD_TOWN_ADD_GLOBAL = "%s was added to the town of %s.";
-    public static final String CMD_PLOT_CLAIM_PLAYER = "You claimed this plot for %s dei";
+    public static final String CMD_PLOT_CLAIM_PLAYER = "You claimed this plot for $%s";
     public static final String CMD_PLOT_UNCLAIM_PLAYER = "You unclaimed this plot";
     public static final String CMD_PLOT_SET_FORSALE_PLAYER = "You put this plot up for sale at %s dei";
     public static final String CMD_PLOT_SET_NOTFORSALE_PLAYER = "You took this plot down from sale";
@@ -37,6 +37,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_TOWN_PROMOTE_MAYOR_TOWN = "%s was promoted to the rank of Mayor";
     public static final String CMD_TOWN_DEMOTE_HELPER_TOWN = "%s was demoted to the rank of Resident";
     public static final String CMD_TOWN_DEMOTE_ASSISTANT_TOWN = "%s was demoted to the rank of Helper";
+    public static final String CMD_TOWN_REQUEST_SENT = "%s has been invited to town.";
     public static final String CMD_KINGDOM_CREATE_SUCCESS_PUBLIC = "%s created a new Kingdom named %s";
     public static final String CMD_RESIDENT_CHANGE_GENDER = "Changed your gender to %s";
     public static final String CMD_KINGDOM_TOWN_ADD = "%s was added to the %s kingdom";
@@ -72,7 +73,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_FAIL_TOWN_SIZE_TOO_SMALL = "The town has reached their maximum plots. You need to recruit before you can claim more land.";
     public static final String CMD_FAIL_TOWN_CREATE_RESIDENT_IN_TOWN = "You cannot start a town while you belong to another";
     public static final String CMD_FAIL_TOWN_KICK_INVALID_PLAYER = "%s is not a member of your town";
-    public static final String CMD_FAIL_TOWN_LEAVE_DUKE = "Please set a new duke before leaving your town";
+    public static final String CMD_FAIL_TOWN_LEAVE_DUKE = "Please promote someone to mayor before leaving your town";
     public static final String CMD_FAIL_TOWN_SET_SPAWN = "The spawn needs to be in an unclaimed town plot";
     public static final String CMD_FAIL_TOWN_WARP = "The warps needs to be on an unclaimed town plot";
     public static final String CMD_FAIL_TOWN_PLOT_NOT_ADJACENT = "New town plots need to be beside another town plot";
@@ -86,6 +87,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_FAIL_KINGDOM_REQUEST_NOT_KING = "You need to be a king to use this command";
     public static final String CMD_FAIL_KINGDOM_REMOVE_CAPITAL = "You are attempting to remove the capital. Please set another capital before leaving your kingdom";
     public static final String CMD_FAIL_KINGDOM_REMOVE_INVALID = "The town of %s does not belong to your kingdom";
+    public static final String CMD_FAIL_UNCLAIM_NON_TOWN_LAND = "You cannot unclaim plots that are not part of town.";
     
     public static final String CMD_KINGDOM_TOO_CLOSE = "%s is %s blocks to the %s. Please move farther away from the kingdom or &c/kingdom request join <kingdom-name>";
     public static final String CMD_TOWN_TOO_CLOSE = "%s is %s blocks to the %s. Please move farther away from them.";

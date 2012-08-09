@@ -31,13 +31,18 @@ public class TownDemoteCommand extends DeityCommandReceiver {
                     String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_RESIDENT, args[0]));
             return true;
         }
-        if (!changingResident.hasTown() || (changingResident.hasTown() && changingResident.getTown().getId() == town.getId())) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, "That resident is not in your town");
-            // TODO
+        if (!changingResident.hasTown() || (changingResident.hasTown() && changingResident.getTown().getId() != town.getId())) {
+            KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_FAIL_RESIDENT_NOT_IN_TOWN, changingResident.getName()));
             return true;
         }
-        if (changingResident.isMayor() || changingResident.isKing()) {
+        if (changingResident.isMayor()) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_DEMOTE, changingResident.getName()));
+            return true;
+        }
+        if (!changingResident.isAssistant() && !changingResident.isSeniorAssistant() && !changingResident.isMayor()) {
+        	KingdomsMain.plugin.chat.sendPlayerMessage(player,
                     String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_DEMOTE, changingResident.getName()));
             return true;
         }

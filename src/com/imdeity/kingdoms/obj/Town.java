@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import com.imdeity.deityapi.DeityAPI;
@@ -344,17 +345,26 @@ public class Town {
         chunk.setTown(this);
         chunk.save();
         this.land.add(chunk.getId());
+        Bukkit.getLogger().severe("Land size: " + this.land.size());
     }
     
     public void unclaim(KingdomsChunk chunk) {
     	int index = 0;
+    	
+    	
     	for (Integer myInt : this.land)
     	{
     		if(myInt == chunk.getId()) break;
     		index++;
     	}
+    	
+    	if(index >= this.land.size()) {
+    		Bukkit.getLogger().severe("Issued town unclaim, but chunk key is outside of list length. Chunk ID: " + chunk.getId() + "; Town: " + this.name);
+    		return;
+    	}
         this.land.remove(index);
         chunk.remove();
+        Bukkit.getLogger().severe("Land size: " + this.land.size());
     }
     
     public void createBankAccount() {
