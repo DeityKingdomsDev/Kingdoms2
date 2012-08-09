@@ -345,7 +345,6 @@ public class Town {
         chunk.setTown(this);
         chunk.save();
         this.land.add(chunk.getId());
-        Bukkit.getLogger().severe("Land size: " + this.land.size());
     }
     
     public void unclaim(KingdomsChunk chunk) {
@@ -364,7 +363,6 @@ public class Town {
     	}
         this.land.remove(index);
         chunk.remove();
-        Bukkit.getLogger().severe("Land size: " + this.land.size());
     }
     
     public void createBankAccount() {

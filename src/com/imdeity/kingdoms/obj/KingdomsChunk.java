@@ -11,6 +11,7 @@ import com.imdeity.kingdoms.main.KingdomsMain;
 import com.imdeity.kingdoms.main.KingdomsMessageHelper;
 import com.imdeity.protect.api.DeityChunk;
 import com.imdeity.protect.enums.DeityChunkPermissionTypes;
+import com.imdeity.protect.obj.ProtectionManager;
 
 public class KingdomsChunk extends DeityChunk {
     
@@ -254,7 +255,8 @@ public class KingdomsChunk extends DeityChunk {
                 this.getZ() * 16 + 15);
         DeityAPI.getAPI().getWorldEditAPI().regenArea(minLocation, maxLocation);
         
-        super.remove();
+        ProtectionManager.removeDeityChunk(super.getId());
+        
         String sql = "DELETE FROM  " + KingdomsMain.getChunkTableName() + " WHERE id = ?;";
         DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, kingdomsId);
         KingdomsManager.removeKingdomsChunk(this);
