@@ -5,4 +5,4 @@ Kingdoms 2 is a chunk based town-nation hierarchy very loosely based on Towny. T
 
 More Information
 -------
-For more information about this plugin, please reference the plugin's [https://github.com/ryanturner/Kingdoms2/wiki wiki].
+For more information about this plugin, please reference the plugin's wiki at https://github.com/ryanturner/Kingdoms2/wiki
