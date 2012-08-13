@@ -49,6 +49,13 @@ public class KingdomRequestCommand extends DeityCommandReceiver {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, "That request was invalid");
                 return true;
             }
+            if(KingdomsManager.getResident(request.getRequestee()).getTown() != null && KingdomsManager.getResident(request.getRequestee()).getTown().getKingdom() != null) {
+                KingdomsMain.plugin.chat.sendPlayerMessage(player, "Requestees town has already joined a nation.");
+                request.setApproved(false);
+                request.setClosed(true);
+                return true;
+            }
+        
             request.setApproved(true);
             request.setClosed(true);
             request.save();
