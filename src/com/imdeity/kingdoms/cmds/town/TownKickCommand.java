@@ -43,6 +43,12 @@ public class TownKickCommand extends DeityCommandReceiver {
             }
             
             town.removeResident(newResident);
+            
+            //Remember to clear the player's positions!
+            newResident.setMayor(false);
+            newResident.setSeniorAssistant(false);
+            newResident.setAssistant(false);
+            
             KingdomsMain.plugin.chat.sendPlayerMessage(player,
                     String.format(KingdomsMessageHelper.CMD_TOWN_KICK_PLAYER, newResident.getName()));
             return true;
