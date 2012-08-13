@@ -36,6 +36,12 @@ public class TownKickCommand extends DeityCommandReceiver {
                         String.format(KingdomsMessageHelper.CMD_FAIL_TOWN_KICK_INVALID_PLAYER, newResident.getName()));
                 return true;
             }
+            if(newResident.equals(resident)) { //Don't allow the player to kick him/herself!
+                KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                        String.format(KingdomsMessageHelper.CMD_FAIL_TOWN_KICK_INVALID_PLAYER, newResident.getName()));
+                return true;
+            }
+            
             town.removeResident(newResident);
             KingdomsMain.plugin.chat.sendPlayerMessage(player,
                     String.format(KingdomsMessageHelper.CMD_TOWN_KICK_PLAYER, newResident.getName()));
