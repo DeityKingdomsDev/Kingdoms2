@@ -1,5 +1,6 @@
 package com.imdeity.kingdoms.cmds.resident;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.imdeity.deityapi.api.DeityCommandReceiver;
@@ -34,7 +35,7 @@ public class ResidentSetCommand extends DeityCommandReceiver {
             } else if (args[0].equalsIgnoreCase("permissions")) {
                 String node = args[1];
                 String value = args[2];
-                if (DeityChunkPermissionTypes.EDIT.name().equals(node)) {
+                if (DeityChunkPermissionTypes.EDIT.name().equalsIgnoreCase(node)) {
                     ChunkPermissionGroupTypes group = ChunkPermissionGroupTypes.getFromString(value);
                     if (group != null) {
                         resident.setPermissions(DeityChunkPermissionTypes.EDIT, group);
@@ -42,7 +43,7 @@ public class ResidentSetCommand extends DeityCommandReceiver {
                         KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_RES_SET_PERMISSIONS_UPDATED, DeityChunkPermissionTypes.EDIT.toString(), group.toString()));
                         return true;
                     }
-                } else if (DeityChunkPermissionTypes.USE.name().equals(node)) {
+                } else if (DeityChunkPermissionTypes.USE.name().equalsIgnoreCase(node)) {
                     ChunkPermissionGroupTypes group = ChunkPermissionGroupTypes.getFromString(value);
                     if (group != null) {
                         resident.setPermissions(DeityChunkPermissionTypes.USE, group);
@@ -50,7 +51,7 @@ public class ResidentSetCommand extends DeityCommandReceiver {
                         KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_RES_SET_PERMISSIONS_UPDATED, DeityChunkPermissionTypes.USE.toString(), group.toString()));
                         return true;
                     }
-                } else if (DeityChunkPermissionTypes.ACCESS.name().equals(node)) {
+                } else if (DeityChunkPermissionTypes.ACCESS.name().equalsIgnoreCase(node)) {
                     ChunkPermissionGroupTypes group = ChunkPermissionGroupTypes.getFromString(value);
                     if (group != null) {
                         resident.setPermissions(DeityChunkPermissionTypes.ACCESS, group);
