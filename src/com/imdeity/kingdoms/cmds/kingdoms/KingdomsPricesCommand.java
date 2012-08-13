@@ -23,7 +23,7 @@ public class KingdomsPricesCommand extends DeityCommandReceiver {
             worldReq = player.getWorld().getName();
         }
         for (World world : KingdomsMain.plugin.getServer().getWorlds()) {
-            if (world.getName().equalsIgnoreCase(args[0])) {
+            if (world.getName().equalsIgnoreCase(worldReq)) {
                 validWorld = world;
                 break;
             }
