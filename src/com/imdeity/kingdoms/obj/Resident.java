@@ -413,10 +413,10 @@ public class Resident {
                     .getMySQL()
                     .write("UPDATE "
                             + KingdomsMain.getResidentTableName()
-                            + " SET name = ?, town_id = ?, is_king = ?, is_mayor = ?, is_senior_assistant = ?, is_assistant = ?, is_male = ?, deed = ?, first_online = ?, last_online = ?, total_time_online = ? WHERE id = ?;",
+                            + " SET name = ?, town_id = ?, is_king = ?, is_mayor = ?, is_senior_assistant = ?, is_assistant = ?, is_male = ?, deed = ?, first_online = ?, last_online = ?, total_time_online = ?, edit_permission = ?, use_permission = ?, access_permission = ? WHERE id = ?;",
                             name, (town != null ? town.getId() : -1), (isKing() ? 1 : 0), (isMayor() ? 1 : 0),
                             (isSeniorAssistant() ? 1 : 0), (isAssistant() ? 1 : 0), (isMale() ? 1 : 0), deed, firstOnline, lastOnline,
-                            totalOnline, id);
+                            totalOnline, this.getPermission(DeityChunkPermissionTypes.EDIT).ordinal(), this.getPermission(DeityChunkPermissionTypes.USE).ordinal(), this.getPermission(DeityChunkPermissionTypes.ACCESS).ordinal(), id);
             hasUpdated = false;
         }
     }
