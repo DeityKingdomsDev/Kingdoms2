@@ -21,12 +21,17 @@ public class PlotSetCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
             return true;
         }
-        if (!resident.isMayor() && !resident.isSeniorAssistant() && !resident.isAssistant()) {
+        Town town = resident.getTown();
+        KingdomsChunk chunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
+        if (chunk == null) { return true; }
+        if (chunk.getType() == KingdomsChunk.ChunkType.WILDERNESS || !chunk.getTown().equals(resident.getTown())) {
+            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_INVALID_LOCATION);
+            return true;
+        }
+        if (!resident.isMayor() && !resident.isSeniorAssistant() && !resident.isAssistant() && (chunk.getOwner() == null || !chunk.getOwner().equals(player.getName()))) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
             return true;
         }
-        Town town = resident.getTown();
-        KingdomsChunk chunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
         
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("For-Sale")) {
