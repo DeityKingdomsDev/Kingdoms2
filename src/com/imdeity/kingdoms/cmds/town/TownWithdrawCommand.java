@@ -24,7 +24,7 @@ public class TownWithdrawCommand extends DeityCommandReceiver {
             }
             town = resident.getTown();
             
-            if (!resident.isKing() && !resident.isMayor() && !resident.isAssistant()) {
+            if (!resident.isKing() && !resident.isMayor() && !resident.isSeniorAssistant() && !resident.isAssistant()) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
                 return true;
             }
