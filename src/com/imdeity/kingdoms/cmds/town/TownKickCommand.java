@@ -26,17 +26,25 @@ public class TownKickCommand extends DeityCommandReceiver {
         Town town = resident.getTown();
         if (args.length == 1) {
             Resident newResident = KingdomsManager.getResident(args[0]);
+            
             if (newResident == null) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player,
                         String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_RESIDENT, args[0]));
                 return true;
             }
-            if (!newResident.hasTown() || !newResident.getTown().getName().equalsIgnoreCase(town.getName())) {
+            
+
+            String kickedPlayersName = newResident.getName();
+            String requestersName = player.getName();
+
+            if(kickedPlayersName.equals(requestersName)) { //Don't allow the player to kick him/herself!
                 KingdomsMain.plugin.chat.sendPlayerMessage(player,
-                        String.format(KingdomsMessageHelper.CMD_FAIL_TOWN_KICK_INVALID_PLAYER, newResident.getName()));
+                        KingdomsMessageHelper.CMD_FAIL_TOWN_KICK_INVALID_PLAYER);
                 return true;
             }
-            if(newResident.equals(resident)) { //Don't allow the player to kick him/herself!
+            
+            
+            if (!newResident.hasTown() || !newResident.getTown().getName().equalsIgnoreCase(town.getName())) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player,
                         String.format(KingdomsMessageHelper.CMD_FAIL_TOWN_KICK_INVALID_PLAYER, newResident.getName()));
                 return true;

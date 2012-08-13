@@ -88,6 +88,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_FAIL_KINGDOM_REMOVE_CAPITAL = "You are attempting to remove the capital. Please set another capital before leaving your kingdom";
     public static final String CMD_FAIL_KINGDOM_REMOVE_INVALID = "The town of %s does not belong to your kingdom";
     public static final String CMD_FAIL_UNCLAIM_NON_TOWN_LAND = "You cannot unclaim plots that are not part of town.";
+    public static final String CMD_FAIL_UNCLAIM_TOWN_SPAWN = "You cannot unclaim the plot that is the town spawn.";
     
     public static final String CMD_KINGDOM_TOO_CLOSE = "%s is %s blocks to the %s. Please move farther away from the kingdom or &c/kingdom request join <kingdom-name>";
     public static final String CMD_TOWN_TOO_CLOSE = "%s is %s blocks to the %s. Please move farther away from them.";

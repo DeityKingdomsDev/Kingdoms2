@@ -30,6 +30,10 @@ public class TownUnclaimCommand extends DeityCommandReceiver {
         	KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_UNCLAIM_NON_TOWN_LAND);
         	return true;
         }
+        if (chunk.getId() == resident.getTown().getTownSpawnLocation().getId())  {
+        	KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_UNCLAIM_TOWN_SPAWN);
+            return true;
+        }
         if (chunk != null && chunk.getType() == KingdomsChunk.ChunkType.TOWN && chunk.getTown() != null
                 && !chunk.getTown().getName().equalsIgnoreCase(resident.getTown().getName())) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_INVALID_LOCATION);
