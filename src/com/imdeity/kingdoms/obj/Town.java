@@ -256,6 +256,7 @@ public class Town {
             Resident r = KingdomsManager.getResident(s);
             if (r.isMayor()) {
                 r.setMayor(false);
+                r.save();
             }
         }
         if (resident != null) {

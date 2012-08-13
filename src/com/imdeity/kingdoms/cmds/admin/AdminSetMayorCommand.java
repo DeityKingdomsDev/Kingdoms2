@@ -35,9 +35,6 @@ public class AdminSetMayorCommand extends DeityCommandReceiver {
                 return true;
             }
             List<String> townResidents = town.getResidentsNames();
-            for(String townResident : townResidents) { //Set all other residents to not be mayor.
-            	if(KingdomsManager.getResident(townResident).isMayor()) KingdomsManager.getResident(townResident).setMayor(false);
-            }
             if(!townResidents.contains(resident.getName())) {
             	town.addResident(resident);
             }
@@ -70,9 +67,6 @@ public class AdminSetMayorCommand extends DeityCommandReceiver {
                 return true;
             }
             List<String> townResidents = town.getResidentsNames();
-            for(String townResident : townResidents) { //Set all other residents to not be mayor.
-            	if(KingdomsManager.getResident(townResident).isMayor()) KingdomsManager.getResident(townResident).setMayor(false);
-            }
             if(!townResidents.contains(resident.getName())) {
             	town.addResident(resident);
             }
