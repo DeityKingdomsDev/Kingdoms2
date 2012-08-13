@@ -105,6 +105,12 @@ public class KingdomRequestCommand extends DeityCommandReceiver {
                         String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_KINGDOM, kingdomName));
                 return true;
             }
+            if (!resident.isMayor()) //Make sure that only mayors can request to join!
+            {
+            	KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                        KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_DUKE);
+            	return true;
+            }
             if (resident.hasTown()) {
                 if (resident.getTown().getKingdom() != null) {
                     KingdomsMain.plugin.chat.sendPlayerMessage(player, "Your town already has a kingdom");
