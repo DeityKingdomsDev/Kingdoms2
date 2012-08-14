@@ -205,7 +205,7 @@ public class KingdomsManager {
     
     public static void loadAllChunks(Town town) {
         List<Integer> townLand = new ArrayList<Integer>();
-        String sql = "SELECT dpc.id AS 'dpcId', dpc.owner AS 'owner', dpc.world, dpc.x_coord, dpc.z_coord, kc.id, kc.town_id, kc.for_sale, kc.price, kc.can_mobs_spawn, kc.can_pvp, kc.can_explode FROM "
+        String sql = "SELECT dpc.id AS 'dpcId', dpc.owner AS 'owner', dpc.world, dpc.x_coord, dpc.z_coord, kc.id as 'kingdomsId', kc.town_id, kc.for_sale, kc.price, kc.can_mobs_spawn, kc.can_pvp, kc.can_explode FROM "
                 + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
                 + " dpc, "
                 + KingdomsMain.getChunkTableName() + " kc" + " WHERE kc.town_id = ? AND dpc.id = kc.deity_protect_id;";
@@ -214,6 +214,7 @@ public class KingdomsManager {
             for (int i = 0; i < query.rowCount(); i++) {
                 try {
                     int protectionId = query.getInteger(i, "dpcId");
+                    int kingdomsId = query.getInteger(i, "kingdomsId");
                     String owner = query.getString(i, "owner");
                     String world = query.getString(i, "world");
                     int xCoord = query.getInteger(i, "x_coord");
@@ -226,7 +227,7 @@ public class KingdomsManager {
                     boolean canExplode = (query.getInteger(i, "can_explode") == 1);
                     
                     KingdomsChunk chunk = new KingdomsChunk(protectionId, KingdomsMain.plugin.getServer().getWorld(world), xCoord,
-                            zCoord, owner, town.getId(), KingdomsChunk.ChunkType.TOWN, town, forSale, price, canMobsSpawn, canPvp,
+                            zCoord, owner, kingdomsId, KingdomsChunk.ChunkType.TOWN, town, forSale, price, canMobsSpawn, canPvp,
                             canExplode);
                     KingdomsManager.addKingdomsChunkToCache(chunk);
                     townLand.add(chunk.getId());
