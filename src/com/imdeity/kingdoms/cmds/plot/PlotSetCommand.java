@@ -24,7 +24,11 @@ public class PlotSetCommand extends DeityCommandReceiver {
         Town town = resident.getTown();
         KingdomsChunk chunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
         if (chunk == null) { return true; }
-        if (chunk.getType() == KingdomsChunk.ChunkType.WILDERNESS || !chunk.getTown().equals(resident.getTown())) {
+        if (chunk.getType() == KingdomsChunk.ChunkType.WILDERNESS) {
+            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_WILDERNESS);
+            return true;
+        }
+        if (!chunk.getTown().equals(resident.getTown())) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_INVALID_LOCATION);
             return true;
         }
