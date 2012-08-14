@@ -45,6 +45,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
                 }
                 chunk.setForSale(true);
                 chunk.setPrice(price);
+                chunk.setUpdated();
                 chunk.save();
                 if(chunk.isForSale()) {
                 	KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_FORSALE_PLAYER, price));
@@ -56,6 +57,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
                 chunk.setOwner(null);
                 chunk.setForSale(false);
                 chunk.setPrice(0);
+                chunk.setUpdated();
                 chunk.save();
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_PLOT_SET_NOTFORSALE_PLAYER);
                 return true;
@@ -70,6 +72,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
                     town.pay(cost, "Plot Set Mob-Spawning - " + player.getName());
                 }
                 chunk.setMobSpawning(allow);
+                chunk.setUpdated();
                 chunk.save();
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_MOBSPAWN_PLAYER, (allow ? "allow" : "deny")));
                 return true;
@@ -84,6 +87,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
                     town.pay(cost, "Plot Set PVP - " + player.getName());
                 }
                 chunk.setPvp(allow);
+                chunk.setUpdated();
                 chunk.save();
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_PVP_PLAYER, (allow ? "allow" : "deny")));
                 return true;
@@ -98,6 +102,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
                     town.pay(cost, "Plot Set Explode - " + player.getName());
                 }
                 chunk.setExplode(allow);
+                chunk.setUpdated();
                 chunk.save();
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_EXPLODE_PLAYER, (allow ? "allow" : "deny")));
                 return true;
