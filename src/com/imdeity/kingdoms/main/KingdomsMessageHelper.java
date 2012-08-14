@@ -67,6 +67,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_FAIL_CANNOT_FIND_KINGDOM = "The kingdom %s is invalid";
     public static final String CMD_FAIL_PLOT_NOT_FOR_SALE = "Sorry, this plot is not for sale";
     public static final String CMD_FAIL_PLOT_INVALID_LOCATION = "This plot does not belong to your town";
+    public static final String CMD_FAIL_PLOT_WILDERNESS = "This plot is in wilderness.";
     public static final String CMD_FAIL_PLOT_NOT_OWNER = "You are not the owner of this plot";
     public static final String CMD_FAIL_RES_RESIDENT_INVALID = "%s can not be found";
     public static final String CMD_FAIL_MIN_PLOTS = "You cannot unclaim the last plot of your town. Please &a/town delete &fif you wish to get rid of your town";

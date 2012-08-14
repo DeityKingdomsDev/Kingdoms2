@@ -46,7 +46,11 @@ public class PlotSetCommand extends DeityCommandReceiver {
                 chunk.setForSale(true);
                 chunk.setPrice(price);
                 chunk.save();
-                KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_FORSALE_PLAYER, price));
+                if(chunk.isForSale()) {
+                	KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_FORSALE_PLAYER, price));
+                } else {
+                	KingdomsMain.plugin.chat.sendPlayerMessage(player, "There was an error setting this plot for sale");
+                }
                 return true;
             } else if (args[0].equalsIgnoreCase("Not-For-Sale")) {
                 chunk.setOwner(null);
