@@ -54,6 +54,11 @@ public class PlotSetCommand extends DeityCommandReceiver {
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("Not-For-Sale")) {
+            	if(!chunk.isForSale())
+            	{
+            		KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_NOT_FOR_SALE);
+            		return true;
+            	}
                 chunk.setOwner(null);
                 chunk.setForSale(false);
                 chunk.setPrice(0);
