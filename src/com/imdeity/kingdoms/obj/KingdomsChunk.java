@@ -256,7 +256,7 @@ public class KingdomsChunk extends DeityChunk {
                 this.getZ() * 16 + 15);
         DeityAPI.getAPI().getWorldEditAPI().regenArea(minLocation, maxLocation);
         
-        ProtectionManager.removeDeityChunk(this.getWorld().getName(), this.getX(), this.getZ());
+        com.imdeity.protect.ProtectionManager.removeDeityChunk(this.getWorld().getName(), this.getX(), this.getZ());
         
         String sql = "DELETE FROM  " + KingdomsMain.getChunkTableName() + " WHERE id = ?;";
         DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, kingdomsId);

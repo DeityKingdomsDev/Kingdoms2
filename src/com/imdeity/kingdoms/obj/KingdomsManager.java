@@ -20,7 +20,7 @@ import com.imdeity.kingdoms.main.KingdomsMain;
 import com.imdeity.kingdoms.obj.KingdomsChunk.ChunkPermissionGroupTypes;
 import com.imdeity.kingdoms.obj.Request.RequestType;
 import com.imdeity.protect.enums.DeityChunkPermissionTypes;
-import com.imdeity.protect.obj.ProtectionManager;
+import com.imdeity.protect.ProtectionManager;
 
 public class KingdomsManager {
     

@@ -27,7 +27,10 @@ public class PlotClaimCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_WILDERNESS);
             return true;
         } 
-        if(!kChunk.getTown().equals(resident.getTown())) {
+        String chunkChangeName = kChunk.getTown().getName();
+        String residentChangeName = resident.getTown().getName();
+
+        if (!chunkChangeName.equals(residentChangeName)) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_INVALID_LOCATION);
             return true;
         }
