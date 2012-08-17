@@ -79,13 +79,21 @@ public class TownCreateCommand extends DeityCommandReceiver {
             try {
             	Location toBeClaimedChunk = player.getLocation();
             	
+            	if(resident == null)
+            	{
+            		Bukkit.getLogger().severe("Error on town create runner: resident object null!");
+            		KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_ERROR_TRY_AGAIN
+                            ));
+            		return;
+            	}
+            	
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.VERIFING_LOCATION);
-                int[] coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), KingdomsMain.plugin.config.getInt(String
+                int[] coords = KingdomsHelper.checkSurroundingPlots(toBeClaimedChunk, KingdomsMain.plugin.config.getInt(String
                         .format(KingdomsConfigHelper.TOWN_BORDER, player.getWorld().getName())));
                 if (coords != null) {
                     Town surroundingTown = KingdomsManager.getTown(coords[0]);
                     if (surroundingTown != null) {
-                        Location closestLocation = new Location(player.getWorld(), coords[1] * 16, player.getLocation().getBlockY(),
+                        Location closestLocation = new Location(player.getWorld(), coords[1] * 16, toBeClaimedChunk.getBlockY(),
                                 coords[2] * 16);
                         String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(toBeClaimedChunk, closestLocation);
                         int distance = (int) closestLocation.distance(toBeClaimedChunk);
@@ -133,6 +141,9 @@ public class TownCreateCommand extends DeityCommandReceiver {
                 town.addResident(resident);
                 town.setMayor(resident);
                 town.claim(chunk);
+                town.hasUpdated();
+                town.save();
+                
                 if (resident.hasDeed()) {
                     Kingdom kingdom = KingdomsManager.getKingdom(resident.getDeed());
                     if (kingdom != null) {

@@ -92,6 +92,8 @@ public class KingdomsMessageHelper {
     public static final String CMD_FAIL_UNCLAIM_NON_TOWN_LAND = "You cannot unclaim plots that are not part of town.";
     public static final String CMD_FAIL_UNCLAIM_TOWN_SPAWN = "You cannot unclaim the plot that is the town spawn.";
     
+    public static final String CMD_ERROR_TRY_AGAIN = "There was an error executing your command; please try again soon.";
+    
     public static final String CMD_KINGDOM_TOO_CLOSE = "%s is %s blocks to the %s. Please move farther away from the kingdom or &c/kingdom request join <kingdom-name>";
     public static final String CMD_TOWN_TOO_CLOSE = "%s is %s blocks to the %s. Please move farther away from them.";
     
