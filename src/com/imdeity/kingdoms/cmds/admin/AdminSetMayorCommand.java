@@ -1,5 +1,8 @@
 package com.imdeity.kingdoms.cmds.admin;
 
+import java.util.List;
+
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.imdeity.deityapi.api.DeityCommandReceiver;
@@ -31,7 +34,11 @@ public class AdminSetMayorCommand extends DeityCommandReceiver {
                 KingdomsMain.plugin.chat.out("The resident " + args[1] + " is invalid");
                 return true;
             }
-            town.addResident(resident);
+            List<String> townResidents = town.getResidentsNames();
+            if(!townResidents.contains(resident.getName())) {
+            	town.addResident(resident);
+            }
+            
             town.setMayor(resident);
         }
         KingdomsMain.plugin.chat.out("Set the mayor of " + args[0] + " to " + args[1]);
@@ -59,7 +66,10 @@ public class AdminSetMayorCommand extends DeityCommandReceiver {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, "The resident " + args[1] + " is invalid");
                 return true;
             }
-            town.addResident(resident);
+            List<String> townResidents = town.getResidentsNames();
+            if(!townResidents.contains(resident.getName())) {
+            	town.addResident(resident);
+            }
             town.setMayor(resident);
         }
         KingdomsMain.plugin.chat.sendPlayerMessage(player, "Set the mayor of " + args[0] + " to " + args[1]);

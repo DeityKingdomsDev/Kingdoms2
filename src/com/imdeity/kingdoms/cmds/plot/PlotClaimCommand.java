@@ -1,5 +1,6 @@
 package com.imdeity.kingdoms.cmds.plot;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.imdeity.deityapi.api.DeityCommandReceiver;
@@ -13,15 +14,23 @@ public class PlotClaimCommand extends DeityCommandReceiver {
     
     @Override
     public boolean onPlayerRunCommand(Player player, String[] args) {
+    	Location playerLocation = player.getLocation();
         Resident resident = KingdomsManager.getResident(player.getName());
         if (resident == null) { return false; }
         if (!resident.hasTown()) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
             return true;
         }
-        KingdomsChunk kChunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
+        KingdomsChunk kChunk = KingdomsManager.getKingdomsChunk(playerLocation, false);
         if (kChunk == null) { return true; }
-        if (kChunk.getType() == KingdomsChunk.ChunkType.WILDERNESS || !kChunk.getTown().equals(resident.getTown())) {
+        if (kChunk.getType() == KingdomsChunk.ChunkType.WILDERNESS) {
+            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_WILDERNESS);
+            return true;
+        } 
+        String chunkChangeName = kChunk.getTown().getName();
+        String residentChangeName = resident.getTown().getName();
+
+        if (!chunkChangeName.equals(residentChangeName)) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_INVALID_LOCATION);
             return true;
         }

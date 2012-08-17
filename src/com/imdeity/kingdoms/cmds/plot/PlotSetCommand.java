@@ -21,12 +21,24 @@ public class PlotSetCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
             return true;
         }
-        if (!resident.isMayor() && !resident.isSeniorAssistant() && !resident.isAssistant()) {
+        Town town = resident.getTown();
+        KingdomsChunk chunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
+        if (chunk == null) { return true; }
+        if (chunk.getType() == KingdomsChunk.ChunkType.WILDERNESS) {
+            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_WILDERNESS);
+            return true;
+        }
+        String chunkChangeName = chunk.getTown().getName();
+        String residentChangeName = resident.getTown().getName();
+
+        if (!chunkChangeName.equals(residentChangeName)) {
+            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_INVALID_LOCATION);
+            return true;
+        }
+        if (!resident.isMayor() && !resident.isSeniorAssistant() && !resident.isAssistant() && (chunk.getOwner() == null || !chunk.getOwner().equals(player.getName()))) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
             return true;
         }
-        Town town = resident.getTown();
-        KingdomsChunk chunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
         
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("For-Sale")) {
@@ -40,55 +52,105 @@ public class PlotSetCommand extends DeityCommandReceiver {
                 }
                 chunk.setForSale(true);
                 chunk.setPrice(price);
+                chunk.setUpdated();
                 chunk.save();
-                KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_FORSALE_PLAYER, price));
+                if(chunk.isForSale()) {
+                	KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_FORSALE_PLAYER, price));
+                } else {
+                	KingdomsMain.plugin.chat.sendPlayerMessage(player, "There was an error setting this plot for sale");
+                }
                 return true;
             } else if (args[0].equalsIgnoreCase("Not-For-Sale")) {
+            	if(!chunk.isForSale())
+            	{
+            		KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_NOT_FOR_SALE);
+            		return true;
+            	}
                 chunk.setOwner(null);
                 chunk.setForSale(false);
                 chunk.setPrice(0);
+                chunk.setUpdated();
                 chunk.save();
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_PLOT_SET_NOTFORSALE_PLAYER);
                 return true;
             } else if (args[0].equalsIgnoreCase("mob-spawning")) {
+            	if(args.length < 2) {
+            		KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_SET_NEED_ARGUMENT);
+            		return true;
+            	}
                 boolean allow = args[1].equalsIgnoreCase("allow");
                 if (allow) {
                     double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_MOB_SPAWN, player.getWorld().getName()));
-                    if (!town.canPay(cost)) {
-                        KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
-                        return true;
+                    if(resident.isMayor() || resident.isSeniorAssistant() || resident.isAssistant()) {
+	                    if (!town.canPay(cost)) {
+	                        KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
+	                        return true;
+	                    }
+	                    town.pay(cost, "Plot Set Mob-Spawning - " + player.getName());
+                    } else {
+	                    if (!town.canPay(cost)) {
+	                        KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
+	                        return true;
+	                    }
+                    	resident.pay(cost, "Plot Set Mob-Spawning - " + player.getName());
                     }
-                    town.pay(cost, "Plot Set Mob-Spawning - " + player.getName());
                 }
                 chunk.setMobSpawning(allow);
+                chunk.setUpdated();
                 chunk.save();
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_MOBSPAWN_PLAYER, (allow ? "allow" : "deny")));
                 return true;
             } else if (args[0].equalsIgnoreCase("pvp")) {
+            	if(args.length < 2) {
+            		KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_SET_NEED_ARGUMENT);
+            		return true;
+            	}
                 boolean allow = args[1].equalsIgnoreCase("allow");
                 if (allow) {
                     double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_PVP, player.getWorld().getName()));
-                    if (!town.canPay(cost)) {
-                        KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
-                        return true;
+                    if(resident.isMayor() || resident.isSeniorAssistant() || resident.isAssistant()) {
+	                    if (!town.canPay(cost)) {
+	                        KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
+	                        return true;
+	                    }
+	                    town.pay(cost, "Plot Set PVP - " + player.getName());
+                    } else {
+	                    if (!town.canPay(cost)) {
+	                        KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
+	                        return true;
+	                    }
+                    	resident.pay(cost, "Plot Set PVP - " + player.getName());
                     }
-                    town.pay(cost, "Plot Set PVP - " + player.getName());
                 }
                 chunk.setPvp(allow);
+                chunk.setUpdated();
                 chunk.save();
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_PVP_PLAYER, (allow ? "allow" : "deny")));
                 return true;
             } else if (args[0].equalsIgnoreCase("explode")) {
+            	if(args.length < 2) {
+            		KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_SET_NEED_ARGUMENT);
+            		return true;
+            	}
                 boolean allow = args[1].equalsIgnoreCase("allow");
                 if (allow) {
                     double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_EXPLODE, player.getWorld().getName()));
-                    if (!town.canPay(cost)) {
-                        KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
-                        return true;
+                    if(resident.isMayor() || resident.isSeniorAssistant() || resident.isAssistant()) {
+	                    if (!town.canPay(cost)) {
+	                        KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
+	                        return true;
+	                    }
+	                    town.pay(cost, "Plot Set Explode - " + player.getName());
+                    } else {
+	                    if (!town.canPay(cost)) {
+	                        KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
+	                        return true;
+	                    }
+                    	resident.pay(cost, "Plot Set Explode - " + player.getName());
                     }
-                    town.pay(cost, "Plot Set Explode - " + player.getName());
                 }
                 chunk.setExplode(allow);
+                chunk.setUpdated();
                 chunk.save();
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_EXPLODE_PLAYER, (allow ? "allow" : "deny")));
                 return true;

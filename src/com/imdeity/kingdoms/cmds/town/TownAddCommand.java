@@ -3,6 +3,7 @@ package com.imdeity.kingdoms.cmds.town;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -32,7 +33,6 @@ public class TownAddCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
             return true;
         }
-        
         Town town = resident.getTown();
         if (args.length == 1) {
             Resident newResident = KingdomsManager.getResident(args[0]);
@@ -45,8 +45,11 @@ public class TownAddCommand extends DeityCommandReceiver {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_ALREADY_IN_TOWN);
                 return true;
             }
-            sendConfirmation(player, town, newResident);
-            return true;
+            if(sendConfirmation(player, town, newResident))
+            {
+            	KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_REQUEST_SENT, newResident.getName()));
+            	return true;
+            }
         }
         return false;
     }
@@ -72,10 +75,11 @@ public class TownAddCommand extends DeityCommandReceiver {
         return false;
     }
     
-    private void sendConfirmation(Player player, Town town, Resident newResident) {
+    private boolean sendConfirmation(Player player, Town town, Resident newResident) {
         String phrase = player.getName() + " has invited you to join " + town.getName();
         
         Plugin tmp = KingdomsMain.plugin.getServer().getPluginManager().getPlugin("Questioner");
+        
         if (tmp != null && tmp instanceof Questioner && tmp.isEnabled()) {
             Questioner questioner = (Questioner) tmp;
             questioner.loadClasses();
@@ -104,5 +108,6 @@ public class TownAddCommand extends DeityCommandReceiver {
                 e.printStackTrace();
             }
         }
+		return true;
     }
 }

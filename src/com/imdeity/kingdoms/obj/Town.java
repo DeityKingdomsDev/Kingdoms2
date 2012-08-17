@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import com.imdeity.deityapi.DeityAPI;
@@ -255,6 +256,7 @@ public class Town {
             Resident r = KingdomsManager.getResident(s);
             if (r.isMayor()) {
                 r.setMayor(false);
+                r.save();
             }
         }
         if (resident != null) {
@@ -347,7 +349,20 @@ public class Town {
     }
     
     public void unclaim(KingdomsChunk chunk) {
-        this.land.remove(chunk.getId());
+    	int index = 0;
+    	
+    	
+    	for (Integer myInt : this.land)
+    	{
+    		if(myInt == chunk.getId()) break;
+    		index++;
+    	}
+    	
+    	if(index >= this.land.size()) {
+    		Bukkit.getLogger().severe("Issued town unclaim, but chunk key is outside of list length. Chunk ID: " + chunk.getId() + "; Town: " + this.name);
+    		return;
+    	}
+        this.land.remove(index);
         chunk.remove();
     }
     
@@ -452,9 +467,9 @@ public class Town {
                     .getMySQL()
                     .write("UPDATE "
                             + KingdomsMain.getTownTableName()
-                            + " SET name = ?, kingdom_id = ?, town_board = ?, default_plot_price = ?, spawn_location_id = ?, is_public = ?, is_capital = ?, creation_date = ?, num_bonus_plots = ? WHERE id = ?;",
+                            + " SET name = ?, kingdom_id = ?, town_board = ?, default_plot_price = ?, spawn_location_id = ?, is_public = ?, is_capital = ?, creation_date = ?, num_bonus_plots = ?, edit_permission = ?, use_permission = ?, access_permission = ? WHERE id = ?;",
                             name, (kingdom != null ? kingdom.getId() : -1), townBoard, defaultPlotPrice, spawnLocation.getId(),
-                            (isPublic() ? 1 : 0), (isCapital() ? 1 : 0), creationDate, numBonusPlots, id);
+                            (isPublic() ? 1 : 0), (isCapital() ? 1 : 0), creationDate, numBonusPlots, this.permissions.get(DeityChunkPermissionTypes.EDIT).ordinal(), this.permissions.get(DeityChunkPermissionTypes.USE).ordinal(), this.permissions.get(DeityChunkPermissionTypes.ACCESS).ordinal(), id);
             hasUpdated = false;
         }
     }

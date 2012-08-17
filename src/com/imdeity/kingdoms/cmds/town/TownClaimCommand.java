@@ -1,5 +1,6 @@
 package com.imdeity.kingdoms.cmds.town;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -72,18 +73,20 @@ public class TownClaimCommand extends DeityCommandReceiver {
         @Override
         public void run() {
             try {
+            	Location toBeClaimedChunk = player.getLocation();
+            	
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.VERIFING_LOCATION);
                 
                 // Town border Check
-                int[] coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), town, KingdomsMain.plugin.config
-                        .getInt(String.format(KingdomsConfigHelper.TOWN_BORDER, player.getWorld().getName())));
+                int[] coords = KingdomsHelper.checkSurroundingPlots(toBeClaimedChunk, town, KingdomsMain.plugin.config
+                        .getInt(String.format(KingdomsConfigHelper.TOWN_BORDER, toBeClaimedChunk.getWorld().getName())));
                 if (coords != null) {
                     Town surroundingTown = KingdomsManager.getTown(coords[0]);
                     if (surroundingTown != null) {
-                        Location closestLocation = new Location(player.getWorld(), coords[1] * 16, player.getLocation().getBlockY(),
+                        Location closestLocation = new Location(player.getWorld(), coords[1] * 16, toBeClaimedChunk.getBlockY(),
                                 coords[2] * 16);
-                        String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(player.getLocation(), closestLocation);
-                        int distance = (int) closestLocation.distance(player.getLocation());
+                        String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(toBeClaimedChunk, closestLocation);
+                        int distance = (int) closestLocation.distance(toBeClaimedChunk);
                         KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_TOO_CLOSE,
                                 surroundingTown.getName(), distance, direction));
                         return;
@@ -92,15 +95,15 @@ public class TownClaimCommand extends DeityCommandReceiver {
                 
                 // Kingdom Border Check
                 if (town != null && town.getKingdom() != null) {
-                    coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), town.getKingdom(), KingdomsMain.plugin.config
-                            .getInt(String.format(KingdomsConfigHelper.KINGDOM_BORDER, player.getWorld().getName())));
+                    coords = KingdomsHelper.checkSurroundingPlots(toBeClaimedChunk, town.getKingdom(), KingdomsMain.plugin.config
+                            .getInt(String.format(KingdomsConfigHelper.KINGDOM_BORDER, toBeClaimedChunk.getWorld().getName())));
                     if (coords != null) {
                         Town surroundingTown = KingdomsManager.getTown(coords[0]);
                         if (surroundingTown != null && surroundingTown.getKingdom() != null) {
-                            Location closestLocation = new Location(player.getWorld(), coords[1] * 16, player.getLocation()
+                            Location closestLocation = new Location(player.getWorld(), coords[1] * 16, toBeClaimedChunk
                                     .getBlockY(), coords[2] * 16);
-                            String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(player.getLocation(), closestLocation);
-                            int distance = (int) closestLocation.distance(player.getLocation());
+                            String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(toBeClaimedChunk, closestLocation);
+                            int distance = (int) closestLocation.distance(toBeClaimedChunk);
                             KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(
                                     KingdomsMessageHelper.CMD_KINGDOM_TOO_CLOSE, surroundingTown.getKingdom().getName(), distance,
                                     direction));
@@ -108,15 +111,15 @@ public class TownClaimCommand extends DeityCommandReceiver {
                         }
                     }
                 } else {
-                    coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), KingdomsMain.plugin.config.getInt(String
+                    coords = KingdomsHelper.checkSurroundingPlots(toBeClaimedChunk, KingdomsMain.plugin.config.getInt(String
                             .format(KingdomsConfigHelper.KINGDOM_BORDER, player.getWorld().getName())));
                     if (coords != null) {
                         Town surroundingTown = KingdomsManager.getTown(coords[0]);
                         if (surroundingTown != null && surroundingTown.getKingdom() != null) {
-                            Location closestLocation = new Location(player.getWorld(), coords[1] * 16, player.getLocation()
+                            Location closestLocation = new Location(toBeClaimedChunk.getWorld(), coords[1] * 16, toBeClaimedChunk
                                     .getBlockY(), coords[2] * 16);
-                            String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(player.getLocation(), closestLocation);
-                            int distance = (int) closestLocation.distance(player.getLocation());
+                            String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(toBeClaimedChunk, closestLocation);
+                            int distance = (int) closestLocation.distance(toBeClaimedChunk);
                             KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(
                                     KingdomsMessageHelper.CMD_KINGDOM_TOO_CLOSE, surroundingTown.getKingdom().getName(), distance,
                                     direction));
@@ -125,18 +128,19 @@ public class TownClaimCommand extends DeityCommandReceiver {
                     }
                 }
                 
-                if (!KingdomsHelper.isAdjacentPlotWithLocation(player.getLocation(), town)) {
+                if (!KingdomsHelper.isAdjacentPlotWithLocation(toBeClaimedChunk, town)) {
                     KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_TOWN_PLOT_NOT_ADJACENT);
                     return;
                 }
                 if (chunk.getId() <= 0) {
-                    chunk = KingdomsManager.addNewKingdomsChunk(player.getWorld(), player.getLocation().getChunk().getX(), player
-                            .getLocation().getChunk().getZ(), town);
+                    chunk = KingdomsManager.addNewKingdomsChunk(toBeClaimedChunk.getWorld(), toBeClaimedChunk.getChunk().getX(), toBeClaimedChunk.getChunk().getZ(), town);
                 }
                 town.claim(chunk);
                 town.pay(cost, "Town Claim - " + player.getName());
                 town.sendMessage(String.format(KingdomsMessageHelper.CMD_TOWN_CLAIM_TOWN, player.getName(), chunk.getX(), chunk.getZ()));
             } catch (Exception e) {
+            	Bukkit.getLogger().severe("Exception on town claim runner!");
+            	Bukkit.getLogger().severe(e.getMessage());
             }
         }
     }

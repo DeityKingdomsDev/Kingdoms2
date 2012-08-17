@@ -25,6 +25,13 @@ public class TownLeaveCommand extends DeityCommandReceiver {
         }
         Town town = resident.getTown();
         town.removeResident(resident);
+
+        //Remember to clear the player's positions!
+        resident.setMayor(false);
+        resident.setSeniorAssistant(false);
+        resident.setAssistant(false);
+        
+        
         KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_TOWN_LEAVE_PLAYER);
         return true;
     }
