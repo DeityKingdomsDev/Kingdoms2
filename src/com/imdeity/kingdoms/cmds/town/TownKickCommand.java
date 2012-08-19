@@ -32,7 +32,7 @@ public class TownKickCommand extends DeityCommandReceiver {
                 return true;
             }
             if (!newResident.hasTown() || !newResident.getTown().getName().equalsIgnoreCase(town.getName())
-                    || newResident.equals(resident)) {
+                    || newResident.getName().equalsIgnoreCase(resident.getName())) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player,
                         String.format(KingdomsMessageHelper.CMD_FAIL_TOWN_KICK_INVALID_PLAYER, newResident.getName()));
                 return true;

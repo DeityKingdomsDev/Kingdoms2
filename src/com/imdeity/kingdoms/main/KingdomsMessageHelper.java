@@ -73,7 +73,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_FAIL_MIN_PLOTS = "You cannot unclaim the last plot of your town. Please &a/town delete &fif you wish to get rid of your town";
     public static final String CMD_FAIL_TOWN_SIZE_TOO_SMALL = "The town has reached their maximum plots. You need to recruit before you can claim more land.";
     public static final String CMD_FAIL_TOWN_CREATE_RESIDENT_IN_TOWN = "You cannot start a town while you belong to another";
-    public static final String CMD_FAIL_TOWN_KICK_INVALID_PLAYER = "%s is not a member of your town";
+    public static final String CMD_FAIL_TOWN_KICK_INVALID_PLAYER = "%s is not a valid resident to kick";
     public static final String CMD_FAIL_TOWN_LEAVE_DUKE = "Please promote a new mayor before leaving your town";
     public static final String CMD_FAIL_TOWN_SET_SPAWN = "The spawn needs to be in an unclaimed town plot";
     public static final String CMD_FAIL_TOWN_WARP = "The warps needs to be on an unclaimed town plot";
