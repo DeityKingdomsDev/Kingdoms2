@@ -76,13 +76,14 @@ public class TownCreateCommand extends DeityCommandReceiver {
         @Override
         public void run() {
             try {
+                Location playerLocation = player.getLocation();
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.VERIFING_LOCATION);
                 int[] coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), KingdomsMain.plugin.config.getInt(String
-                        .format(KingdomsConfigHelper.TOWN_BORDER, player.getWorld().getName())));
+                        .format(KingdomsConfigHelper.TOWN_BORDER, playerLocation.getWorld().getName())));
                 if (coords != null) {
                     Town surroundingTown = KingdomsManager.getTown(coords[0]);
                     if (surroundingTown != null) {
-                        Location closestLocation = new Location(player.getWorld(), coords[1] * 16, player.getLocation().getBlockY(),
+                        Location closestLocation = new Location(playerLocation.getWorld(), coords[1] * 16, playerLocation.getBlockY(),
                                 coords[2] * 16);
                         String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(player.getLocation(), closestLocation);
                         int distance = (int) closestLocation.distance(player.getLocation());
@@ -97,16 +98,16 @@ public class TownCreateCommand extends DeityCommandReceiver {
                         Kingdom kingdom = KingdomsManager.getKingdom(resident.getDeed());
                         if (kingdom != null) {
                             coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), kingdom, KingdomsMain.plugin.config
-                                    .getInt(String.format(KingdomsConfigHelper.KINGDOM_BORDER, player.getWorld().getName())));
+                                    .getInt(String.format(KingdomsConfigHelper.KINGDOM_BORDER, playerLocation.getWorld().getName())));
                         }
                     } else {
                         coords = KingdomsHelper.checkSurroundingPlots(player.getLocation(), KingdomsMain.plugin.config.getInt(String
-                                .format(KingdomsConfigHelper.KINGDOM_BORDER, player.getWorld().getName())));
+                                .format(KingdomsConfigHelper.KINGDOM_BORDER, playerLocation.getWorld().getName())));
                     }
                     if (coords != null) {
                         Town surroundingTown = KingdomsManager.getTown(coords[0]);
                         if (surroundingTown != null && surroundingTown.getKingdom() != null) {
-                            Location closestLocation = new Location(player.getWorld(), coords[1] * 16, player.getLocation()
+                            Location closestLocation = new Location(playerLocation.getWorld(), coords[1] * 16, player.getLocation()
                                     .getBlockY(), coords[2] * 16);
                             String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(player.getLocation(), closestLocation);
                             int distance = (int) closestLocation.distance(player.getLocation());
@@ -124,7 +125,7 @@ public class TownCreateCommand extends DeityCommandReceiver {
                     town = KingdomsManager.getTown(townName);
                 }
                 if (chunk.getId() <= 0) {
-                    chunk = KingdomsManager.addNewKingdomsChunk(player.getWorld(), player.getLocation().getChunk().getX(), player
+                    chunk = KingdomsManager.addNewKingdomsChunk(playerLocation.getWorld(), playerLocation.getChunk().getX(), player
                             .getLocation().getChunk().getZ(), town);
                 }
                 town.addResident(resident);

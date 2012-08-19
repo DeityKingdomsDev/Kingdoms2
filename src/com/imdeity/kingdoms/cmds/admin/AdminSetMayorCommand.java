@@ -61,11 +61,6 @@ public class AdminSetMayorCommand extends DeityCommandReceiver {
             }
             town.addResident(resident);
             town.setMayor(resident);
-            for (String townResident : town.getResidentsNames()) {
-                if (KingdomsManager.getResident(townResident).isMayor()) {
-                    KingdomsManager.getResident(townResident).setMayor(false);
-                }
-            }
         }
         KingdomsMain.plugin.chat.sendPlayerMessage(player, "Set the mayor of " + args[0] + " to " + args[1]);
         return true;
