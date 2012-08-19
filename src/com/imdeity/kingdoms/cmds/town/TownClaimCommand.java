@@ -75,57 +75,37 @@ public class TownClaimCommand extends DeityCommandReceiver {
                 Location playerLocation = player.getLocation();
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.VERIFING_LOCATION);
                 
-                // Town border Check
-                int[] coords = KingdomsHelper.checkSurroundingPlots(playerLocation, town, KingdomsMain.plugin.config.getInt(String
-                        .format(KingdomsConfigHelper.TOWN_BORDER, playerLocation.getWorld().getName())));
-                if (coords != null) {
-                    Town surroundingTown = KingdomsManager.getTown(coords[0]);
-                    if (surroundingTown != null) {
-                        Location closestLocation = new Location(playerLocation.getWorld(), coords[1] * 16, playerLocation.getBlockY(),
-                                coords[2] * 16);
+                int townBorder = KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.TOWN_BORDER, playerLocation
+                        .getWorld().getName()));
+                if (chunk.isTooClose(playerLocation, townBorder)) {
+                    Town closestTown = chunk.getClosestTownNotInTown(playerLocation, townBorder, town.getId());
+                    if (closestTown != null) {
+                        Location closestLocation = closestTown.getClosestLocation(playerLocation);
                         String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(playerLocation, closestLocation);
                         int distance = (int) closestLocation.distance(playerLocation);
-                        KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_TOO_CLOSE,
-                                surroundingTown.getName(), distance, direction));
+                        KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                                String.format(KingdomsMessageHelper.CMD_TOWN_TOO_CLOSE, closestTown.getName(), distance, direction));
                         return;
                     }
                 }
-                
-                // Kingdom Border Check
-                if (town != null && town.getKingdom() != null) {
-                    coords = KingdomsHelper.checkSurroundingPlots(playerLocation, town.getKingdom(), KingdomsMain.plugin.config
-                            .getInt(String.format(KingdomsConfigHelper.KINGDOM_BORDER, playerLocation.getWorld().getName())));
-                    if (coords != null) {
-                        Town surroundingTown = KingdomsManager.getTown(coords[0]);
-                        if (surroundingTown != null && surroundingTown.getKingdom() != null) {
-                            Location closestLocation = new Location(playerLocation.getWorld(), coords[1] * 16,
-                                    playerLocation.getBlockY(), coords[2] * 16);
-                            String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(playerLocation, closestLocation);
-                            int distance = (int) closestLocation.distance(playerLocation);
-                            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(
-                                    KingdomsMessageHelper.CMD_KINGDOM_TOO_CLOSE, surroundingTown.getKingdom().getName(), distance,
-                                    direction));
-                            return;
-                        }
+                int kingdomBorder = KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.KINGDOM_BORDER,
+                        playerLocation.getWorld().getName()));
+                if (chunk.isTooClose(playerLocation, kingdomBorder)) {
+                    Town closestTown = null;
+                    if (town.getKingdom() != null) {
+                        closestTown = chunk.getClosestTownNotInKingdom(playerLocation, kingdomBorder, town.getKingdom().getId());
+                    } else {
+                        closestTown = chunk.getClosestTownNotInKingdom(playerLocation, kingdomBorder);
                     }
-                } else {
-                    coords = KingdomsHelper.checkSurroundingPlots(playerLocation, KingdomsMain.plugin.config.getInt(String.format(
-                            KingdomsConfigHelper.KINGDOM_BORDER, playerLocation.getWorld().getName())));
-                    if (coords != null) {
-                        Town surroundingTown = KingdomsManager.getTown(coords[0]);
-                        if (surroundingTown != null && surroundingTown.getKingdom() != null) {
-                            Location closestLocation = new Location(playerLocation.getWorld(), coords[1] * 16,
-                                    playerLocation.getBlockY(), coords[2] * 16);
-                            String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(playerLocation, closestLocation);
-                            int distance = (int) closestLocation.distance(playerLocation);
-                            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(
-                                    KingdomsMessageHelper.CMD_KINGDOM_TOO_CLOSE, surroundingTown.getKingdom().getName(), distance,
-                                    direction));
-                            return;
-                        }
+                    if (closestTown != null) {
+                        Location closestLocation = closestTown.getClosestLocation(playerLocation);
+                        String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(playerLocation, closestLocation);
+                        int distance = (int) closestLocation.distance(playerLocation);
+                        KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_KINGDOM_TOO_CLOSE,
+                                closestTown.getKingdom().getName(), distance, direction));
+                        return;
                     }
                 }
-                
                 if (!KingdomsHelper.isAdjacentPlotWithLocation(playerLocation, town)) {
                     KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_TOWN_PLOT_NOT_ADJACENT);
                     return;

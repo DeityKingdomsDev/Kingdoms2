@@ -94,8 +94,10 @@ public class KingdomsHelper {
     public static void getMapHelp(Player player) {
         KingdomsMain.plugin.chat.sendPlayerMessageNoHeader(
                 player,
-                KingdomsChunk.getFormat(0) + " &f= Wilderness, " + KingdomsChunk.getFormat(2) + " &f= Your plots, " + KingdomsChunk.getFormat(1) + " &f= For Sale Plots, " + KingdomsChunk.getFormat(3) + " &f= Owned Plots, " + KingdomsChunk.getFormat(4) + " &f= Blank Plots, "
-                        + KingdomsChunk.getFormat(5) + " &f= Other Towns, " + PLAYER_MARKER + " &f= Your Location");
+                KingdomsChunk.getFormat(0) + " &f= Wilderness, " + KingdomsChunk.getFormat(2) + " &f= Your plots, "
+                        + KingdomsChunk.getFormat(1) + " &f= For Sale Plots, " + KingdomsChunk.getFormat(3) + " &f= Owned Plots, "
+                        + KingdomsChunk.getFormat(4) + " &f= Blank Plots, " + KingdomsChunk.getFormat(5) + " &f= Other Towns, "
+                        + PLAYER_MARKER + " &f= Your Location");
     }
     
     public static void sendMap(Player player, Location location) {
@@ -104,13 +106,21 @@ public class KingdomsHelper {
         }
     }
     
-    public static Town checkAdjacentPlots(Location location, int diameter) {
+    public static Town getAdjacentPlots(Location location, int diameter) {
         int xCoord = location.getChunk().getX();
         int zCoord = location.getChunk().getZ();
         
-        String sql = "SELECT kc.town_id FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
+        String sql = "SELECT kc.town_id FROM "
+                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
+                + " dpc, "
+                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
                 + " kc WHERE dpc.id = kc.deity_protect_id  AND dpc.world = ? AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, location.getWorld().getName(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
+        DatabaseResults query = DeityAPI
+                .getAPI()
+                .getDataAPI()
+                .getMySQL()
+                .readEnhanced(sql, location.getWorld().getName(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord,
+                        diameter);
         if (query != null && query.hasRows()) {
             for (int i = 0; i < query.rowCount(); i++) {
                 try {
@@ -123,13 +133,21 @@ public class KingdomsHelper {
         return null;
     }
     
-    public static Town checkAdjacentPlots(Location location, Town town, int diameter) {
+    public static Town getAdjacentPlots(Location location, Town town, int diameter) {
         int xCoord = location.getChunk().getX();
         int zCoord = location.getChunk().getZ();
         
-        String sql = "=SELECT kc.town_id FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
-                + " kc WHERE kc.town_id != ? AND dpc.id = kc.deity_protect_id AND dpc.world = ? AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, town.getId(), location.getWorld().getName(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
+        String sql = "=SELECT kc.town_id FROM "
+                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
+                + " dpc, "
+                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
+                + " kc WHERE kc.town_id != ? AND dpc.id = kc.deity_protect_id AND dpc.world = ? AND (dpc.x_coord - ? <= ? AND ? <= dpc.x_coord + ?) AND (dpc.z_coord - ? <= ? AND ? <= dpc.z_coord + ?);";
+        DatabaseResults query = DeityAPI
+                .getAPI()
+                .getDataAPI()
+                .getMySQL()
+                .readEnhanced(sql, town.getId(), location.getWorld().getName(), diameter, xCoord, xCoord, diameter, diameter, zCoord,
+                        zCoord, diameter);
         if (query != null && query.hasRows()) {
             for (int i = 0; i < query.rowCount(); i++) {
                 try {
@@ -142,57 +160,38 @@ public class KingdomsHelper {
         return null;
     }
     
-    public static int[] checkSurroundingPlots(Location location, int diameter) {
-        int xCoord = location.getChunk().getX();
-        int zCoord = location.getChunk().getZ();
-        
-        String sql = "SELECT kc.town_id, dpc.x_coord, dpc.z_coord FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
-                + " kc WHERE dpc.id = kc.deity_protect_id AND dpc.world = ? AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, location.getWorld().getName(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
-        if (query != null && query.hasRows()) {
-            for (int i = 0; i < query.rowCount(); i++) {
-                try {
-                    int[] tmp = { query.getInteger(i, "town_id"), query.getInteger(i, "x_coord"), query.getInteger(i, "z_coord") };
-                    return tmp;
-                } catch (SQLDataException e) {
-                    e.printStackTrace();
-                }
-            }
+    public static Town getSurroundingTownInBorder(String world, int xCoord, int zCoord, int diameter, int idNotToCheck, boolean isTown) {
+        String sql = "SELECT kc.town_id FROM "
+                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
+                + " dpc, "
+                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "towns")
+                + "kt,"
+                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
+                + " kc WHERE dpc.world = ? AND (dpc.x_coord - ? <= ? AND ? <= dpc.x_coord + ?) AND (dpc.z_coord - ? <= ? AND ? <= dpc.z_coord + ?) AND dpc.id = kc.deity_protect_id";
+        DatabaseResults query = null;
+        if (isTown && idNotToCheck >= 0) {
+            query = DeityAPI
+                    .getAPI()
+                    .getDataAPI()
+                    .getMySQL()
+                    .readEnhanced(sql + " AND kc.town_id != ?;", world, diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord,
+                            diameter, idNotToCheck);
+        } else if (!isTown && idNotToCheck >= 0) {
+            query = DeityAPI
+                    .getAPI()
+                    .getDataAPI()
+                    .getMySQL()
+                    .readEnhanced(sql + " AND kt.kingdom_id != ? AND kt.id = kc.town_id;", world, diameter, xCoord, xCoord, diameter,
+                            diameter, zCoord, zCoord, diameter, idNotToCheck);
+        } else {
+            query = DeityAPI.getAPI().getDataAPI().getMySQL()
+                    .readEnhanced(sql, world, diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
         }
-        return null;
-    }
-    
-    public static int[] checkSurroundingPlots(Location location, Town town, int diameter) {
-        int xCoord = location.getChunk().getX();
-        int zCoord = location.getChunk().getZ();
-        String sql = "SELECT kc.town_id, dpc.x_coord, dpc.z_coord FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
-                + " kc WHERE kc.town_id != ? AND dpc.id = kc.deity_protect_id AND dpc.world = ? AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, town.getId(), location.getWorld().getName(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
         if (query != null && query.hasRows()) {
             for (int i = 0; i < query.rowCount(); i++) {
                 try {
-                    int[] tmp = { query.getInteger(i, "town_id"), query.getInteger(i, "x_coord"), query.getInteger(i, "z_coord") };
-                    return tmp;
-                } catch (SQLDataException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
-    }
-    
-    public static int[] checkSurroundingPlots(Location location, Kingdom kingdom, int diameter) {
-        int xCoord = location.getChunk().getX();
-        int zCoord = location.getChunk().getZ();
-        
-        String sql = "SELECT kc.town_id, dpc.x_coord, dpc.z_coord FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "towns") + "kt,"
-                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks") + " kc WHERE kt.kingdom_id != ? AND kt.id = kc.town_id AND dpc.id = kc.deity_protect_id AND dpc.world = ? AND (dpc.x_coord-? <= ? AND ? <= dpc.x_coord+?) AND (dpc.z_coord-? <= ? AND ? <= dpc.z_coord+?);";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, kingdom.getId(), location.getWorld().getName(), diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
-        if (query != null && query.hasRows()) {
-            for (int i = 0; i < query.rowCount(); i++) {
-                try {
-                    int[] tmp = { query.getInteger(i, "town_id"), query.getInteger(i, "x_coord"), query.getInteger(i, "z_coord") };
-                    return tmp;
+                    int townId = query.getInteger(i, "town_id");
+                    return KingdomsManager.getTown(townId);
                 } catch (SQLDataException e) {
                     e.printStackTrace();
                 }
@@ -205,9 +204,13 @@ public class KingdomsHelper {
         int xCoord = location.getChunk().getX();
         int zCoord = location.getChunk().getZ();
         
-        String sql = "SELECT dpc.x_coord, dpc.z_coord FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " dpc, " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
-                + " kc WHERE kc.town_id = ? AND dpc.id = kc.deity_protect_id AND dpc.world = ? AND (((dpc.x_coord = (?+1) OR dpc.x_coord = (?-1)) AND dpc.z_coord = ?) OR ((dpc.z_coord = (?+1) OR dpc.z_coord = (?-1)) AND dpc.x_coord = ?));";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, town.getId(), location.getWorld().getName(),  xCoord, xCoord, zCoord, zCoord, zCoord, xCoord);
+        String sql = "SELECT dpc.x_coord, dpc.z_coord FROM "
+                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
+                + " dpc, "
+                + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
+                + " kc WHERE kc.town_id = ? AND dpc.id = kc.deity_protect_id AND dpc.world = ? AND (((dpc.x_coord = (? + 1) OR dpc.x_coord = (? - 1)) AND dpc.z_coord = ?) OR ((dpc.z_coord = (? + 1) OR dpc.z_coord = (? - 1)) AND dpc.x_coord = ?));";
+        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL()
+                .readEnhanced(sql, town.getId(), location.getWorld().getName(), xCoord, xCoord, zCoord, zCoord, zCoord, xCoord);
         if (query != null && query.hasRows()) { return true; }
         return false;
     }
@@ -215,7 +218,8 @@ public class KingdomsHelper {
     public static boolean verifyName(String name) {
         if (name.length() > 20) { return false; }
         for (int i = 0; i < name.length(); i++) {
-            if (('a' <= name.charAt(i) && name.charAt(i) <= 'z') || ('A' <= name.charAt(i) && name.charAt(i) <= 'Z') || '-' == name.charAt(i) || name.charAt(i) == '_') {
+            if (('a' <= name.charAt(i) && name.charAt(i) <= 'z') || ('A' <= name.charAt(i) && name.charAt(i) <= 'Z')
+                    || '-' == name.charAt(i) || name.charAt(i) == '_') {
                 continue;
             } else {
                 return false;

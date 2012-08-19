@@ -3,6 +3,7 @@ package com.imdeity.kingdoms.obj;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.imdeity.deityapi.DeityAPI;
@@ -312,6 +313,34 @@ public class KingdomsChunk extends DeityChunk {
             } else {
                 return "P";
             }
+        }
+    }
+    
+    public boolean isTooClose(Location location, int borderSize) {
+        if (KingdomsHelper.getSurroundingTownInBorder(this.getWorld().getName(), this.getX(), this.getZ(), borderSize, -1, false) != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public Town getClosestTownNotInKingdom(Location location, int borderSize, int... kingdomId) {
+        if (kingdomId.length > 0) {
+            return KingdomsHelper.getSurroundingTownInBorder(this.getWorld().getName(), this.getX(), this.getZ(), borderSize,
+                    kingdomId[0], false);
+        } else {
+            return KingdomsHelper.getSurroundingTownInBorder(this.getWorld().getName(), this.getX(), this.getZ(), borderSize, -1,
+                    false);
+        }
+    }
+    
+    public Town getClosestTownNotInTown(Location location, int borderSize, int... townId) {
+        if (townId.length > 0) {
+            return KingdomsHelper.getSurroundingTownInBorder(this.getWorld().getName(), this.getX(), this.getZ(), borderSize,
+                    townId[0], true);
+        } else {
+            return KingdomsHelper
+                    .getSurroundingTownInBorder(this.getWorld().getName(), this.getX(), this.getZ(), borderSize, -1, true);
         }
     }
 }

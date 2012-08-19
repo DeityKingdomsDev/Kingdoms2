@@ -391,6 +391,27 @@ public class Town {
         }
     }
     
+    public Location getClosestLocation(Location location) {
+        Location closestLocation = new Location(KingdomsManager.getKingdomsChunk(land.get(0)).getWorld(), KingdomsManager
+                .getKingdomsChunk(land.get(0)).getX() * 16, location.getY(), KingdomsManager.getKingdomsChunk(land.get(0)).getZ() * 16);
+        for (int i = 1; i < land.size(); i++) {
+            KingdomsChunk chunk = KingdomsManager.getKingdomsChunk(land.get(i));
+            if (chunk != null) {
+                if ((location.getChunk().getX() > chunk.getX() && chunk.getX() > closestLocation.getChunk().getX()
+                        && location.getChunk().getZ() > chunk.getZ() && chunk.getZ() > closestLocation.getChunk().getZ())
+                        || (location.getChunk().getX() > chunk.getX() && chunk.getX() > closestLocation.getChunk().getX()
+                                && location.getChunk().getZ() < chunk.getZ() && chunk.getZ() < closestLocation.getChunk().getZ())
+                        || (location.getChunk().getX() < chunk.getX() && chunk.getX() < closestLocation.getChunk().getX()
+                                && location.getChunk().getZ() > chunk.getZ() && chunk.getZ() > closestLocation.getChunk().getZ())
+                        || (location.getChunk().getX() < chunk.getX() && chunk.getX() < closestLocation.getChunk().getX()
+                                && location.getChunk().getZ() < chunk.getZ() && chunk.getZ() < closestLocation.getChunk().getZ())) {
+                    closestLocation = new Location(chunk.getWorld(), chunk.getX() * 16, location.getY(), chunk.getZ() * 16);
+                }
+            }
+        }
+        return closestLocation;
+    }
+    
     public void sendMessage(String message) {
         for (String s : residents) {
             Resident r = KingdomsManager.getResident(s);
