@@ -23,7 +23,7 @@ public class KingdomsPricesCommand extends DeityCommandReceiver {
             worldReq = player.getWorld().getName();
         }
         for (World world : KingdomsMain.plugin.getServer().getWorlds()) {
-            if (world.getName().equalsIgnoreCase(args[0])) {
+            if (world.getName().equalsIgnoreCase(worldReq)) {
                 validWorld = world;
                 break;
             }
@@ -36,15 +36,55 @@ public class KingdomsPricesCommand extends DeityCommandReceiver {
         }
         List<String> output = new ArrayList<String>();
         output.add("    Kingdom Prices: ");
-        output.add("        Creation: " + DeityAPI.getAPI().getEconAPI().getFormattedBalance(KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.KINGDOM_PRICES_CREATE, validWorld))));
+        output.add("        Creation: "
+                + DeityAPI
+                        .getAPI()
+                        .getEconAPI()
+                        .getFormattedBalance(
+                                KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.KINGDOM_PRICES_CREATE,
+                                        validWorld))));
         output.add("    Town Prices: ");
-        output.add("        Creation: " + DeityAPI.getAPI().getEconAPI().getFormattedBalance(KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_CREATE, validWorld))));
-        output.add("        Claim: " + DeityAPI.getAPI().getEconAPI().getFormattedBalance(KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_CLAIM, validWorld))));
-        output.add("        Spawn: " + DeityAPI.getAPI().getEconAPI().getFormattedBalance(KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SPAWN, validWorld))));
-        output.add("        Warp-Add: " + DeityAPI.getAPI().getEconAPI().getFormattedBalance(KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_WARP_ADD, validWorld))));
+        output.add("        Creation: "
+                + DeityAPI
+                        .getAPI()
+                        .getEconAPI()
+                        .getFormattedBalance(
+                                KingdomsMain.plugin.config.getDouble(String
+                                        .format(KingdomsConfigHelper.TOWN_PRICES_CREATE, validWorld))));
+        output.add("        Claim: "
+                + DeityAPI
+                        .getAPI()
+                        .getEconAPI()
+                        .getFormattedBalance(
+                                KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_CLAIM, validWorld))));
+        output.add("        Spawn: "
+                + DeityAPI
+                        .getAPI()
+                        .getEconAPI()
+                        .getFormattedBalance(
+                                KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SPAWN, validWorld))));
+        output.add("        Warp-Add: "
+                + DeityAPI
+                        .getAPI()
+                        .getEconAPI()
+                        .getFormattedBalance(
+                                KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_WARP_ADD,
+                                        validWorld))));
         output.add("    Plot Prices:");
-        output.add("        Mob-Spawning: " + DeityAPI.getAPI().getEconAPI().getFormattedBalance(KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_MOB_SPAWN, validWorld))));
-        output.add("        PvP: " + DeityAPI.getAPI().getEconAPI().getFormattedBalance(KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_PVP, validWorld))));
+        output.add("        Mob-Spawning: "
+                + DeityAPI
+                        .getAPI()
+                        .getEconAPI()
+                        .getFormattedBalance(
+                                KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_MOB_SPAWN,
+                                        validWorld))));
+        output.add("        PvP: "
+                + DeityAPI
+                        .getAPI()
+                        .getEconAPI()
+                        .getFormattedBalance(
+                                KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_PVP,
+                                        validWorld))));
         KingdomsMain.plugin.chat.sendPlayerMessageNoHeader(player, "+-----[World Prices (" + validWorld.getName() + ")]-----+");
         for (String s : output) {
             KingdomsMain.plugin.chat.sendPlayerMessageNoHeader(player, s);
