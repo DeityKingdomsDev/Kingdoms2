@@ -331,6 +331,10 @@ public class Town {
         }
         residents.remove(resident.getName());
         resident.setTown(null);
+        resident.setKing(false);
+        resident.setMayor(false);
+        resident.setSeniorAssistant(false);
+        resident.setAssistant(false);
         resident.save();
     }
     
