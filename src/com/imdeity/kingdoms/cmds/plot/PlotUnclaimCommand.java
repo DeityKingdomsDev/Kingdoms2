@@ -6,6 +6,7 @@ import com.imdeity.deityapi.api.DeityCommandReceiver;
 import com.imdeity.kingdoms.main.KingdomsMain;
 import com.imdeity.kingdoms.main.KingdomsMessageHelper;
 import com.imdeity.kingdoms.obj.KingdomsChunk;
+import com.imdeity.kingdoms.obj.KingdomsChunk.ChunkType;
 import com.imdeity.kingdoms.obj.KingdomsManager;
 import com.imdeity.kingdoms.obj.Resident;
 
@@ -21,7 +22,7 @@ public class PlotUnclaimCommand extends DeityCommandReceiver {
         }
         KingdomsChunk kChunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
         if (kChunk == null) { return true; }
-        if (!kChunk.getTown().equals(resident.getTown())) {
+        if (kChunk.getType() == ChunkType.WILDERNESS || !kChunk.getTown().getName().equalsIgnoreCase(resident.getTown().getName())) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_INVALID_LOCATION);
             return true;
         }
