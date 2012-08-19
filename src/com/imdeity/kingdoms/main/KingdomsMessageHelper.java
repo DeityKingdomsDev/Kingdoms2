@@ -25,6 +25,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_TOWN_SET_PERMISSIONS_UPDATED = "You updated the towns %s permission to %s";
     public static final String CMD_TOWN_SET_SPAWN_PLAYER = "You set the town spawn to %s, %s, %s";
     public static final String CMD_TOWN_SET_VISCOUNT = "You set %s as a viscount";
+    public static final String CMD_TOWN_REQUEST_SENT = "%s has been invited to town.";
     public static final String CMD_KINGDOMS_MAP_ON = "You have turned Map Mode On!";
     public static final String CMD_KINGDOMS_MAP_OFF = "You have turned Map Mode Off!";
     public static final String CMD_TOWN_SET_BOARD_PLAYER = "You set the town board to %s";
