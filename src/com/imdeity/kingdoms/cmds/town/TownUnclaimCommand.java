@@ -26,6 +26,13 @@ public class TownUnclaimCommand extends DeityCommandReceiver {
         }
         KingdomsChunk chunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
         
+        if (chunk.isChunk(resident.getTown().getTownSpawnLocation().getLocation().getWorld().getName(), resident.getTown()
+                .getTownSpawnLocation().getLocation().getChunk().getX(), resident.getTown().getTownSpawnLocation().getLocation()
+                .getChunk().getZ())) {
+            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_UNCLAIM_TOWN_SPAWN);
+            return true;
+        }
+        
         if (chunk == null || chunk.getType() != KingdomsChunk.ChunkType.TOWN || chunk.getTown() == null
                 || !chunk.getTown().getName().equalsIgnoreCase(resident.getTown().getName())) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_INVALID_CLAIM);
