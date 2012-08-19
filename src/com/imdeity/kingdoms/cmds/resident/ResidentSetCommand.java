@@ -29,33 +29,43 @@ public class ResidentSetCommand extends DeityCommandReceiver {
                 }
                 resident.setMale(isMale);
                 resident.save();
-                KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_RESIDENT_CHANGE_GENDER, output));
+                KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                        String.format(KingdomsMessageHelper.CMD_RESIDENT_CHANGE_GENDER, output));
                 return true;
             } else if (args[0].equalsIgnoreCase("permissions")) {
                 String node = args[1];
                 String value = args[2];
-                if (DeityChunkPermissionTypes.EDIT.name().equals(node)) {
+                if (DeityChunkPermissionTypes.EDIT.name().equalsIgnoreCase(node)) {
                     ChunkPermissionGroupTypes group = ChunkPermissionGroupTypes.getFromString(value);
                     if (group != null) {
                         resident.setPermissions(DeityChunkPermissionTypes.EDIT, group);
                         resident.save();
-                        KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_RES_SET_PERMISSIONS_UPDATED, DeityChunkPermissionTypes.EDIT.toString(), group.toString()));
+                        KingdomsMain.plugin.chat.sendPlayerMessage(
+                                player,
+                                String.format(KingdomsMessageHelper.CMD_RES_SET_PERMISSIONS_UPDATED,
+                                        DeityChunkPermissionTypes.EDIT.toString(), group.toString()));
                         return true;
                     }
-                } else if (DeityChunkPermissionTypes.USE.name().equals(node)) {
+                } else if (DeityChunkPermissionTypes.USE.name().equalsIgnoreCase(node)) {
                     ChunkPermissionGroupTypes group = ChunkPermissionGroupTypes.getFromString(value);
                     if (group != null) {
                         resident.setPermissions(DeityChunkPermissionTypes.USE, group);
                         resident.save();
-                        KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_RES_SET_PERMISSIONS_UPDATED, DeityChunkPermissionTypes.USE.toString(), group.toString()));
+                        KingdomsMain.plugin.chat.sendPlayerMessage(
+                                player,
+                                String.format(KingdomsMessageHelper.CMD_RES_SET_PERMISSIONS_UPDATED,
+                                        DeityChunkPermissionTypes.USE.toString(), group.toString()));
                         return true;
                     }
-                } else if (DeityChunkPermissionTypes.ACCESS.name().equals(node)) {
+                } else if (DeityChunkPermissionTypes.ACCESS.name().equalsIgnoreCase(node)) {
                     ChunkPermissionGroupTypes group = ChunkPermissionGroupTypes.getFromString(value);
                     if (group != null) {
                         resident.setPermissions(DeityChunkPermissionTypes.ACCESS, group);
                         resident.save();
-                        KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_RES_SET_PERMISSIONS_UPDATED, DeityChunkPermissionTypes.ACCESS.toString(), group.toString()));
+                        KingdomsMain.plugin.chat.sendPlayerMessage(
+                                player,
+                                String.format(KingdomsMessageHelper.CMD_RES_SET_PERMISSIONS_UPDATED,
+                                        DeityChunkPermissionTypes.ACCESS.toString(), group.toString()));
                         return true;
                     }
                 }
