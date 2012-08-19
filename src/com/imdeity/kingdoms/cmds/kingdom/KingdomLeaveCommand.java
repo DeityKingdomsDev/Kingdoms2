@@ -20,7 +20,7 @@ public class KingdomLeaveCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_IN_TOWN);
             return true;
         }
-        if (!resident.isMayor() && !resident.isAssistant()) {
+        if (!resident.isMayor() && !resident.isSeniorAssistant()) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_STAFF);
             return true;
         }
@@ -32,7 +32,8 @@ public class KingdomLeaveCommand extends DeityCommandReceiver {
         }
         if (kingdom.getTownNames().contains(town.getName())) {
             kingdom.removeTown(town);
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_KINGDOM_LEAVE, kingdom.getName()));
+            KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                    String.format(KingdomsMessageHelper.CMD_KINGDOM_LEAVE, kingdom.getName()));
             return true;
         }
         return false;
