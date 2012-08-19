@@ -25,8 +25,9 @@ public class TownUnclaimCommand extends DeityCommandReceiver {
             return true;
         }
         KingdomsChunk chunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
-        if (chunk != null && chunk.getType() == KingdomsChunk.ChunkType.TOWN && chunk.getTown() != null
-                && !chunk.getTown().getName().equalsIgnoreCase(resident.getTown().getName())) {
+        
+        if (chunk == null || chunk.getType() != KingdomsChunk.ChunkType.TOWN || chunk.getTown() == null
+                || !chunk.getTown().getName().equalsIgnoreCase(resident.getTown().getName())) {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_INVALID_LOCATION);
             return true;
         } else {
@@ -36,7 +37,7 @@ public class TownUnclaimCommand extends DeityCommandReceiver {
                 return true;
             }
             town.unclaim(chunk);
-            town.sendMessage(String.format(KingdomsMessageHelper.CMD_TOWN_CLAIM_TOWN, player.getName(), chunk.getX(), chunk.getZ()));
+            town.sendMessage(String.format(KingdomsMessageHelper.CMD_TOWN_UNCLAIM_TOWN, player.getName(), chunk.getX(), chunk.getZ()));
             return true;
         }
     }
