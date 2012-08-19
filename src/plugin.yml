@@ -1,6 +1,6 @@
 name: Kingdoms-2
 main: com.imdeity.kingdoms.main.KingdomsMain
-version: 12.08.08
+version: 12.08.13
 author: vanZeben
 website: http://dev.bukkit.org/server-mods/kingdoms-2/
 depend: [DeityAPI, DeityProtect]
