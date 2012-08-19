@@ -313,7 +313,9 @@ public class Town {
     }
     
     public void addResident(Resident resident) {
-        residents.add(resident.getName());
+        if (!residents.contains(resident.getName())) {
+            residents.add(resident.getName());
+        }
         resident.setTown(this);
         resident.save();
     }
