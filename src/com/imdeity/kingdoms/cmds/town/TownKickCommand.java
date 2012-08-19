@@ -31,7 +31,8 @@ public class TownKickCommand extends DeityCommandReceiver {
                         String.format(KingdomsMessageHelper.CMD_FAIL_CANNOT_FIND_RESIDENT, args[0]));
                 return true;
             }
-            if (!newResident.hasTown() || !newResident.getTown().getName().equalsIgnoreCase(town.getName())) {
+            if (!newResident.hasTown() || !newResident.getTown().getName().equalsIgnoreCase(town.getName())
+                    || newResident.equals(resident)) {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player,
                         String.format(KingdomsMessageHelper.CMD_FAIL_TOWN_KICK_INVALID_PLAYER, newResident.getName()));
                 return true;
