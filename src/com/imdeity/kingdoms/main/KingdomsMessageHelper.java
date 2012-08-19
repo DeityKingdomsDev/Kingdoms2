@@ -8,7 +8,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_TOWN_ADD_GLOBAL = "%s was added to the town of %s.";
     public static final String CMD_PLOT_CLAIM_PLAYER = "You claimed this plot for %s dei";
     public static final String CMD_PLOT_UNCLAIM_PLAYER = "You unclaimed this plot";
-    public static final String CMD_PLOT_SET_FORSALE_PLAYER = "You put this plot up for sale at %s dei";
+    public static final String CMD_PLOT_SET_FORSALE_PLAYER = "You put this plot up for sale at %s";
     public static final String CMD_PLOT_SET_NOTFORSALE_PLAYER = "You took this plot down from sale";
     public static final String CMD_PLOT_SET_MOBSPAWN_PLAYER = "You set this plot to %s mob spawning";
     public static final String CMD_PLOT_SET_PVP_PLAYER = "You set this plot to %s pvp";

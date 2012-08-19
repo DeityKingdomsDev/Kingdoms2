@@ -2,6 +2,7 @@ package com.imdeity.kingdoms.cmds.plot;
 
 import org.bukkit.entity.Player;
 
+import com.imdeity.deityapi.DeityAPI;
 import com.imdeity.deityapi.api.DeityCommandReceiver;
 import com.imdeity.kingdoms.main.KingdomsConfigHelper;
 import com.imdeity.kingdoms.main.KingdomsMain;
@@ -41,7 +42,10 @@ public class PlotSetCommand extends DeityCommandReceiver {
                 chunk.setForSale(true);
                 chunk.setPrice(price);
                 chunk.save();
-                KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_FORSALE_PLAYER, price));
+                KingdomsMain.plugin.chat.sendPlayerMessage(
+                        player,
+                        String.format(KingdomsMessageHelper.CMD_PLOT_SET_FORSALE_PLAYER, DeityAPI.getAPI().getEconAPI()
+                                .getFormattedBalance(price)));
                 return true;
             } else if (args[0].equalsIgnoreCase("Not-For-Sale")) {
                 chunk.setOwner(null);
@@ -53,7 +57,8 @@ public class PlotSetCommand extends DeityCommandReceiver {
             } else if (args[0].equalsIgnoreCase("mob-spawning")) {
                 boolean allow = args[1].equalsIgnoreCase("allow");
                 if (allow) {
-                    double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_MOB_SPAWN, player.getWorld().getName()));
+                    double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_MOB_SPAWN,
+                            player.getWorld().getName()));
                     if (!town.canPay(cost)) {
                         KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
                         return true;
@@ -62,12 +67,14 @@ public class PlotSetCommand extends DeityCommandReceiver {
                 }
                 chunk.setMobSpawning(allow);
                 chunk.save();
-                KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_MOBSPAWN_PLAYER, (allow ? "allow" : "deny")));
+                KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                        String.format(KingdomsMessageHelper.CMD_PLOT_SET_MOBSPAWN_PLAYER, (allow ? "allow" : "deny")));
                 return true;
             } else if (args[0].equalsIgnoreCase("pvp")) {
                 boolean allow = args[1].equalsIgnoreCase("allow");
                 if (allow) {
-                    double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_PVP, player.getWorld().getName()));
+                    double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_PVP, player
+                            .getWorld().getName()));
                     if (!town.canPay(cost)) {
                         KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
                         return true;
@@ -76,12 +83,14 @@ public class PlotSetCommand extends DeityCommandReceiver {
                 }
                 chunk.setPvp(allow);
                 chunk.save();
-                KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_PVP_PLAYER, (allow ? "allow" : "deny")));
+                KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                        String.format(KingdomsMessageHelper.CMD_PLOT_SET_PVP_PLAYER, (allow ? "allow" : "deny")));
                 return true;
             } else if (args[0].equalsIgnoreCase("explode")) {
                 boolean allow = args[1].equalsIgnoreCase("allow");
                 if (allow) {
-                    double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_EXPLODE, player.getWorld().getName()));
+                    double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_EXPLODE,
+                            player.getWorld().getName()));
                     if (!town.canPay(cost)) {
                         KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
                         return true;
@@ -90,7 +99,8 @@ public class PlotSetCommand extends DeityCommandReceiver {
                 }
                 chunk.setExplode(allow);
                 chunk.save();
-                KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_PLOT_SET_EXPLODE_PLAYER, (allow ? "allow" : "deny")));
+                KingdomsMain.plugin.chat.sendPlayerMessage(player,
+                        String.format(KingdomsMessageHelper.CMD_PLOT_SET_EXPLODE_PLAYER, (allow ? "allow" : "deny")));
                 return true;
             }
         }
