@@ -347,7 +347,14 @@ public class Town {
     }
     
     public void unclaim(KingdomsChunk chunk) {
-        this.land.remove(chunk.getId());
+        int chunkIndex = 0;
+        for (int i : this.land) {
+            if (i == chunk.getId()) {
+                chunkIndex = i;
+                break;
+            }
+        }
+        this.land.remove(chunkIndex);
         chunk.remove();
     }
     
