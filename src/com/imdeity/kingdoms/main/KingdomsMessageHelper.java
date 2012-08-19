@@ -56,6 +56,7 @@ public class KingdomsMessageHelper {
     public static final String CMD_FAIL_NO_MONEY_TOWN = "Your town does not have enough money. Please check /kingdoms prices";
     public static final String CMD_FAIL_PLAYER_NULL = "That resident does not exist.";
     public static final String CMD_FAIL_ALREADY_IN_TOWN = "That resident already belongs to a town.";
+    public static final String CMD_FAIL_ALREADY_IN_KINGDOM = "Requestees town has already joined a nation.";
     public static final String CMD_FAIL_NAME_INVALID = "The name %s is invalid. Name must be under 20 characters and can only contain letters, underscores and hyphens";
     public static final String CMD_FAIL_TOWN_CREATE_EXIST = "The town %s already exists";
     public static final String CMD_FAIL_KINGDOM_CREATE_EXIST = "The kingdom %s already exists";
