@@ -3,7 +3,6 @@ package com.imdeity.kingdoms.obj;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.imdeity.deityapi.DeityAPI;

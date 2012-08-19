@@ -711,10 +711,13 @@ public class KingdomsManager {
             KingdomsChunk c = loadedChunks.get(i);
             if (c.isChunk(chunk.getWorld().getName(), chunk.getX(), chunk.getZ())) {
                 index = i;
+                chunk = c;
                 break;
             }
         }
         if (index != -1) {
+            ProtectionManager.removeDeityChunk(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
+            loadedChunks.get(index).remove();
             loadedChunks.remove(index);
         }
     }
