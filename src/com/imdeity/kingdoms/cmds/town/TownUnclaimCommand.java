@@ -28,7 +28,7 @@ public class TownUnclaimCommand extends DeityCommandReceiver {
         
         if (chunk == null || chunk.getType() != KingdomsChunk.ChunkType.TOWN || chunk.getTown() == null
                 || !chunk.getTown().getName().equalsIgnoreCase(resident.getTown().getName())) {
-            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_INVALID_LOCATION);
+            KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_INVALID_CLAIM);
             return true;
         } else {
             Town town = resident.getTown();
