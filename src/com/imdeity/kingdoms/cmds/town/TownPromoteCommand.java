@@ -54,6 +54,10 @@ public class TownPromoteCommand extends DeityCommandReceiver {
             town.sendMessage(String.format(KingdomsMessageHelper.CMD_TOWN_PROMOTE_ASSISTANT_TOWN, changingResident.getName()));
             return true;
         } else {
+            resident.setMayor(false);
+            resident.setSeniorAssistant(true);
+            resident.save();
+            
             town.setMayor(changingResident);
             changingResident.setMayor(true);
             changingResident.setSeniorAssistant(false);
