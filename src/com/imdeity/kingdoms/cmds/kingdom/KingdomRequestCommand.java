@@ -114,6 +114,10 @@ public class KingdomRequestCommand extends DeityCommandReceiver {
                 kingdom.addRequest(request);
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_REQUEST_CONFIRM);
             } else {
+                if (!resident.isMayor()) {
+                    KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NOT_TOWN_DUKE);
+                    return true;
+                }
                 for (Request r : kingdom.getRequests()) {
                     if (r.getRequestee().equals(player.getName())) {
                         KingdomsMain.plugin.chat.sendPlayerMessage(player, "You already have a request open");
