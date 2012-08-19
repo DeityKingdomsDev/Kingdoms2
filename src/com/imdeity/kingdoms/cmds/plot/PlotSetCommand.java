@@ -48,13 +48,17 @@ public class PlotSetCommand extends DeityCommandReceiver {
                                 .getFormattedBalance(price)));
                 return true;
             } else if (args[0].equalsIgnoreCase("Not-For-Sale")) {
+                if (!chunk.isForSale()) {
+                    KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_NOT_FOR_SALE);
+                    return true;
+                }
                 chunk.setOwner(null);
                 chunk.setForSale(false);
                 chunk.setPrice(0);
                 chunk.save();
                 KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_PLOT_SET_NOTFORSALE_PLAYER);
                 return true;
-            } else if (args[0].equalsIgnoreCase("mob-spawning")) {
+            } else if (args[0].equalsIgnoreCase("mob-spawning") && args.length < 2) {
                 boolean allow = args[1].equalsIgnoreCase("allow");
                 if (allow) {
                     double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_MOB_SPAWN,
@@ -70,7 +74,8 @@ public class PlotSetCommand extends DeityCommandReceiver {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player,
                         String.format(KingdomsMessageHelper.CMD_PLOT_SET_MOBSPAWN_PLAYER, (allow ? "allow" : "deny")));
                 return true;
-            } else if (args[0].equalsIgnoreCase("pvp")) {
+            } else if (args[0].equalsIgnoreCase("pvp") && args.length < 2) {
+                if (args.length < 2) { return false; }
                 boolean allow = args[1].equalsIgnoreCase("allow");
                 if (allow) {
                     double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_PVP, player
@@ -86,7 +91,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
                 KingdomsMain.plugin.chat.sendPlayerMessage(player,
                         String.format(KingdomsMessageHelper.CMD_PLOT_SET_PVP_PLAYER, (allow ? "allow" : "deny")));
                 return true;
-            } else if (args[0].equalsIgnoreCase("explode")) {
+            } else if (args[0].equalsIgnoreCase("explode") && args.length < 2) {
                 boolean allow = args[1].equalsIgnoreCase("allow");
                 if (allow) {
                     double cost = KingdomsMain.plugin.config.getDouble(String.format(KingdomsConfigHelper.TOWN_PRICES_SET_EXPLODE,
