@@ -81,11 +81,13 @@ public class TownClaimCommand extends DeityCommandReceiver {
                     Town closestTown = chunk.getClosestTownNotInTown(playerLocation, townBorder, town.getId());
                     if (closestTown != null) {
                         Location closestLocation = closestTown.getClosestLocation(playerLocation);
-                        String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(playerLocation, closestLocation);
-                        int distance = (int) closestLocation.distance(playerLocation);
-                        KingdomsMain.plugin.chat.sendPlayerMessage(player,
-                                String.format(KingdomsMessageHelper.CMD_TOWN_TOO_CLOSE, closestTown.getName(), distance, direction));
-                        return;
+                        if (closestLocation != null) {
+                            String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(playerLocation, closestLocation);
+                            int distance = (int) closestLocation.distance(playerLocation);
+                            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_TOWN_TOO_CLOSE,
+                                    closestTown.getName(), distance, direction));
+                            return;
+                        }
                     }
                 }
                 int kingdomBorder = KingdomsMain.plugin.config.getInt(String.format(KingdomsConfigHelper.KINGDOM_BORDER,
@@ -99,11 +101,14 @@ public class TownClaimCommand extends DeityCommandReceiver {
                     }
                     if (closestTown != null) {
                         Location closestLocation = closestTown.getClosestLocation(playerLocation);
-                        String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(playerLocation, closestLocation);
-                        int distance = (int) closestLocation.distance(playerLocation);
-                        KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(KingdomsMessageHelper.CMD_KINGDOM_TOO_CLOSE,
-                                closestTown.getKingdom().getName(), distance, direction));
-                        return;
+                        if (closestLocation != null) {
+                            String direction = DeityAPI.getAPI().getPlayerAPI().getDirectionTo(playerLocation, closestLocation);
+                            int distance = (int) closestLocation.distance(playerLocation);
+                            KingdomsMain.plugin.chat.sendPlayerMessage(player, String.format(
+                                    KingdomsMessageHelper.CMD_KINGDOM_TOO_CLOSE, closestTown.getKingdom().getName(), distance,
+                                    direction));
+                            return;
+                        }
                     }
                 }
                 if (!KingdomsHelper.isAdjacentPlotWithLocation(playerLocation, town)) {
