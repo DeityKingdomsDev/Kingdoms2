@@ -717,7 +717,6 @@ public class KingdomsManager {
             }
         }
         if (index != -1) {
-            ProtectionManager.removeDeityChunkFromCache(chunk.getId());
             loadedChunks.remove(index);
         }
     }

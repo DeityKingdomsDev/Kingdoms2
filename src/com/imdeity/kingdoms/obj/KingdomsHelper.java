@@ -165,7 +165,7 @@ public class KingdomsHelper {
                 + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
                 + " dpc, "
                 + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "towns")
-                + " kt,"
+                + " kt, "
                 + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
                 + " kc WHERE dpc.world = ? AND (dpc.x_coord - ? <= ? AND ? <= dpc.x_coord + ?) AND (dpc.z_coord - ? <= ? AND ? <= dpc.z_coord + ?) AND dpc.id = kc.deity_protect_id";
         DatabaseResults query = null;
@@ -176,6 +176,9 @@ public class KingdomsHelper {
                     .getMySQL()
                     .readEnhanced(sql + " AND kc.town_id != ?;", world, diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord,
                             diameter, idNotToCheck);
+        } else if (isTown && idNotToCheck < 0) {
+            query = DeityAPI.getAPI().getDataAPI().getMySQL()
+                    .readEnhanced(sql, world, diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
         } else if (!isTown && idNotToCheck >= 0) {
             query = DeityAPI
                     .getAPI()
@@ -184,8 +187,12 @@ public class KingdomsHelper {
                     .readEnhanced(sql + " AND kt.kingdom_id != ? AND kt.id = kc.town_id;", world, diameter, xCoord, xCoord, diameter,
                             diameter, zCoord, zCoord, diameter, idNotToCheck);
         } else {
-            query = DeityAPI.getAPI().getDataAPI().getMySQL()
-                    .readEnhanced(sql, world, diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
+            query = DeityAPI
+                    .getAPI()
+                    .getDataAPI()
+                    .getMySQL()
+                    .readEnhanced(sql + " AND kt.kingdom_id != -1 AND kt.id = kc.town_id;", world, diameter, xCoord, xCoord, diameter,
+                            diameter, zCoord, zCoord, diameter);
         }
         if (query != null && query.hasRows()) {
             for (int i = 0; i < query.rowCount(); i++) {
