@@ -717,8 +717,7 @@ public class KingdomsManager {
             }
         }
         if (index != -1) {
-            ProtectionManager.removeDeityChunk(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
-            loadedChunks.get(index).remove();
+            ProtectionManager.removeDeityChunkFromCache(chunk.getId());
             loadedChunks.remove(index);
         }
     }

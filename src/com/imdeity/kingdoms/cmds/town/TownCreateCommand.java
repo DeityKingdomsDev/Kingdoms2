@@ -136,6 +136,8 @@ public class TownCreateCommand extends DeityCommandReceiver {
                 KingdomsMain.plugin.chat.sendGlobalMessage(String.format(KingdomsMessageHelper.CMD_TOWN_CREATE_SUCCESS_PUBLIC,
                         resident.getName(), town.getName()));
             } catch (Exception e) {
+                KingdomsMain.plugin.chat.sendPlayerMessage(player, "There was an error claiming the plot. Please inform an admin.");
+                e.printStackTrace();
             }
         }
     }

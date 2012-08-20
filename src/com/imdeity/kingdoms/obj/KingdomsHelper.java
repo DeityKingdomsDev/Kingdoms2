@@ -165,7 +165,7 @@ public class KingdomsHelper {
                 + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
                 + " dpc, "
                 + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "towns")
-                + "kt,"
+                + " kt,"
                 + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("kingdoms2_", "chunks")
                 + " kc WHERE dpc.world = ? AND (dpc.x_coord - ? <= ? AND ? <= dpc.x_coord + ?) AND (dpc.z_coord - ? <= ? AND ? <= dpc.z_coord + ?) AND dpc.id = kc.deity_protect_id";
         DatabaseResults query = null;

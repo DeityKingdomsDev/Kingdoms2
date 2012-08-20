@@ -118,6 +118,8 @@ public class TownClaimCommand extends DeityCommandReceiver {
                 town.pay(cost, "Town Claim - " + player.getName());
                 town.sendMessage(String.format(KingdomsMessageHelper.CMD_TOWN_CLAIM_TOWN, player.getName(), chunk.getX(), chunk.getZ()));
             } catch (Exception e) {
+                KingdomsMain.plugin.chat.sendPlayerMessage(player, "There was an error claiming the plot. Please inform an admin.");
+                e.printStackTrace();
             }
         }
     }
