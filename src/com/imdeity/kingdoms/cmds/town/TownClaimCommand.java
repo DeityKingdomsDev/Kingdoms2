@@ -45,7 +45,7 @@ public class TownClaimCommand extends DeityCommandReceiver {
             KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_NO_MONEY_TOWN);
             return true;
         }
-        new LandClaimRunner(player, town, chunk, cost);
+        new Runner(player, town, chunk, cost);
         return true;
     }
     
@@ -54,14 +54,14 @@ public class TownClaimCommand extends DeityCommandReceiver {
         return false;
     }
     
-    public class LandClaimRunner implements Runnable {
+    public class Runner implements Runnable {
         
         private Player player;
         private Town town;
         private KingdomsChunk chunk;
         private double cost;
         
-        public LandClaimRunner(Player player, Town town, KingdomsChunk chunk, double cost) {
+        public Runner(Player player, Town town, KingdomsChunk chunk, double cost) {
             this.player = player;
             this.town = town;
             this.chunk = chunk;
