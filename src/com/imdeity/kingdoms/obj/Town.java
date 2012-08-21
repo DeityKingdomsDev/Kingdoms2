@@ -1,6 +1,7 @@
 package com.imdeity.kingdoms.obj;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -354,14 +355,7 @@ public class Town {
     }
     
     public void unclaim(KingdomsChunk chunk) {
-        int chunkIndex = 0;
-        for (int i : this.land) {
-            if (i == chunk.getId()) {
-                chunkIndex = i;
-                break;
-            }
-        }
-        this.land.remove(chunkIndex);
+        this.land.removeAll(Arrays.asList(chunk.getId()));
         chunk.remove();
     }
     
