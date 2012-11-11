@@ -481,15 +481,15 @@ public class Town {
 		if (this.getResidentsNames() != null && !this.getResidentsNames().isEmpty()) {
 			String list = "";
 			if (!onlineList) {
-				list = DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getResidentsNames(), ", ");
+				list = DeityAPI.getAPI().getUtilAPI().getStringUtils().join(this.getResidentsNames(), "&8, &7");
 				out.add("&" + outputColor[0] + "Residents &" + outputColor[1] + "[" + this.getResidentsNames().size()
-				        + "] &f: " + list);
+				        + "] &f: &7" + list);
 			} else {
 				list = DeityAPI.getAPI().getUtilAPI().getStringUtils()
-				        .join(this.getOnlineResidents(), "&7, " + outputColor[1]);
+				        .join(this.getOnlineResidents(), "&8, &7");
 				if (!list.isEmpty()) {
 					out.add("&" + outputColor[0] + "Online Residents &" + outputColor[1] + "["
-					        + this.getOnlineResidents().size() + "] &f: " + list);
+					        + this.getOnlineResidents().size() + "] &f: &7" + list);
 				} else {
 					out.add("&" + outputColor[0] + "Residents &" + outputColor[1] + "["
 					        + this.getResidentsNames().size() + "] &f: &fWe have no online residents");
