@@ -178,7 +178,7 @@ public class KingdomsHelper {
                             diameter, idNotToCheck);
         } else if (isTown && idNotToCheck < 0) {
             query = DeityAPI.getAPI().getDataAPI().getMySQL()
-                    .readEnhanced(sql, world, diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
+                    .readEnhanced(sql + " AND kc.town_id != -1;", world, diameter, xCoord, xCoord, diameter, diameter, zCoord, zCoord, diameter);
         } else if (!isTown && idNotToCheck >= 0) {
             query = DeityAPI
                     .getAPI()

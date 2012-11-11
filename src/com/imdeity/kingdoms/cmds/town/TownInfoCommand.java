@@ -23,7 +23,7 @@ public class TownInfoCommand extends DeityCommandReceiver {
                 return true;
             }
             town = resident.getTown();
-            for (String s : town.showInfo(false)) {
+            for (String s : town.showInfo(true)) {
                 KingdomsMain.plugin.chat.sendPlayerMessageNoHeader(player, s);
             }
             return true;
@@ -34,15 +34,15 @@ public class TownInfoCommand extends DeityCommandReceiver {
                     return true;
                 }
                 town = resident.getTown();
-                for (String s : town.showInfo(true)) {
+                for (String s : town.showInfo(false)) {
                     KingdomsMain.plugin.chat.sendPlayerMessageNoHeader(player, s);
                 }
             } else {
                 String townName = args[0];
-                boolean showOnline = false;
+                boolean showOnline = true;
                 if (args.length == 2) {
                     if (args[1].equalsIgnoreCase("-o")) {
-                        showOnline = true;
+                        showOnline = false;
                     }
                 }
                 town = KingdomsManager.getTown(townName);
