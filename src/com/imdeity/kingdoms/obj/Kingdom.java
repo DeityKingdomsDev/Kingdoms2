@@ -92,6 +92,10 @@ public class Kingdom {
             Town town = KingdomsManager.getTown(s);
             if (!town.isCapital()) {
                 tmp.add(town.getMayor());
+            } else {
+            	for (Resident assistant : town.getAssistants()) {
+            		tmp.add(assistant);
+            	}
             }
         }
         return tmp;
