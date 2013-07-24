@@ -30,7 +30,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
         KingdomsChunk chunk = KingdomsManager.getKingdomsChunk(player.getLocation(), false);
         
         if (args.length > 0) {
-            if (args[0].equalsIgnoreCase("For-Sale")) {
+            if (args[0].equalsIgnoreCase("For-Sale") || args[0].equalsIgnoreCase("fs")) {
                 int price = town.getDefaultPlotPrice();
                 if (args.length > 1) {
                     try {
@@ -47,7 +47,7 @@ public class PlotSetCommand extends DeityCommandReceiver {
                         String.format(KingdomsMessageHelper.CMD_PLOT_SET_FORSALE_PLAYER, DeityAPI.getAPI().getEconAPI()
                                 .getFormattedBalance(price)));
                 return true;
-            } else if (args[0].equalsIgnoreCase("Not-For-Sale")) {
+            } else if (args[0].equalsIgnoreCase("Not-For-Sale") || args[0].equalsIgnoreCase("nfs")) {
                 if (!chunk.isForSale()) {
                     KingdomsMain.plugin.chat.sendPlayerMessage(player, KingdomsMessageHelper.CMD_FAIL_PLOT_NOT_FOR_SALE);
                     return true;
